@@ -2082,3 +2082,18 @@ Changes applied:
 
 Deferred:
 - `canvasEngine.ts` overlay integration remains explicitly out of scope for the next PR.
+### May 26, 2026 - Multi-supplier architecture setup
+
+Workflow / architecture finding:
+- The supplied architecture files are directionally right: the product should become a catalogue platform with calculators layered on top.
+- The downloaded Brief 030 schema cannot be applied literally in this repo because `products`, `product_components`, v3 rule tables, and migration numbers `030`/`031` already exist.
+- Current production architecture is server-first through the Supabase `bom-calculator` edge function, with `localBomCalculator.ts` serving as fallback/regression guard rather than the long-term source of truth.
+
+Changes applied:
+- Added `docs/multi-supplier-platform-architecture.md` as the repo-aware canonical architecture reference.
+- Added `docs/glass-outlet-range-rollout.md` to sequence the remaining Glass Outlet calculator families.
+- Updated `docs/app-overview.md` with current routes, ColorBond seed coverage, broad price-catalogue coverage, and the new architecture/rollout docs.
+- Updated `docs/tasks.md` with the architecture setup note.
+
+Recommended next slice:
+- Finish ColorBond/SuperSleeper verification first, then start Glass Pool Fencing as the first major new calculator family.

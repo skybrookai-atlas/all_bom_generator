@@ -1,6 +1,6 @@
 # QuickScreen BOM Generator - Living App Overview
 
-Last updated: 2026-05-12
+Last updated: 2026-05-26
 
 This file is the regular handoff overview for the app. Update it whenever a feature changes the app flow, calculator engine, seed model, canvas mapper, Supabase schema, or key file responsibilities.
 
@@ -8,7 +8,7 @@ This file is the regular handoff overview for the app. Update it whenever a feat
 
 QuickScreen BOM Generator is a React and Supabase quoting tool for The Glass Outlet slat screening and gate systems. The current sandbox focus is a working trade quote calculator that can:
 
-- Select a fence system such as QSHS, VS, XPL, or BAYG.
+- Select a fence system such as QSHS, VS, XPL, BAYG, or ColorBond.
 - Configure runs, segments, gates, colours, slat sizes, gaps, post sizes, mounting type, and accessories.
 - Draw or edit a fence layout on a canvas and translate that layout into run and segment data.
 - Generate a priced bill of materials with GST and grand total.
@@ -20,13 +20,15 @@ QuickScreen BOM Generator is a React and Supabase quoting tool for The Glass Out
 
 The current branch uses these active routes in `src/App.tsx`:
 
-- `/` redirects to `/calculator`.
-- `/calculator` renders the active v3 calculator surface, `CalculatorV3Page`.
+- `/` redirects to `/fence-calculator`.
+- `/fence-calculator` renders the active v3 calculator surface, `CalculatorV3Page`.
+- `/calculator` is retained as a compatibility alias for the same v3 calculator surface.
+- `/fence-calculator-v4` renders the experimental `CalculatorV4Page`.
 - `/login` renders the auth page.
 - `/quotes` and `/quote/:id` are protected saved quote views.
-- `/new` still renders the older `MainApp` behind `AuthGuard`; do not extend it unless the project intentionally revives that surface.
+- `/admin/products`, `/admin/products/:id`, `/admin/components`, and `/admin/colours` are admin-only catalogue management routes.
 
-Older docs may mention `/fence-calculator`; in this branch the locally tested route is `/calculator`.
+Older docs may mention `/new`; that legacy route is gone in this branch.
 
 ## Runtime Stack
 
@@ -280,12 +282,18 @@ The mapper is intentionally split between a vanilla engine and a React wrapper.
 - `supabase/seeds/glass-outlet/products/bayg.json`
   - Alumawood/BAYG data.
 
+- `supabase/seeds/glass-outlet/products/colorbond.json`
+  - ColorBond steel fence data, component selectors, panel/gate variables, and current draft BOM rules.
+
 - `supabase/seeds/glass-outlet/products/qs_gate.json`
   - Shared QuickScreen gate product data.
   - Current QSG direction is based on `CTS+QSG+Pedestrian+Gates~V3-T1 (1).xlsx`: pedestrian gates should use QSG side frames and normal QSG 65/90 gate rails, not the discontinued XP gate frame system and not sliding-gate HD rail.
 
-- `supabase/seeds/glass-outlet/products/gate_legacy.json`
-  - Historical gate data. Do not extend unless intentionally migrating old rules.
+- `supabase/seeds/glass-outlet/products/xpsg_gate.json`
+  - XP sliding gate seed data.
+
+- `supabase/seeds/glass-outlet/products/price_catalogue.json`
+  - Broad Glass Outlet price catalogue import. Rows here can price/search items before their full calculators exist.
 
 - `supabase/seeds/glass-outlet/products/other.json`
   - Inactive/other product families.
@@ -373,6 +381,12 @@ Recommended checks after calculator logic changes:
 
 - `docs/app-overview.md`
   - This living map of app files, responsibilities, and current runtime behavior.
+
+- `docs/multi-supplier-platform-architecture.md`
+  - Canonical architecture direction for growing into a multi-supplier catalogue platform.
+
+- `docs/glass-outlet-range-rollout.md`
+  - Working build order and definition of done for adding the rest of the Glass Outlet calculator range.
 
 ## Update Rules For This File
 

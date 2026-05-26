@@ -32,6 +32,8 @@ Latest sandbox polish: run sidebar readability, 0m first-segment defaults, compa
 
 Living app overview: [`docs/app-overview.md`](./app-overview.md) now tracks current routes, file responsibilities, data flow, mapper responsibilities, fallback engine behavior, Supabase seed structure, and update rules.
 
+Latest architecture setup: the supplied multi-supplier architecture files were reviewed against the current repo, the plan was adapted to avoid conflicting with the existing v3 products/rules/pricing schema and already-used migration numbers, and two canonical references were added: [`docs/multi-supplier-platform-architecture.md`](./multi-supplier-platform-architecture.md) and [`docs/glass-outlet-range-rollout.md`](./glass-outlet-range-rollout.md).
+
 Latest brief queue pass: Brief 001 removes the pre-address confirm-location warning from the calculator entry flow and hides custom-angle warning chips in the V3 sidebar while leaving BOM calculation behavior unchanged.
 
 Latest BOM workflow pass: generated BOM rows aggregate by product within each tab, individual gate tabs are labelled from the canonical gate segments, Generate BOM clears stale results before recalculating, and the mapper opens without the initial snap dot.
