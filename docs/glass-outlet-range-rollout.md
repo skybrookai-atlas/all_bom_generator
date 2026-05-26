@@ -14,11 +14,13 @@ The live seed set already contains:
 | `bayg.json` | Buy As You Go fence calculator |
 | `colorbond.json` | ColorBond steel fence calculator draft |
 | `qs_gate.json` | Shared pedestrian gate calculator |
-| `xpsg_gate.json` | XP sliding gate seed present |
+| `xpsg_gate.json` | XP sliding gate component catalogue used by QSG sliding gate selections |
 | `price_catalogue.json` | Broad Glass Outlet catalogue/pricing import |
 | `other.json` | Inactive placeholders for future calculators |
 
 The imported price catalogue is broad, but only some ranges are calculator-ready. A catalogue row with a SKU and price is not the same thing as a calculator. Each calculator still needs rules, compatible options, warnings, diagrams where helpful, and test cases.
+
+The QSG sliding gate branch extends the shared `QS_GATE` calculator with backend sliding-gate BOM rules. Treat it as the first branch-sized example for the rest of this rollout: one system family, one seed/rule change set, validation, then push.
 
 ## Imported Price-Catalogue Coverage
 
@@ -36,9 +38,23 @@ The current broad price catalogue includes rows from:
 
 ## Recommended Build Order
 
-### 1. Finish ColorBond and SuperSleeper
+### 1. QSG / CTS Sliding Gates
 
-Why first:
+Status:
+
+- Branch started: `codex/qsg-sliding-gates-calculator`.
+- `QS_GATE` now supports swing versus sliding rule branching.
+- Sliding gate rules emit QSG sliding rails, side frames, infill/channel infill, screw covers, joiners, spacers, top caps, wheel/clamp hardware, XPSG track, guides, stops, catches, centre support rails for gates over 3000mm, and optional Filo automation.
+
+Still needed:
+
+- Run `npm run seed:products` against the target Supabase project after merge/review.
+- Add spreadsheet comparison test cases for standard 2400mm, wide 3600mm, and automation-enabled sliding gates.
+- Decide whether Hamptons/CTS sliding gate variants belong in `QS_GATE` as build options or in a separate gate product file.
+
+### 2. Finish ColorBond and SuperSleeper
+
+Why next:
 
 - It is already partially built.
 - It is a panel-based system, which proves the app can support more than slat calculators.
@@ -50,9 +66,9 @@ Needed:
 - Add SuperSleeper as either a compatible accessory/subsystem or a separate calculator, depending on how the source catalogue describes ordering.
 - Add user-verified test scenarios for common bay lengths, heights, gates, sleepers, shark fins, and post choices.
 
-### 2. Glass Pool Fencing
+### 3. Glass Pool Fencing
 
-Why second:
+Why after panel-system verification:
 
 - It has the largest imported row count and likely a high-value quoting workflow.
 - It will need a different calculator style: panels, gates, spigots/posts, clamps, hinge/latch hardware, compliance warnings, and possible layout constraints.
@@ -64,9 +80,9 @@ Expected calculator families:
 - Glass pool gates.
 - Hardware/accessory picker for spigots, hinges, latches, caps, and core-drill/base-plate choices.
 
-### 3. Aluminium Pool Fencing
+### 4. Aluminium Pool Fencing
 
-Why third:
+Why after glass pool fencing:
 
 - It is likely closer to panel/gate counting than custom slat cutting.
 - It can reuse some pool-fence UI concepts from glass pool fencing.
@@ -77,9 +93,9 @@ Expected calculator families:
 - Aluminium pool gates.
 - Posts, brackets, caps, hinges, latches, and compliance warnings.
 
-### 4. Hamptons, Zeus, and PIC
+### 5. Hamptons, Zeus, and PIC
 
-Why fourth:
+Why after the pool-fence patterns:
 
 - The imported source file groups them together.
 - These probably need separate display systems but may share panel/gate/post logic.
@@ -90,14 +106,14 @@ Expected calculator families:
 - Zeus fencing/gates if catalogue data supports it.
 - PIC panels/gates if catalogue data supports it.
 
-### 5. Screening, Nexia, and Accessories
+### 6. Screening, Nexia, and Accessories
 
-Why fifth:
+Why after the main fence/gate calculators:
 
 - Some parts may be add-ons rather than standalone calculators.
 - Good candidate for catalogue search, accessory suggestion, and compatibility mapping rather than a full geometry-first calculator.
 
-### 6. Balustrade, Shower, General Glass, DrainLab, Exterior, Move Shutters
+### 7. Balustrade, Shower, General Glass, DrainLab, Exterior, Move Shutters
 
 Why later:
 
@@ -134,7 +150,6 @@ When new files arrive, record:
 
 ## Next Best Slice
 
-Start with ColorBond/SuperSleeper completion, then Glass Pool Fencing.
+After the QSG sliding gate branch, start the ColorBond/SuperSleeper verification branch, then the CTS equipment enclosure branch.
 
-ColorBond is already in the UI and seed set, so finishing it will harden the panel-system pattern before starting the larger glass-pool workflow.
-
+ColorBond is already in the UI and seed set, so finishing it will harden the panel-system pattern before starting the larger glass-pool workflow. Equipment enclosure is a good next non-fence calculator because the workbook has clear with-lid and without-lid calculation tabs.

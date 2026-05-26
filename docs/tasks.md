@@ -480,6 +480,7 @@ Enables reliable LLM authoring and sets up an in-app AI import feature later
 - [x] Brief 016 mobile BOM cards: mobile BOM view now renders grouped stacked cards, sticky totals, collapsible accessory cards, a bottom BOM action bar, and Share PDF support with Web Share API plus download fallback while preserving the desktop BOM table.
 - [x] Master baseline keyboard-offset fix: removed the duplicate `keyboardOffset` state declaration left by the mobile brief merge and rewired the orphaned Job-tab Generate BOM button to the current `handleManualBomGenerate` handler.
 - [x] ColorBond fence system: extracted `GO_colorbond_V2B_lowres.pdf`, added `supabase/seeds/glass-outlet/products/colorbond.json`, allowed `COLORBOND` in component system types, removed the inactive placeholder from `other.json`, added the fifth calculator selector, and wired ColorBond-specific profile/colour/height/bay options plus local fallback BOM quantities.
+- [x] QSG sliding gate calculator branch: extended `QS_GATE` seed data with sliding gate movement/build variables, QSG sliding rail/side-frame/infill/track/running-gear/automation BOM rules and selectors, conditional swing/sliding validations, and UI cleanup so swing gates stay 65mm and QSG gate gaps only offer seeded spacer sizes.
 - [ ] Stage 3 — in-app AI import feature backed by the same JSON Schemas (not scheduled)
 
 ---

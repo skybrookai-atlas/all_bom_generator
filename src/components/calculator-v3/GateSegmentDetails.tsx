@@ -101,13 +101,14 @@ const SLAT_SIZE_OPTIONS: GateOption[] = [
   { value: "90", label: "90mm slat" },
 ];
 
+const SWING_SLAT_SIZE_OPTIONS: GateOption[] = [
+  { value: "65", label: "65mm slat" },
+];
+
 const SLAT_GAP_OPTIONS: GateOption[] = [
   { value: "5", label: "5mm" },
   { value: "9", label: "9mm" },
-  { value: "12", label: "12mm" },
-  { value: "15", label: "15mm" },
   { value: "20", label: "20mm" },
-  { value: "30", label: "30mm" },
 ];
 
 interface Props {
@@ -563,6 +564,7 @@ export function GateSegmentDetails({ runId, seg }: Props) {
   );
   const slatSizeMm = Number(v[GATE_SEGMENT_STUB_KEYS.slatSizeMm] ?? masterVars.slat_size_mm ?? 65);
   const slatGapMm = Number(v[GATE_SEGMENT_STUB_KEYS.slatGapMm] ?? masterVars.slat_gap_mm ?? 9);
+  const gateSlatSizeOptions = isSwing ? SWING_SLAT_SIZE_OPTIONS : SLAT_SIZE_OPTIONS;
   const gateHeightMm = Number(
     seg.targetHeightMm ??
       v[GATE_SEGMENT_STUB_KEYS.gateHeightMm] ??
@@ -709,6 +711,8 @@ export function GateSegmentDetails({ runId, seg }: Props) {
       [GATE_SEGMENT_STUB_KEYS.slidingSide]:
         nextMovement === "sliding" ? v[GATE_SEGMENT_STUB_KEYS.slidingSide] ?? "front" : "front",
       [GATE_SEGMENT_STUB_KEYS.leafCount]: nextMovement === "double_swing" ? 2 : 1,
+      [GATE_SEGMENT_STUB_KEYS.slatSizeMm]:
+        nextMovement === "sliding" ? Number(v[GATE_SEGMENT_STUB_KEYS.slatSizeMm] ?? masterVars.slat_size_mm ?? 65) : 65,
       [GATE_SEGMENT_STUB_KEYS.dropBoltType]:
         nextMovement === "double_swing" ? "SS-0300DB-B" : "none",
       [GATE_SEGMENT_STUB_KEYS.hingeType]:
@@ -866,7 +870,7 @@ export function GateSegmentDetails({ runId, seg }: Props) {
             <OptionPills
               label="Gate slat size"
               value={String(v[GATE_SEGMENT_STUB_KEYS.slatSizeMm] ?? masterVars.slat_size_mm ?? 65)}
-              options={SLAT_SIZE_OPTIONS}
+              options={gateSlatSizeOptions}
               onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.slatSizeMm]: Number(value) })}
             />
             <OptionPills

@@ -141,7 +141,12 @@ export function matchesJSON(
         return false;
       if ("eq" in range && actual !== range.eq) return false;
       if ("neq" in range && actual === range.neq) return false;
-      if ("in" in range && !range.in.includes(actual)) return false;
+      if ("in" in range) {
+        const allowedValues = range.in;
+        if (!Array.isArray(allowedValues) || !allowedValues.includes(actual)) {
+          return false;
+        }
+      }
     } else if (Array.isArray(expected)) {
       if (!expected.includes(actual)) return false;
     } else {

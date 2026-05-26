@@ -2097,3 +2097,27 @@ Changes applied:
 
 Recommended next slice:
 - Finish ColorBond/SuperSleeper verification first, then start Glass Pool Fencing as the first major new calculator family.
+
+### May 26, 2026 - QSG sliding gate calculator seed branch
+
+Workflow / calculation finding:
+- The QSG/CTS sliding gate workbooks showed the app already had most of the right gate UI controls and local fallback logic, but the server-side `QS_GATE` seed only emitted swing-gate BOM rows.
+- `xpsg_gate.json` is currently a component catalogue for sliding tracks, catches, guides, motors, and running gear; the active calculator still dispatches gate segments through `QS_GATE`.
+- Math.js seed expressions cannot compare strings with `==`; string comparisons in new seed rules must use `equalText(...)`.
+
+Changes applied:
+- Extended `supabase/seeds/glass-outlet/products/qs_gate.json` with sliding gate variables, QSG sliding gate cut/stock rules, QSG rails/side frames/infill/joiners/covers/spacers/screws/caps, XPSG track/running gear/catch/guide selectors, centre support rail rules for gates over 3000mm, and optional Filo automation selectors.
+- Updated swing-gate rules so they emit zero quantities when the gate movement is sliding, and disabled duplicate swing companion rules where selectors already emit the same rows.
+- Adjusted gate UI choices so swing gates only show 65mm slats and QSG gate gaps only show the seeded 5mm, 9mm, and 20mm spacer options.
+- Fixed `matchesJSON` typing for `in` predicates so Deno edge tests type-check.
+
+Verification:
+- `qs_gate.json` passes the product seed JSON schema.
+- A Deno rule-evaluation smoke test generated a 3600mm sliding gate sample with 15 slat stock lengths, 2 track lengths, 1 centre support rail, and 26 BOM selector lines.
+- `npm run typecheck` passed.
+- `npm run build` passed.
+- `npm run test:unit` passed: 36 Deno edge-function unit tests.
+
+Deferred:
+- `npm run seed:products` was not run in this branch session, so the linked Supabase database still needs to be seeded before the remote backend serves these new sliding-gate rules.
+- Remaining workbook/PDF calculator branches still need separate slices: ColorBond pricing verification, CTS equipment enclosure, CTS side-frame systems, Hamptons/CTS sliding gate variants, and balustrade.
