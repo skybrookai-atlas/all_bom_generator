@@ -1403,7 +1403,6 @@ function calculateColorBondRun(
     : "none";
   let internalPanelPosts = 0;
   let totalPanels = 0;
-  let gateWarningAdded = false;
 
   warnings.push(
     "ColorBond steel fencing should not be used within 1km of the ocean or in saltwater/chlorine splash zones.",
@@ -1418,12 +1417,83 @@ function calculateColorBondRun(
 
   for (const segment of run.segments) {
     if (segment.segmentKind === "gate_opening") {
-      if (!gateWarningAdded) {
-        warnings.push(
-          "ColorBond gate components were extracted from the catalogue, but ColorBond gate openings are not wired into the local fallback BOM yet. Add gate hardware manually for this quote.",
-        );
-        gateWarningAdded = true;
+      const vars = { ...mergedRunVars, ...(segment.variables ?? {}) };
+      const movement = gateMovementOrDefault(vars[GATE_SEGMENT_STUB_KEYS.gateMovement]);
+      const leafCount = movement === "double_swing" ? 2 : 1;
+      const profile = colorbondProfile(vars.profile_code ?? runProfile);
+      const colour = colorbondColour(vars.colour_code ?? runColour);
+      const gateColour = colorbondFrameColour(
+        vars[GATE_SEGMENT_STUB_KEYS.colourCode] ?? vars.post_colour_code ?? runPostColour,
+        runPostColour,
+      );
+      const targetHeightMm = colorbondHeight(
+        segment.targetHeightMm ?? vars[GATE_SEGMENT_STUB_KEYS.gateHeightMm] ?? vars.target_height_mm,
+        profile,
+      );
+      const infillHeightMm = targetHeightMm - 10;
+      const base = { runId: run.runId, segmentId: segment.segmentId };
+
+      if (movement === "sliding") {
+        warnings.push("ColorBond catalogue gate parts cover swing gates only. Use single or double swing for ColorBond gates.");
+        continue;
       }
+      if (leafCount === 1) {
+        const openingWidth = toNumber(segment.segmentWidthMm, 900);
+        if (Math.abs(openingWidth - 900) > 50) {
+          warnings.push("ColorBond single gates are catalogue-listed as 900mm wide edge-to-edge. Confirm custom opening clearances.");
+        }
+      } else {
+        warnings.push("ColorBond double gates are possible using two infill panels. Confirm overlap and finished clear opening on site.");
+      }
+
+      emit(lines, {
+        ...base,
+        sku: `CB-${targetHeightMm}GS-${gateColour}-2PK`,
+        category: "gate_components",
+        quantity: leafCount,
+        unit: "pack",
+        notes: "Gate stile pack includes left and right stiles with integrated vertical U channel and caps",
+      });
+      emit(lines, {
+        ...base,
+        sku: `CB-GATE-R-830-${gateColour}`,
+        category: "gate_components",
+        quantity: leafCount * 2,
+        unit: "length",
+        notes: "Top and bottom ColorBond gate rails",
+      });
+      emit(lines, {
+        ...base,
+        sku: `CB-${profile}-${infillHeightMm}-${colour}`,
+        category: "gate_components",
+        quantity: leafCount,
+        unit: "each",
+        notes: "One ColorBond infill sheet per gate leaf",
+      });
+      emit(lines, {
+        ...base,
+        sku: `CB-TS-${gateColour}-15PK`,
+        category: "gate_components",
+        quantity: leafCount,
+        unit: "pack",
+        notes: "One 15-pack of Tek screws per ColorBond gate leaf",
+      });
+      emit(lines, {
+        ...base,
+        sku: `CB-HINGE-${gateColour}-2PK`,
+        category: "gate_hardware",
+        quantity: leafCount,
+        unit: "pack",
+        notes: "Colour-matched ColorBond butt hinge pair; one pack per gate leaf",
+      });
+      emit(lines, {
+        ...base,
+        sku: `CB-LATCH-${gateColour}`,
+        category: "gate_hardware",
+        quantity: 1,
+        unit: "each",
+        notes: "Colour-matched ColorBond latch kit",
+      });
       continue;
     }
 
@@ -1860,7 +1930,7 @@ export function calculateLocalBom(
           scopeKind: "gate",
           scopeId: segment.segmentId,
           scopeLabel: `R${runIndex + 1} G${gateIndex}`,
-          productCode: "QS_GATE",
+          productCode: run.productCode === "COLORBOND" ? "COLORBOND" : "QS_GATE",
         });
         return;
       }

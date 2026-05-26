@@ -17,6 +17,17 @@ import {
   type GateDiagramNumber,
 } from "../../lib/gateDiagramMapping";
 import { setGateDiagramHover, useGateDiagramHover } from "../../lib/gateDiagramHover";
+import {
+  colorBondDiagramReferencesForSku,
+  colorBondDiagramReferenceTitle,
+  sameColorBondDiagramReference,
+  type ColorBondDiagramReference,
+  type ColorBondDiagramScope,
+} from "../../lib/colorbondDiagramMapping";
+import {
+  setColorBondDiagramHover,
+  useColorBondDiagramHover,
+} from "../../lib/colorbondDiagramHover";
 import { InstallVideoQR } from "../calculator-v3/InstallVideoQR";
 import type { InstallVideoKey } from "../../lib/installVideos";
 import { BomCutList } from "./BomCutList";
@@ -191,6 +202,19 @@ function isGateDiagramLine(item: BOMLineItem) {
   );
 }
 
+function colorBondDiagramScopeForLine(item: BOMLineItem): ColorBondDiagramScope | null {
+  if (/^CB-(1500|1800|2100)GS-|^CB-GATE-R-830-/i.test(item.sku)) return "gate";
+  if (item.sources?.some((source) => source.scopeKind === "gate")) return "gate";
+  if (/^CB-(POSTCAP|CPOST|RAIL|TS|GLINE|GZAG|GTRIM)-/i.test(item.sku)) return "fence";
+  if (item.productCode === "COLORBOND") return "fence";
+  return null;
+}
+
+function colorBondDiagramReferencesForLine(item: BOMLineItem): ColorBondDiagramReference[] {
+  const scope = colorBondDiagramScopeForLine(item);
+  return scope ? colorBondDiagramReferencesForSku(item.sku, scope) : [];
+}
+
 function GateDiagramBadges({ numbers }: { numbers: GateDiagramNumber[] }) {
   if (numbers.length === 0) return null;
   return (
@@ -207,6 +231,28 @@ function GateDiagramBadges({ numbers }: { numbers: GateDiagramNumber[] }) {
           title={gateDiagramTitle(number)}
         >
           <NumberedBadge interactive>{number}</NumberedBadge>
+        </button>
+      ))}
+    </span>
+  );
+}
+
+function ColorBondDiagramBadges({ refs }: { refs: ColorBondDiagramReference[] }) {
+  if (refs.length === 0) return null;
+  return (
+    <span className="inline-flex items-center gap-1 print:hidden" aria-label="ColorBond diagram references">
+      {refs.map((ref) => (
+        <button
+          key={`${ref.scope}-${ref.number}`}
+          type="button"
+          onMouseEnter={() => setColorBondDiagramHover(ref)}
+          onMouseLeave={() => setColorBondDiagramHover(null)}
+          onFocus={() => setColorBondDiagramHover(ref)}
+          onBlur={() => setColorBondDiagramHover(null)}
+          className="focus:outline-none"
+          title={colorBondDiagramReferenceTitle(ref)}
+        >
+          <NumberedBadge interactive>{ref.number}</NumberedBadge>
         </button>
       ))}
     </span>
@@ -231,6 +277,7 @@ function BOMTable({
   const sorted = sortItems(items);
   const groups = groupByCategory(sorted);
   const hoveredGateDiagramNumber = useGateDiagramHover();
+  const hoveredColorBondDiagramRef = useColorBondDiagramHover();
 
   if (items.length === 0) {
     return (
@@ -249,6 +296,7 @@ function BOMTable({
       onRemoveLine={onRemoveLine}
       onSwitchEconomyToStandard={onSwitchEconomyToStandard}
       hoveredGateDiagramNumber={hoveredGateDiagramNumber}
+      hoveredColorBondDiagramRef={hoveredColorBondDiagramRef}
       customerMode={customerMode}
     />
     <div className="hidden overflow-x-auto md:block" data-testid="bom-desktop-table">
@@ -295,6 +343,7 @@ function BOMTable({
               onRemoveLine={onRemoveLine}
               onSwitchEconomyToStandard={onSwitchEconomyToStandard}
               hoveredGateDiagramNumber={hoveredGateDiagramNumber}
+              hoveredColorBondDiagramRef={hoveredColorBondDiagramRef}
               customerMode={customerMode}
             />
           ))}
@@ -312,6 +361,7 @@ function BOMMobileCards({
   onRemoveLine,
   onSwitchEconomyToStandard,
   hoveredGateDiagramNumber,
+  hoveredColorBondDiagramRef,
   customerMode,
 }: {
   groups: [string, BOMLineItem[]][];
@@ -320,6 +370,7 @@ function BOMMobileCards({
   onRemoveLine?: (item: BOMLineItem) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   hoveredGateDiagramNumber: GateDiagramNumber | null;
+  hoveredColorBondDiagramRef: ColorBondDiagramReference | null;
   customerMode?: boolean;
 }) {
   return (
@@ -331,6 +382,9 @@ function BOMMobileCards({
           </h3>
           <div className="space-y-2">
             {orderCompanions(categoryItems).map((item, itemIndex) => (
+              (() => {
+                const colorBondRefs = colorBondDiagramReferencesForLine(item);
+                return (
               <BOMMobileCard
                 key={`${category}-${item.sku}-${item.category}-${item.description}-${itemIndex}`}
                 item={item}
@@ -339,11 +393,16 @@ function BOMMobileCards({
                 onRemoveLine={onRemoveLine}
                 onSwitchEconomyToStandard={onSwitchEconomyToStandard}
                 highlighted={
-                  hoveredGateDiagramNumber !== null &&
-                  gateDiagramNumbersForSku(item.sku).includes(hoveredGateDiagramNumber)
+                  (hoveredGateDiagramNumber !== null &&
+                    gateDiagramNumbersForSku(item.sku).includes(hoveredGateDiagramNumber)) ||
+                  colorBondRefs.some((ref) =>
+                    sameColorBondDiagramReference(ref, hoveredColorBondDiagramRef),
+                  )
                 }
                 customerMode={customerMode}
               />
+                );
+              })()
             ))}
           </div>
         </section>
@@ -373,6 +432,7 @@ function BOMMobileCard({
   const cartonHint = cartonHintForLine(item);
   const sourceText = sourceBreakdown(item);
   const diagramNumbers = isGateDiagramLine(item) ? gateDiagramNumbersForSku(item.sku) : [];
+  const colorBondDiagramRefs = colorBondDiagramReferencesForLine(item);
   const canSwitchEconomy =
     item.sku.startsWith("XP-6500-E65") &&
     item.notes?.includes("Switch to Standard slats?");
@@ -387,6 +447,7 @@ function BOMMobileCard({
       <div className="grid grid-cols-[1fr_auto] gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
+            <ColorBondDiagramBadges refs={colorBondDiagramRefs} />
             <GateDiagramBadges numbers={diagramNumbers} />
             <span className="font-mono text-xs font-bold text-brand-muted">
               {item.sku}
@@ -482,6 +543,7 @@ function ItemGroup({
   onRemoveLine,
   onSwitchEconomyToStandard,
   hoveredGateDiagramNumber,
+  hoveredColorBondDiagramRef,
   customerMode,
 }: {
   category: string;
@@ -491,6 +553,7 @@ function ItemGroup({
   onRemoveLine?: (item: BOMLineItem) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   hoveredGateDiagramNumber: GateDiagramNumber | null;
+  hoveredColorBondDiagramRef: ColorBondDiagramReference | null;
   customerMode?: boolean;
 }) {
   const orderedItems = orderCompanions(items);
@@ -519,8 +582,12 @@ function ItemGroup({
             item.notes?.includes("Switch to Standard slats?");
           const sourceText = sourceBreakdown(item);
           const diagramNumbers = isGateDiagramLine(item) ? gateDiagramNumbersForSku(item.sku) : [];
+          const colorBondDiagramRefs = colorBondDiagramReferencesForLine(item);
           const diagramHighlighted =
             hoveredGateDiagramNumber !== null && diagramNumbers.includes(hoveredGateDiagramNumber);
+          const colorBondDiagramHighlighted = colorBondDiagramRefs.some((ref) =>
+            sameColorBondDiagramReference(ref, hoveredColorBondDiagramRef),
+          );
           const subCategory = item.subCategory ?? "";
           const showSubCategory = subCategory && subCategory !== lastSubCategory && !item.companionOf;
           if (subCategory) lastSubCategory = subCategory;
@@ -543,18 +610,21 @@ function ItemGroup({
           title={sourceText ? `Source breakdown: ${sourceText}` : undefined}
           onMouseEnter={() => {
             if (diagramNumbers[0]) setGateDiagramHover(diagramNumbers[0]);
+            if (colorBondDiagramRefs[0]) setColorBondDiagramHover(colorBondDiagramRefs[0]);
           }}
           onMouseLeave={() => {
             if (diagramNumbers.length > 0) setGateDiagramHover(null);
+            if (colorBondDiagramRefs.length > 0) setColorBondDiagramHover(null);
           }}
           className={`border-b border-brand-border last:border-0 transition-colors ${
-            diagramHighlighted
+            diagramHighlighted || colorBondDiagramHighlighted
               ? "bg-brand-warning/15 ring-1 ring-inset ring-brand-warning/50"
               : "hover:bg-brand-accent/5"
           }`}
         >
           <td className="py-2.5 px-3 text-xs font-mono text-brand-accent whitespace-nowrap">
             <span className="inline-flex flex-wrap items-center gap-1.5">
+              <ColorBondDiagramBadges refs={colorBondDiagramRefs} />
               <GateDiagramBadges numbers={diagramNumbers} />
               {item.sku}
               <PageChip sku={item.sku} />

@@ -22,6 +22,7 @@ import {
   type GateOption,
 } from "../../lib/gateOptionRules";
 import { GateComponentList } from "./GateComponentList";
+import { ColorBondComponentList } from "./ColorBondComponentList";
 import {
   baseHardwareSku,
   estimateGateWeight,
@@ -68,6 +69,16 @@ const COLOUR_OPTIONS: GateOption[] = [
   { value: "S", label: "Palladium Silver Pearl" },
   { value: "KWI", label: "Kwila" },
   { value: "WRC", label: "Western Red Cedar" },
+];
+
+const COLORBOND_GATE_COLOUR_OPTIONS: GateOption[] = [
+  { value: "B", label: "Night Sky / Black" },
+  { value: "BS", label: "Basalt" },
+  { value: "G", label: "Woodland Grey" },
+  { value: "MN", label: "Monument" },
+  { value: "PB", label: "Paperbark" },
+  { value: "P", label: "Primrose" },
+  { value: "SM", label: "Surfmist" },
 ];
 
 const SWING_DIRECTION_OPTIONS: GateOption[] = [
@@ -520,7 +531,12 @@ export function GateSegmentDetails({ runId, seg }: Props) {
   const v = seg.variables ?? {};
   const run = state.payload?.runs.find((item) => item.runId === runId);
   const runVars = { ...(state.payload?.variables ?? {}), ...(run?.variables ?? {}) };
-  const movement = gateMovementOrDefault(v[GATE_SEGMENT_STUB_KEYS.gateMovement]);
+  const isColorBondGate = run?.productCode === "COLORBOND";
+  const rawMovement = gateMovementOrDefault(v[GATE_SEGMENT_STUB_KEYS.gateMovement]);
+  const movement = isColorBondGate && rawMovement === "sliding" ? "single_swing" : rawMovement;
+  const movementOptions = isColorBondGate
+    ? GATE_MOVEMENTS.filter((option) => option.value !== "sliding")
+    : GATE_MOVEMENTS;
   const buildOptions = gateBuildsForMovement(movement);
   const prefersVerticalGate =
     run?.productCode === "VS" ||
@@ -538,7 +554,13 @@ export function GateSegmentDetails({ runId, seg }: Props) {
   const masterVars = {
     ...runVars,
   };
-  const gateColour = String(v[GATE_SEGMENT_STUB_KEYS.colourCode] ?? masterVars.colour_code ?? "B");
+  const gateColour = String(
+    v[GATE_SEGMENT_STUB_KEYS.colourCode] ??
+      (isColorBondGate
+        ? masterVars.post_colour_code ?? masterVars.colour_code
+        : masterVars.colour_code) ??
+      "B",
+  );
   const slatSizeMm = Number(v[GATE_SEGMENT_STUB_KEYS.slatSizeMm] ?? masterVars.slat_size_mm ?? 65);
   const slatGapMm = Number(v[GATE_SEGMENT_STUB_KEYS.slatGapMm] ?? masterVars.slat_gap_mm ?? 9);
   const gateHeightMm = Number(
@@ -750,18 +772,24 @@ export function GateSegmentDetails({ runId, seg }: Props) {
     <div className="space-y-4 text-sm font-semibold">
       <GateSettingsSection
         title="Gate Type & Direction"
-        summary={`${optionLabel(buildOptions, build)} / ${optionLabel(GATE_MOVEMENTS, movement)}`}
+        summary={
+          isColorBondGate
+            ? `ColorBond / ${optionLabel(movementOptions, movement)}`
+            : `${optionLabel(buildOptions, build)} / ${optionLabel(GATE_MOVEMENTS, movement)}`
+        }
       >
-        <OptionPills
-          label="QSG gate system"
-          value={build}
-          options={buildOptions}
-          onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.gateBuild]: value })}
-        />
+        {!isColorBondGate && (
+          <OptionPills
+            label="QSG gate system"
+            value={build}
+            options={buildOptions}
+            onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.gateBuild]: value })}
+          />
+        )}
         <OptionPills
           label="Gate type"
           value={movement}
-          options={GATE_MOVEMENTS}
+          options={movementOptions}
           onChange={setMovement}
         />
         {isSwing ? (
@@ -830,32 +858,38 @@ export function GateSegmentDetails({ runId, seg }: Props) {
       </GateSettingsSection>
 
       <GateSettingsSection
-        title="Slat, Post & Colour"
-        summary={`${slatSizeMm}mm / ${slatGapMm}mm / ${gateColour}`}
+        title={isColorBondGate ? "Gate Colour" : "Slat, Post & Colour"}
+        summary={isColorBondGate ? `${gateHeightMm}mm / ${gateColour}` : `${slatSizeMm}mm / ${slatGapMm}mm / ${gateColour}`}
       >
-        <OptionPills
-          label="Gate slat size"
-          value={String(v[GATE_SEGMENT_STUB_KEYS.slatSizeMm] ?? masterVars.slat_size_mm ?? 65)}
-          options={SLAT_SIZE_OPTIONS}
-          onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.slatSizeMm]: Number(value) })}
-        />
-        <OptionPills
-          label="Gate slat gap"
-          value={String(v[GATE_SEGMENT_STUB_KEYS.slatGapMm] ?? masterVars.slat_gap_mm ?? 9)}
-          options={SLAT_GAP_OPTIONS}
-          onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.slatGapMm]: Number(value) })}
-        />
-        <OptionPills
-          label="Gate post"
-          value={String(v[GATE_SEGMENT_STUB_KEYS.gatePostSizeMm] ?? masterVars.post_size ?? masterPostSize)}
-          options={GATE_POST_SIZE_OPTIONS}
-          onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.gatePostSizeMm]: Number(value) })}
-        />
+        {!isColorBondGate && (
+          <>
+            <OptionPills
+              label="Gate slat size"
+              value={String(v[GATE_SEGMENT_STUB_KEYS.slatSizeMm] ?? masterVars.slat_size_mm ?? 65)}
+              options={SLAT_SIZE_OPTIONS}
+              onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.slatSizeMm]: Number(value) })}
+            />
+            <OptionPills
+              label="Gate slat gap"
+              value={String(v[GATE_SEGMENT_STUB_KEYS.slatGapMm] ?? masterVars.slat_gap_mm ?? 9)}
+              options={SLAT_GAP_OPTIONS}
+              onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.slatGapMm]: Number(value) })}
+            />
+            <OptionPills
+              label="Gate post"
+              value={String(v[GATE_SEGMENT_STUB_KEYS.gatePostSizeMm] ?? masterVars.post_size ?? masterPostSize)}
+              options={GATE_POST_SIZE_OPTIONS}
+              onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.gatePostSizeMm]: Number(value) })}
+            />
+          </>
+        )}
         <div className="space-y-1">
-          <p className="text-sm font-bold text-brand-muted">Gate colour</p>
+          <p className="text-sm font-bold text-brand-muted">
+            {isColorBondGate ? "Gate stile/rail colour" : "Gate colour"}
+          </p>
           <ColourPalette
             value={gateColour}
-            options={COLOUR_OPTIONS.map((option) => option.value)}
+            options={(isColorBondGate ? COLORBOND_GATE_COLOUR_OPTIONS : COLOUR_OPTIONS).map((option) => option.value)}
             onChange={(value) => upsertVariables({ [GATE_SEGMENT_STUB_KEYS.colourCode]: value })}
           />
         </div>
@@ -1101,15 +1135,25 @@ export function GateSegmentDetails({ runId, seg }: Props) {
       </GateSettingsSection>
 
       <GateSettingsSection title="Gate Components" summary="Checklist">
-        <GateComponentList
-          orientation={build.includes("vertical") ? "vertical" : "horizontal"}
-          movement={movement}
-          slatSizeMm={slatSizeMm}
-          slatGapMm={slatGapMm}
-          colourCode={gateColour}
-          hingeSku={currentHingeValue}
-          latchSku={currentLatchValue}
-        />
+        {isColorBondGate ? (
+          <ColorBondComponentList
+            scope="gate"
+            profileCode={String(masterVars.profile_code ?? "GZAG")}
+            targetHeightMm={gateHeightMm}
+            infillColourCode={String(masterVars.colour_code ?? "MN")}
+            frameColourCode={gateColour}
+          />
+        ) : (
+          <GateComponentList
+            orientation={build.includes("vertical") ? "vertical" : "horizontal"}
+            movement={movement}
+            slatSizeMm={slatSizeMm}
+            slatGapMm={slatGapMm}
+            colourCode={gateColour}
+            hingeSku={currentHingeValue}
+            latchSku={currentLatchValue}
+          />
+        )}
       </GateSettingsSection>
     </div>
   );

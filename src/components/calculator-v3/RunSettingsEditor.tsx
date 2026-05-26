@@ -20,6 +20,12 @@ import { getPreferredGroutSku, setPreferredGroutSku } from "../../lib/userPrefs"
 import { SchemaDrivenForm, type SchemaField } from "./SchemaDrivenForm";
 import { colourName } from "./ColourPalette";
 import { SettingsDisclosureRow } from "./SettingsDisclosureRow";
+import { CombinedGapSelect } from "./CombinedGapSelect";
+import {
+  combinedGapLabel,
+  normaliseGapMode,
+  type GapMode,
+} from "../../lib/gapChoices";
 
 interface Props {
   run: CanonicalRun;
@@ -162,6 +168,8 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
   const substrate = String(variables.base_plate_substrate ?? "concrete");
   const slatSize = Number(variables.slat_size_mm ?? 65);
   const louvreEnabled = variables.louvre_treatment === true || variables.louvre_treatment === "true";
+  const gapMode = normaliseGapMode(productCode, variables.slat_gap_mode);
+  const gapMm = Number(variables.slat_gap_mm ?? 9);
   const fieldMap = useMemo(() => new Map(fields.map((field) => [field.field_key, field])), [fields]);
   const mountingField = fieldMap.get("mounting_method") ?? fieldMap.get("mounting_type");
 
@@ -200,12 +208,14 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
     key: string,
     value: string | number | boolean,
     nextProductCode = productCode,
+    extraVariables: Record<string, string | number | boolean> = {},
   ) {
     const previousColour = String(variables.colour_code ?? "");
     const previousPostColour = String(variables.post_colour_code ?? previousColour);
     const nextVariables: Record<string, string | number | boolean> = {
       ...(run.variables ?? {}),
       [key]: value,
+      ...extraVariables,
     };
     if (key === "mounting_type" || key === "mounting_method") {
       nextVariables.mounting_type = value;
@@ -248,6 +258,7 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
     ]);
     const resetSectionKeys = [
       key,
+      ...Object.keys(extraVariables),
       ...(key === "colour_code" ? ["colour_code", "post_colour_code"] : []),
       ...(key === "post_system" ? ["post_system", "post_size"] : []),
       ...(key === "mounting_type" || key === "mounting_method" ? ["mounting_type", "mounting_method"] : []),
@@ -282,7 +293,11 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
                 variables: {
                   ...(clearKeys(segment.variables) ?? {}),
                   [GATE_SEGMENT_STUB_KEYS.gateBuild]: defaultGateBuildForMovement(movement, nextProductCode === "VS"),
-                  [GATE_SEGMENT_STUB_KEYS.colourCode]: String(normalised.colour_code ?? "B"),
+                  [GATE_SEGMENT_STUB_KEYS.colourCode]: String(
+                    nextProductCode === "COLORBOND"
+                      ? normalised.post_colour_code ?? normalised.colour_code ?? "MN"
+                      : normalised.colour_code ?? "B",
+                  ),
                   [GATE_SEGMENT_STUB_KEYS.slatSizeMm]: Number(normalised.slat_size_mm ?? 65),
                   [GATE_SEGMENT_STUB_KEYS.slatGapMm]: Number(normalised.slat_gap_mm ?? 9),
                   [GATE_SEGMENT_STUB_KEYS.gatePostSizeMm]: Number(normalised.post_size ?? 50),
@@ -296,6 +311,12 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
           })
           : run.segments,
       },
+    });
+  }
+
+  function updateRunGap(mode: GapMode, gapMm: number) {
+    updateRunVariables("slat_gap_mode", mode, productCode, {
+      slat_gap_mm: gapMm,
     });
   }
 
@@ -319,11 +340,23 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
               segment.segmentKind === "gate_opening"
                 ? {
                   ...(segment.variables ?? {}),
+                  [GATE_SEGMENT_STUB_KEYS.gateMovement]:
+                    nextProductCode === "COLORBOND" &&
+                    gateMovementOrDefault(segment.variables?.[GATE_SEGMENT_STUB_KEYS.gateMovement]) === "sliding"
+                      ? "single_swing"
+                      : gateMovementOrDefault(segment.variables?.[GATE_SEGMENT_STUB_KEYS.gateMovement]),
                   [GATE_SEGMENT_STUB_KEYS.gateBuild]: defaultGateBuildForMovement(
-                    gateMovementOrDefault(segment.variables?.[GATE_SEGMENT_STUB_KEYS.gateMovement]),
+                    nextProductCode === "COLORBOND" &&
+                    gateMovementOrDefault(segment.variables?.[GATE_SEGMENT_STUB_KEYS.gateMovement]) === "sliding"
+                      ? "single_swing"
+                      : gateMovementOrDefault(segment.variables?.[GATE_SEGMENT_STUB_KEYS.gateMovement]),
                     nextProductCode === "VS",
                   ),
-                  [GATE_SEGMENT_STUB_KEYS.colourCode]: String(nextVariables.colour_code ?? "B"),
+                  [GATE_SEGMENT_STUB_KEYS.colourCode]: String(
+                    nextProductCode === "COLORBOND"
+                      ? nextVariables.post_colour_code ?? nextVariables.colour_code ?? "MN"
+                      : nextVariables.colour_code ?? "B",
+                  ),
                   [GATE_SEGMENT_STUB_KEYS.slatSizeMm]: Number(nextVariables.slat_size_mm ?? 65),
                   [GATE_SEGMENT_STUB_KEYS.slatGapMm]: Number(nextVariables.slat_gap_mm ?? 9),
                   [GATE_SEGMENT_STUB_KEYS.gatePostSizeMm]: Number(nextVariables.post_size ?? 50),
@@ -369,34 +402,26 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
       </SettingsDisclosureRow>
       <SettingsDisclosureRow
         id={`${run.runId}-slats-colours-spacings`}
-        label={isColorBond ? "Profile and colours" : "Slats, colors, and spacings"}
+        label={isColorBond ? "Profile and infill" : "Slats, colors, and spacings"}
         value={
           isColorBond
-            ? `${valueFor("profile_code")} / ${colourName(variables.colour_code)} / ${colourName(variables.post_colour_code ?? variables.colour_code)}`
-            : `${valueFor("finish_family")} / ${colourName(variables.colour_code)} / ${valueFor("slat_size_mm")} / ${valueFor("slat_gap_mm")}`
+            ? `${valueFor("profile_code")} / ${colourName(variables.colour_code)}`
+            : `${valueFor("finish_family")} / ${colourName(variables.colour_code)} / ${valueFor("slat_size_mm")} / ${combinedGapLabel(gapMode, gapMm)}`
         }
       >
         <div className="space-y-4">
           {renderField("profile_code")}
           {renderField("finish_family")}
           {renderField("colour_code")}
-          <button
-            type="button"
-            onClick={() => setPostColourOpen((value) => !value)}
-            className="rounded-lg border border-brand-border px-3 py-2 text-sm font-extrabold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-primary"
-          >
-            {postColourOpen
-              ? isColorBond
-                ? "Hide alternate rail/post colour"
-                : "Hide alternate post colour"
-              : isColorBond
-                ? "Alternate rail/post colour"
-                : "Alternate post colour"}
-          </button>
-          {postColourOpen && renderField("post_colour_code")}
           {!isColorBond && renderField("slat_size_mm")}
-          {!isColorBond && renderField("slat_gap_mode")}
-          {!isColorBond && renderField("slat_gap_mm")}
+          {!isColorBond && (
+            <CombinedGapSelect
+              productCode={productCode}
+              mode={variables.slat_gap_mode}
+              gapMm={variables.slat_gap_mm}
+              onChange={updateRunGap}
+            />
+          )}
           {productCode === "QSHS" && (
             <label className="flex items-start gap-3 rounded-xl border border-brand-border/60 bg-brand-bg/50 p-3">
               <input
@@ -431,11 +456,25 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
           label={isColorBond ? "Posts, mounting and bay width" : "Post size, mounting and spacing"}
           value={
             isColorBond
-              ? `${valueFor("mounting_type", valueFor("mounting_method", "Concreted in ground"))} / ${valueFor("max_panel_width_mm", "2365mm")}`
-              : `${valueFor("post_system", postLabel(productCode, variables))} / ${valueFor("max_panel_width_mm", "2600mm")}`
+              ? `${colourName(variables.post_colour_code ?? variables.colour_code)} / ${valueFor("mounting_type", valueFor("mounting_method", "Concreted in ground"))} / ${valueFor("max_panel_width_mm", "2365mm")}`
+              : `${valueFor("post_system", postLabel(productCode, variables))} / ${colourName(variables.post_colour_code ?? variables.colour_code)} / ${valueFor("max_panel_width_mm", "2600mm")}`
           }
         >
           <div className="space-y-4">
+            <button
+              type="button"
+              onClick={() => setPostColourOpen((value) => !value)}
+              className="rounded-lg border border-brand-border px-3 py-2 text-sm font-extrabold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-primary"
+            >
+              {postColourOpen
+                ? isColorBond
+                  ? "Hide alternate rail/post colour"
+                  : "Hide alternate post colour"
+                : isColorBond
+                  ? "Alternate rail/post colour"
+                  : "Alternate post colour"}
+            </button>
+            {postColourOpen && renderField("post_colour_code")}
             {!isColorBond && renderField("post_system")}
             {!isColorBond && renderField("post_size")}
             {mountingField && (

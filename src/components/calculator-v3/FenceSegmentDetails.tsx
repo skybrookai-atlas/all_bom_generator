@@ -19,7 +19,14 @@ import {
 import { SchemaDrivenForm, type SchemaField } from "./SchemaDrivenForm";
 import NumberInput from "../shared/NumberInput";
 import { SettingsDisclosureRow } from "./SettingsDisclosureRow";
-import { ColourPalette } from "./ColourPalette";
+import { ColourPalette, colourName } from "./ColourPalette";
+import { ColorBondComponentList } from "./ColorBondComponentList";
+import { CombinedGapSelect } from "./CombinedGapSelect";
+import {
+  combinedGapLabel,
+  normaliseGapMode,
+  type GapMode,
+} from "../../lib/gapChoices";
 
 const POST_SIZE_LABELS: Record<string, string> = {
   "50": "50mm Post Standard",
@@ -82,6 +89,14 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
     upsertSegment(
       patchSegmentVariables(seg, { [key]: value === base ? null : value }),
     );
+  }
+
+  function onJobOverridePatch(patch: Record<string, string | number | boolean>) {
+    const nextPatch: Record<string, string | number | boolean | null> = {};
+    for (const [key, value] of Object.entries(patch)) {
+      nextPatch[key] = value === runVariables[key] ? null : value;
+    }
+    upsertSegment(patchSegmentVariables(seg, nextPatch));
   }
 
   function onSystemTypeChange(nextProductCode: string) {
@@ -205,19 +220,26 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
         : [],
     [mergedJobDisplay, productCode, runFields],
   );
-  const slatOptionFields = optionFields.filter(
-    (field) => field.field_key !== "finish_family",
-  );
+  const slatOptionFields = optionFields;
+  const gapMode = normaliseGapMode(productCode, mergedJobDisplay.slat_gap_mode);
+  const gapMm = Number(mergedJobDisplay.slat_gap_mm ?? 9);
   const optionSummary = slatOptionFields
+    .filter((field) => field.field_key !== "slat_gap_mode" && field.field_key !== "slat_gap_mm")
     .map((field) => {
       const raw = mergedJobDisplay[field.field_key] ?? field.default_value_json;
       if (raw === undefined || raw === null || raw === "") return null;
       const label =
-        raw === true
-          ? "Yes"
-          : raw === false
-            ? "No"
-            : `${raw}${field.unit ?? ""}`;
+        field.field_key === "colour_code" || field.field_key === "post_colour_code"
+          ? colourName(raw)
+          : field.field_key === "profile_code"
+            ? String(raw)
+            : field.field_key === "finish_family"
+              ? String(raw)
+              : raw === true
+                ? "Yes"
+                : raw === false
+                  ? "No"
+                  : `${raw}${field.unit ?? ""}`;
       return `${field.label}: ${label}`;
     })
     .filter(Boolean)
@@ -230,14 +252,29 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
     mergedJobDisplay,
   )[0];
   const remainingOptionFields = slatOptionFields.filter(
-    (field) => field.field_key !== "colour_code",
+    (field) =>
+      field.field_key !== "colour_code" &&
+      field.field_key !== "slat_gap_mode" &&
+      field.field_key !== "slat_gap_mm",
   );
   function handleOptionChange(key: string, value: string | number | boolean) {
     onJobOverrideChange(key, value);
   }
+  function handleGapChange(mode: GapMode, gap: number) {
+    onJobOverridePatch({
+      slat_gap_mode: mode,
+      slat_gap_mm: gap,
+    });
+  }
   const postSummary = isColorBond
-    ? `Channel post / ${effectiveMax}mm`
-    : `${POST_SIZE_LABELS[postSystem] ?? POST_SIZE_LABELS[postSize] ?? (postSize ? `${postSize}mm Post` : "Run default")} / ${effectiveMax}mm`;
+    ? `Channel post / ${colourName(mergedJobDisplay.post_colour_code ?? mergedJobDisplay.colour_code)} / ${effectiveMax}mm`
+    : `${POST_SIZE_LABELS[postSystem] ?? POST_SIZE_LABELS[postSize] ?? (postSize ? `${postSize}mm Post` : "Run default")} / ${colourName(mergedJobDisplay.post_colour_code ?? mergedJobDisplay.colour_code)} / ${effectiveMax}mm`;
+  const slatSummary = [
+    optionSummary,
+    !isColorBond ? combinedGapLabel(gapMode, gapMm) : null,
+  ]
+    .filter(Boolean)
+    .join(" / ");
 
   return (
     <div className="space-y-4">
@@ -261,11 +298,11 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
         </div>
       </SettingsDisclosureRow>
 
-      {slatOptionFields.length > 0 || postColourField ? (
+      {slatOptionFields.length > 0 ? (
         <SettingsDisclosureRow
           id={`${seg.segmentId}-section-style`}
-          label={isColorBond ? "Profile and colours" : "Slats, colors, and spacings"}
-          value={optionSummary || "Run defaults"}
+          label={isColorBond ? "Profile and infill" : "Slats, colors, and spacings"}
+          value={slatSummary || "Run defaults"}
         >
           <div className="space-y-4">
             {colourField && (
@@ -275,38 +312,19 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
                 onChange={handleOptionChange}
               />
             )}
-            {postColourField && (
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => setPostColourOpen((value) => !value)}
-                  className="rounded-lg border border-brand-border px-3 py-2 text-sm font-extrabold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-primary"
-                >
-                  {postColourOpen
-                    ? isColorBond
-                      ? "Hide alternate rail/post colour"
-                      : "Hide alternate post colour"
-                    : isColorBond
-                      ? "Alternate rail/post colour"
-                      : "Alternate post colour"}
-                </button>
-                {postColourOpen && (
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-brand-muted">{isColorBond ? "Rail/post colour" : "Post colour"}</p>
-                    <ColourPalette
-                      value={String(mergedJobDisplay.post_colour_code ?? mergedJobDisplay.colour_code ?? "B")}
-                      options={(postColourField.options_json ?? colourField?.options_json ?? ["B", "MN", "G", "SM", "W", "BS", "D", "M"]).map(String)}
-                      onChange={(value) => handleOptionChange("post_colour_code", value)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
             {remainingOptionFields.length > 0 && (
               <SchemaDrivenForm
                 fields={remainingOptionFields}
                 variables={mergedJobDisplay}
                 onChange={handleOptionChange}
+              />
+            )}
+            {!isColorBond && (
+              <CombinedGapSelect
+                productCode={productCode}
+                mode={mergedJobDisplay.slat_gap_mode}
+                gapMm={mergedJobDisplay.slat_gap_mm}
+                onChange={handleGapChange}
               />
             )}
           </div>
@@ -336,6 +354,33 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
           label={isColorBond ? "Posts, mounting and bay width" : "Post size, mounting and spacing"}
           value={postSummary}
         >
+          {postColourField && (
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setPostColourOpen((value) => !value)}
+                className="rounded-lg border border-brand-border px-3 py-2 text-sm font-extrabold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-primary"
+              >
+                {postColourOpen
+                  ? isColorBond
+                    ? "Hide alternate rail/post colour"
+                    : "Hide alternate post colour"
+                  : isColorBond
+                    ? "Alternate rail/post colour"
+                    : "Alternate post colour"}
+              </button>
+              {postColourOpen && (
+                <div className="space-y-1">
+                  <p className="text-sm font-bold text-brand-muted">{isColorBond ? "Rail/post colour" : "Post colour"}</p>
+                  <ColourPalette
+                    value={String(mergedJobDisplay.post_colour_code ?? mergedJobDisplay.colour_code ?? "B")}
+                    options={(postColourField.options_json ?? colourField?.options_json ?? ["B", "MN", "G", "SM", "W", "BS", "D", "M"]).map(String)}
+                    onChange={(value) => handleOptionChange("post_colour_code", value)}
+                  />
+                </div>
+              )}
+            </div>
+          )}
           {postFields.length > 0 && (
             <SchemaDrivenForm
               fields={postFields}
@@ -373,6 +418,24 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
               />
             </label>
           )}
+        </SettingsDisclosureRow>
+      )}
+
+      {isColorBond && (
+        <SettingsDisclosureRow
+          id={`${seg.segmentId}-section-fence-components`}
+          label="Fence Components"
+          value="5 catalogue items"
+        >
+          <ColorBondComponentList
+            scope="fence"
+            profileCode={String(mergedJobDisplay.profile_code ?? "GZAG")}
+            targetHeightMm={Number(seg.targetHeightMm ?? mergedJobDisplay.target_height_mm ?? 1800)}
+            infillColourCode={String(mergedJobDisplay.colour_code ?? "MN")}
+            frameColourCode={String(mergedJobDisplay.post_colour_code ?? mergedJobDisplay.colour_code ?? "MN")}
+            railLengthMm={effectiveMax === 3125 ? 3125 : 2365}
+            mountingType={String(mergedJobDisplay.mounting_type ?? mergedJobDisplay.mounting_method ?? "in_ground")}
+          />
         </SettingsDisclosureRow>
       )}
 

@@ -10,6 +10,10 @@ Latest infrastructure fix: duplicate Supabase migration version 029 was resolved
 
 Latest ColorBond pass: extracted `GO_colorbond_V2B_lowres.pdf` into a new `COLORBOND` fence product seed, added the fifth fence-system selector path, customised the ColorBond run/section options for profiles, infill colours, rail/post colours, 1500/1800/2100mm heights and 2365/3125mm bays, documented the catalogue mapping, widened the component system-type constraint, and added local fallback BOM rules for ColorBond panels, rails, channel posts, Tek screws, shark fins, sleepers, post caps, and optional 65mm support posts.
 
+Latest ColorBond component pass: section settings now include a ColorBond Fence Components disclosure with the supplied simplified panel/gate renders, interactive orange overlay badges, numbered component rows, and BOM badge hover cross-highlighting for post caps, channel posts, rails, infill sheets, and Tek screws. ColorBond gate settings now show the catalogue gate components image/list, hide slat/gap/sliding-only choices, and the local fallback BOM emits the catalogue stile, 830mm rail, infill sheet, Tek screw, butt hinge, and latch-kit lines for single/double swing gates.
+
+Latest Brief 031 pass: run headings now show full system names with inline editable default height, section and gate headings share the same inline height editor, settings buttons are labeled text controls, run/section gap selectors combine type and size in one dropdown, section settings mirror run settings grouping, and closed section subheadings show only settings that differ from run defaults.
+
 Latest Brief 014 pass: the mobile Job tab now prioritises job/address/system/run controls, supports Web Speech API address dictation, adds numeric and decimal mobile keyboard hints, enlarges key touch targets, and keeps Save/Clear/Generate actions in a keyboard-aware sticky action bar.
 
 Latest Brief 017 pass: the calculator now has production-only PWA registration, manifest/icons, install and offline banners, customer quote mode that hides costs, and a real-device mobile QA checklist.
