@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    name: TypeScript check & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+  integration:
+    name: Deno integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Start Supabase
+        run: supabase start
+
+      - name: Export Supabase keys
+        run: |
+          STATUS=$(supabase status --output json)
+          echo "VITE_SUPABASE_URL=http://localhost:54321"           >> $GITHUB_ENV
+          echo "SUPABASE_URL=http://localhost:54321"                >> $GITHUB_ENV
+          echo "VITE_SUPABASE_ANON_KEY=$(echo "$STATUS" | jq -r '.ANON_KEY')"          >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(echo "$STATUS" | jq -r '.SERVICE_ROLE_KEY')" >> $GITHUB_ENV
+
+      - name: Reset DB + seed
+        run: npm run db:reset
+
+      - name: Serve edge functions
+        run: supabase functions serve --no-verify-jwt &
+
+      - name: Wait for edge runtime
+        run: sleep 5
+
+      - name: Run Deno tests
+        run: npm run test:integration
+        env:
+          TEST_USER_EMAIL: test@glass-outlet.com
+          TEST_USER_PASSWORD: "123456"
+
+      - name: Stop Supabase
+        run: supabase stop
+        if: always()

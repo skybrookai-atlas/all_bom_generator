@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pricing_rules.schema.json",
+  "title": "pricing_rules",
+  "description": "Per-SKU, per-tier pricing. Each row is a single price point. Non-null 'rule' is a math.js expression that must evaluate truthy for this price to apply (e.g. quantity-break: 'qty >= 40'). Null rule = always applies for legacy rows. Quantity break rows are sorted by priority so the highest applicable min-quantity rule wins.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "sku",
+      "tier_code",
+      "price",
+      "active"
+    ],
+    "properties": {
+      "sku": {
+        "type": "string",
+        "description": "SKU this price applies to. Must match a product_components.sku in the same org."
+      },
+      "tier_code": {
+        "type": "string",
+        "enum": [
+          "tier1",
+          "tier2",
+          "tier3"
+        ]
+      },
+      "rule": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Optional math.js expression. Null = always applies for legacy rows. Variable 'qty' is available. Example: 'qty >= 40' for a quantity-break row."
+      },
+      "price": {
+        "type": "number",
+        "description": "Per-unit price ex-GST in AUD. Use 0 for SKUs where pricing is TBC — engine will emit unitPrice=0 with a warning."
+      },
+      "priority": {
+        "type": "integer",
+        "description": "Lower = tried first. Quantity-break rows usually have higher priority than the always-applies row.",
+        "default": 0
+      },
+      "valid_from": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date"
+      },
+      "valid_to": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date"
+      },
+      "notes": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "active": {
+        "type": "boolean"
+      }
+    }
+  }
+}

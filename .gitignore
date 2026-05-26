@@ -1,0 +1,46 @@
+
+
+# Except this file itself
+!.gitignore
+
+# Root redirect
+!index.html
+
+# App folder
+!Desktop/
+Desktop/*
+!Desktop/Claude Glass Outlet Project/
+Desktop/Claude Glass Outlet Project/*
+!Desktop/Claude Glass Outlet Project/index.html
+!Desktop/Claude Glass Outlet Project/QuickScreen-BOM-Generator.html
+!Desktop/Claude Glass Outlet Project/fence-mapper.js
+!Desktop/Claude Glass Outlet Project/fence-mapper.css
+!Desktop/Claude Glass Outlet Project/archive/
+Desktop/Claude Glass Outlet Project/archive/*
+!Desktop/Claude Glass Outlet Project/archive/quickscreen_bom_ai_intake.html
+!Desktop/Claude Glass Outlet Project/archive/QuickScreen-BOM-Generator-BACKUP.html
+
+# Skill folder
+!.claude/
+!.claude/skills/
+!.claude/skills/**
+!.agents/
+!.agents/skills/
+!.agents/skills/**
+
+node_modules/
+dist/
+screenshots/
+.env.local
+
+.temp
+
+.tmp
+
+.env*
+!.env.example
+!.env.local.example
+
+vite-dev*.log
+
+.claude/worktrees/*
