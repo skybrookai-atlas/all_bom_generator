@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { LoginForm } from '../components/auth/LoginForm';
 import { SignUpForm } from '../components/auth/SignUpForm';
 import { useAuth } from '../hooks/useAuth';
-import { isSupabaseConfigured } from '../lib/supabase';
+import { enablePreviewMode, isSupabaseConfigured } from '../lib/supabase';
 
 export function LoginPage() {
   const { user, loading } = useAuth();
@@ -63,6 +63,22 @@ export function LoginPage() {
           </div>
 
           {mode === 'login' ? <LoginForm /> : <SignUpForm />}
+
+          <div className="mt-6 border-t border-brand-border pt-5">
+            <button
+              type="button"
+              onClick={() => {
+                enablePreviewMode();
+                window.location.assign('/fence-calculator');
+              }}
+              className="w-full rounded-lg border border-brand-accent/50 bg-brand-accent/10 px-4 py-3 text-sm font-bold text-brand-accent transition-colors hover:border-brand-accent hover:bg-brand-accent/15"
+            >
+              Continue without backend
+            </button>
+            <p className="mt-2 text-center text-xs leading-relaxed text-brand-muted">
+              Preview mode uses local seed data. Login, saved quotes, and Supabase pricing stay off.
+            </p>
+          </div>
         </div>
       </div>
     </div>
