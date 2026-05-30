@@ -33,3 +33,4 @@ Restrict the key before sharing or deploying it:
 - Add the production domain when it is known
 
 Set a daily quota cap and billing alert in Google Cloud so a broken preview or leaked key cannot run up unexpected usage. See [docs/google-maps-setup.md](docs/google-maps-setup.md) for the full repeatable setup checklist.
+
