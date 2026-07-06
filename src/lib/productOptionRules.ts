@@ -12,8 +12,13 @@ type Variables = Record<string, string | number | boolean>;
 const STANDARD_COLOURS = ["B", "MN", "G", "SM", "W", "BS", "D", "M", "P", "PB", "S"];
 const ALUMAWOOD_COLOURS = ["KWI", "WRC"];
 const ECONOMY_COLOURS = ["B", "MN", "SM"];
-const COLORBOND_INFILL_COLOURS = ["BS", "G", "MN", "PB", "P", "SM"];
-const COLORBOND_FRAME_COLOURS = ["B", "BS", "G", "MN", "PB", "P", "SM"];
+// Real catalogue colour codes (matches the seeded colorbond.json options).
+// Sheets come in 18 colours; rails/posts/caps additionally in Night Sky (NS).
+const COLORBOND_INFILL_COLOURS = [
+  "BA", "CG", "DM", "DO", "DU", "EH", "IS", "JA", "MO",
+  "MR", "PB", "PE", "RS", "SG", "SM", "WG", "WI", "WS",
+];
+const COLORBOND_FRAME_COLOURS = [...COLORBOND_INFILL_COLOURS, "NS"];
 const COLORBOND_PROFILES = ["GLINE", "GZAG", "GTRIM"];
 const COLORBOND_HEIGHTS = [1500, 1800, 2100];
 const COLORBOND_RAIL_WIDTHS = [2365, 3125];
@@ -212,8 +217,8 @@ export function initialVariablesForSystem(productCode: string): Variables {
     const supplierDefault = String(supplierField?.default_value_json ?? "amazing-fencing");
     return normaliseVariablesForSystem(productCode, {
       supplier: supplierDefault,
-      colour_code: "MN",
-      post_colour_code: "MN",
+      colour_code: "MO",
+      post_colour_code: "MO",
       profile_code: "GZAG",
       target_height_mm: 1800,
       max_panel_width_mm: 2365,
@@ -355,12 +360,12 @@ function normaliseColorBondVariables(variables: Variables): Variables {
     : "GZAG";
   const colour = COLORBOND_INFILL_COLOURS.includes(String(next.colour_code))
     ? String(next.colour_code)
-    : "MN";
+    : "MO";
   const postColour = COLORBOND_FRAME_COLOURS.includes(String(next.post_colour_code))
     ? String(next.post_colour_code)
     : COLORBOND_FRAME_COLOURS.includes(colour)
       ? colour
-      : "MN";
+      : "MO";
   const mounting = ["in_ground", "base_plate"].includes(String(next.mounting_method ?? next.mounting_type))
     ? String(next.mounting_method ?? next.mounting_type)
     : "in_ground";
@@ -459,7 +464,7 @@ export function normaliseVariablesForSystem(
       ...next,
       post_colour_code: postColourOptions.includes(String(next.colour_code))
         ? String(next.colour_code)
-        : "MN",
+        : postColourOptions[0] ?? "MN",
     };
   }
 
@@ -691,7 +696,7 @@ export function applyProductOptionRules(
         "colour_code",
         "Colour",
         colourOptionsForSystem(variables, productCode),
-        productCode === "COLORBOND" ? "MN" : "B",
+        productCode === "COLORBOND" ? "MO" : "B",
         10,
       ),
     );
@@ -704,7 +709,7 @@ export function applyProductOptionRules(
         "post_colour_code",
         productCode === "COLORBOND" ? "Rail/post colour" : "Post colour",
         postColourOptionsForSystem(variables, productCode),
-        productCode === "COLORBOND" ? "MN" : "B",
+        productCode === "COLORBOND" ? "MO" : "B",
         25,
       ),
     );

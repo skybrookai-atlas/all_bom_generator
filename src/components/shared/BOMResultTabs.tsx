@@ -21,6 +21,7 @@ import { InstallVideoQR } from "../calculator-v3/InstallVideoQR";
 import type { InstallVideoKey } from "../../lib/installVideos";
 import { BomCutList } from "./BomCutList";
 import { NumberedBadge } from "./NumberedBadge";
+import { SupplierSwapButton, type SwapChoice } from "./SupplierSwapButton";
 import { stripParentheticalDispatchCode } from "../../lib/displayText";
 
 interface BOMResultTabsProps {
@@ -28,6 +29,7 @@ interface BOMResultTabsProps {
   editable?: boolean;
   onQuantityChange?: (item: BOMLineItem, quantity: number) => void;
   onRemoveLine?: (item: BOMLineItem) => void;
+  onSwapLine?: (item: BOMLineItem, choice: SwapChoice) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   onActiveSummaryChange?: (summary: {
     label: string;
@@ -219,6 +221,7 @@ function BOMTable({
   editable,
   onQuantityChange,
   onRemoveLine,
+  onSwapLine,
   onSwitchEconomyToStandard,
   customerMode,
   bomFormat,
@@ -227,6 +230,7 @@ function BOMTable({
   editable?: boolean;
   onQuantityChange?: (item: BOMLineItem, quantity: number) => void;
   onRemoveLine?: (item: BOMLineItem) => void;
+  onSwapLine?: (item: BOMLineItem, choice: SwapChoice) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   customerMode?: boolean;
   bomFormat?: 'summary' | 'exploded';
@@ -254,6 +258,7 @@ function BOMTable({
       editable={editable}
       onQuantityChange={onQuantityChange}
       onRemoveLine={onRemoveLine}
+      onSwapLine={onSwapLine}
       onSwitchEconomyToStandard={onSwitchEconomyToStandard}
       hoveredGateDiagramNumber={hoveredGateDiagramNumber}
       customerMode={customerMode}
@@ -300,6 +305,7 @@ function BOMTable({
               editable={editable}
               onQuantityChange={onQuantityChange}
               onRemoveLine={onRemoveLine}
+              onSwapLine={onSwapLine}
               onSwitchEconomyToStandard={onSwitchEconomyToStandard}
               hoveredGateDiagramNumber={hoveredGateDiagramNumber}
               customerMode={customerMode}
@@ -317,6 +323,7 @@ function BOMMobileCards({
   editable,
   onQuantityChange,
   onRemoveLine,
+  onSwapLine,
   onSwitchEconomyToStandard,
   hoveredGateDiagramNumber,
   customerMode,
@@ -325,6 +332,7 @@ function BOMMobileCards({
   editable?: boolean;
   onQuantityChange?: (item: BOMLineItem, quantity: number) => void;
   onRemoveLine?: (item: BOMLineItem) => void;
+  onSwapLine?: (item: BOMLineItem, choice: SwapChoice) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   hoveredGateDiagramNumber: GateDiagramNumber | null;
   customerMode?: boolean;
@@ -344,6 +352,7 @@ function BOMMobileCards({
                 editable={editable}
                 onQuantityChange={onQuantityChange}
                 onRemoveLine={onRemoveLine}
+              onSwapLine={onSwapLine}
                 onSwitchEconomyToStandard={onSwitchEconomyToStandard}
                 highlighted={
                   hoveredGateDiagramNumber !== null &&
@@ -364,6 +373,7 @@ function BOMMobileCard({
   editable,
   onQuantityChange,
   onRemoveLine,
+  onSwapLine,
   onSwitchEconomyToStandard,
   highlighted,
   customerMode,
@@ -372,6 +382,7 @@ function BOMMobileCard({
   editable?: boolean;
   onQuantityChange?: (item: BOMLineItem, quantity: number) => void;
   onRemoveLine?: (item: BOMLineItem) => void;
+  onSwapLine?: (item: BOMLineItem, choice: SwapChoice) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   highlighted: boolean;
   customerMode?: boolean;
@@ -468,13 +479,18 @@ function BOMMobileCard({
             </button>
           )}
           {editable && (
-            <button
-              type="button"
-              onClick={() => onRemoveLine?.(item)}
-              className="ml-auto min-h-11 rounded-lg px-3 py-2 text-xs font-black text-brand-danger"
-            >
-              Remove
-            </button>
+            <>
+              {onSwapLine && (
+                <SupplierSwapButton item={item} onSwap={onSwapLine} />
+              )}
+              <button
+                type="button"
+                onClick={() => onRemoveLine?.(item)}
+                className="ml-auto min-h-11 rounded-lg px-3 py-2 text-xs font-black text-brand-danger"
+              >
+                Remove
+              </button>
+            </>
           )}
         </div>
       )}
@@ -488,6 +504,7 @@ function ItemGroup({
   editable,
   onQuantityChange,
   onRemoveLine,
+  onSwapLine,
   onSwitchEconomyToStandard,
   hoveredGateDiagramNumber,
   customerMode,
@@ -497,6 +514,7 @@ function ItemGroup({
   editable?: boolean;
   onQuantityChange?: (item: BOMLineItem, quantity: number) => void;
   onRemoveLine?: (item: BOMLineItem) => void;
+  onSwapLine?: (item: BOMLineItem, choice: SwapChoice) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   hoveredGateDiagramNumber: GateDiagramNumber | null;
   customerMode?: boolean;
@@ -659,13 +677,18 @@ function ItemGroup({
           )}
           {editable && (
             <td className="py-2.5 px-3 text-right print:hidden">
-              <button
-                type="button"
-                onClick={() => onRemoveLine?.(item)}
-                className="rounded px-2 py-1 text-xs font-medium text-brand-danger transition-colors hover:bg-brand-danger/10"
-              >
-                Remove
-              </button>
+              <span className="inline-flex flex-wrap items-center justify-end gap-1">
+                {onSwapLine && (
+                  <SupplierSwapButton item={item} onSwap={onSwapLine} />
+                )}
+                <button
+                  type="button"
+                  onClick={() => onRemoveLine?.(item)}
+                  className="rounded px-2 py-1 text-xs font-medium text-brand-danger transition-colors hover:bg-brand-danger/10"
+                >
+                  Remove
+                </button>
+              </span>
             </td>
           )}
         </tr>
@@ -681,6 +704,7 @@ export function BOMResultTabs({
   editable,
   onQuantityChange,
   onRemoveLine,
+  onSwapLine,
   onSwitchEconomyToStandard,
   onActiveSummaryChange,
   customerMode,
@@ -790,6 +814,7 @@ export function BOMResultTabs({
           editable={editable}
           onQuantityChange={onQuantityChange}
           onRemoveLine={onRemoveLine}
+          onSwapLine={onSwapLine}
           onSwitchEconomyToStandard={onSwitchEconomyToStandard}
           customerMode={customerMode}
           bomFormat={bomFormat}

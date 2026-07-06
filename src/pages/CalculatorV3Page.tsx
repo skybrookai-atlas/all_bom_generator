@@ -2878,6 +2878,28 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                             [lineKey(item)]: null,
                           }))
                         }
+                        onSwapLine={(item, choice) => {
+                          // Replace the engine line with the other supplier's
+                          // equivalent: hide the original, add the swap as an
+                          // extra item at the same quantity.
+                          setLineEdits((prev) => ({
+                            ...prev,
+                            [lineKey(item)]: null,
+                          }));
+                          setExtraItems((prev) => [
+                            ...prev,
+                            {
+                              id: `swap-${item.sku}-${choice.sku}`,
+                              sku: choice.sku,
+                              description: `${choice.name} — swapped from ${item.sku} (${choice.supplierLabel})`,
+                              quantity: item.quantity,
+                              unitPrice: choice.unitPrice,
+                            },
+                          ]);
+                          toast.success(
+                            `Swapped to ${choice.supplierLabel}: ${choice.sku} @ $${choice.unitPrice.toFixed(2)}`,
+                          );
+                        }}
                         onSwitchEconomyToStandard={handleSwitchEconomyToStandard}
                         onActiveSummaryChange={handleActiveBomSummaryChange}
                         customerMode={customerMode}
