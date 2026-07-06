@@ -2,7 +2,13 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { queryClient } from '../lib/queryClient';
 
-export type QuoteLineItemKind = 'calculated' | 'catalogue' | 'manual';
+export type QuoteLineItemKind =
+  | 'calculated'
+  | 'catalogue'
+  | 'manual'
+  | 'library'
+  | 'heading'
+  | 'text';
 
 /** Row shape of quote_line_items (internal, staff-only — never exposed to the portal). */
 export interface QuoteLineItem {

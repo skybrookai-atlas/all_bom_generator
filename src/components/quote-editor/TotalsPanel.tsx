@@ -21,6 +21,8 @@ export function computeQuoteTotals(items: QuoteLineItemDraft[]): QuoteTotals {
   let totalLabor = 0;
 
   for (const item of items) {
+    // Structure-only rows carry no pricing.
+    if (item.kind === "heading" || item.kind === "text") continue;
     const lineTotal = item.quantity * item.unit_price;
     if (item.is_optional) {
       optionalTotal += lineTotal;

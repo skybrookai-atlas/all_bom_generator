@@ -1,0 +1,2700 @@
+{
+  "org_slug": "glass-outlet",
+  "generated_from": "C:\\Users\\Liam\\Documents\\QuoteBOMGenerator\\Quotient Replica\\data\\items.json",
+  "library_items": [
+    {
+      "title": "1200mm Black Chain-link Fencing",
+      "body": "* 60mm PVC Coated Chain-link Mesh \n* 50NB Corner Posts\n* 40NB Intermediate Posts\n* 40NB Top Rail \n* High Tensile Mid and Bottom Wires With Black PVC C",
+      "unit": "each",
+      "unit_price": 230,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 0,
+      "active": true,
+      "source_quote_item_id": 1819620,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1819620_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm Chain-link Pedestrian Gate",
+      "body": "* 32NB Black Powder Coated Gate Frames\n* 60mm Chain-mesh\n* D-Latch\n* 50NB-32NB Hinges",
+      "unit": "each",
+      "unit_price": 536.21,
+      "categories": [
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 1,
+      "active": true,
+      "source_quote_item_id": 1819624,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1819624_0.jpg",
+          "images/item_1819624_1.jpg",
+          "images/item_1819624_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High40mm x 40mm Dressed Treated Pine Vertical Battens10mm Gaps",
+      "body": "* 40mm x 40mm Dressed Treated Pine Horizontal Slats\n* 100mm x 100mm Skimp Dressed Treated Pine Posts\n* 2 rails 100mm x 38mm Skimp Dressed Rails",
+      "unit": "each",
+      "unit_price": 360,
+      "categories": [
+        "Vertical batten fences",
+        "Horizontal flat fences"
+      ],
+      "sort_order": 2,
+      "active": true,
+      "source_quote_item_id": 1841226,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1841226_0.jpg",
+          "images/item_1841226_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Barr Fencing",
+      "body": "* 50mm x 25mm Barr Fencing Posts\n* 2200mm Wide Barr Fencing Panels \n* 600mm Concrete Footings\n* Complies with Australian Pool Fencing Standards",
+      "unit": "each",
+      "unit_price": 543.6,
+      "categories": [
+        "Pool fences",
+        "Security fences"
+      ],
+      "sort_order": 3,
+      "active": true,
+      "source_quote_item_id": 1875719,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875719_0.jpg",
+          "images/item_1875719_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Black Flat Top Aluminium Pool Fence",
+      "body": "* 50x50 Aluminium post cemented 600mm deep\n* Meets Australian pool fencing standards",
+      "unit": "each",
+      "unit_price": 170,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 4,
+      "active": true,
+      "source_quote_item_id": 54584,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_54584_0.jpg",
+          "images/item_54584_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Colorbond Fence",
+      "body": "",
+      "unit": "each",
+      "unit_price": 152.26,
+      "categories": [
+        "Colorbond fences"
+      ],
+      "sort_order": 5,
+      "active": true,
+      "source_quote_item_id": 1841237,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1841237_0.jpg",
+          "images/item_1841237_1.jpg",
+          "images/item_1841237_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Dressed Treated Pine Decorative Top Picket Fence\n\n10mm Gaps Between Pickets",
+      "body": "* 100mm x 100mm dressed treated pine posts concreted 600mm below ground level\n* 100mm x 38mm dressed treated pine horizontal rails\n* 90mm x 19mm x 120",
+      "unit": "each",
+      "unit_price": 190,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 6,
+      "active": true,
+      "source_quote_item_id": 982468,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_982468_0.jpg",
+          "images/item_982468_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Frameless Glass Gate",
+      "body": "* Stainless steel sprung hinges\n* Stainless steel Magna Latch",
+      "unit": "each",
+      "unit_price": 660,
+      "categories": [
+        "Glass fences",
+        "Gates"
+      ],
+      "sort_order": 7,
+      "active": true,
+      "source_quote_item_id": 1144334,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144334_0.jpg",
+          "images/item_1144334_1.jpg",
+          "images/item_1144334_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Frameless Glass Pool Fence\n\n* 1200mm high glass panel\n* 12mm toughened glass with 4 hole",
+      "body": "* 1200mm high glass panel\n* 12mm toughened glass with 4 holes",
+      "unit": "each",
+      "unit_price": 400,
+      "categories": [
+        "Glass fences",
+        "Pool fences"
+      ],
+      "sort_order": 8,
+      "active": true,
+      "source_quote_item_id": 29176,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_29176_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Frameless Glass Pool Fence- Core Drilled",
+      "body": "* 12mm toughened glass\n* 50mm square stainless spigots, core drilled, with stainless steel dress rings",
+      "unit": "each",
+      "unit_price": 380,
+      "categories": [
+        "Glass fences",
+        "Pool fences"
+      ],
+      "sort_order": 9,
+      "active": true,
+      "source_quote_item_id": 27854,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_27854_0.jpg",
+          "images/item_27854_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Hardwood Batten Fence\n42mm Battens\n10mm Gaps",
+      "body": "* 42mm x 19mm Hardwood Battens\n* 100mm x 38mm Skimp Dressed Hardwood Rails\n* 100mm x 100mm Skimp Dressed Hardwood Posts\n* 600mm Concrete Footings\n* St",
+      "unit": "each",
+      "unit_price": 290,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 10,
+      "active": true,
+      "source_quote_item_id": 1841235,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1841235_0.jpg",
+          "images/item_1841235_1.jpg",
+          "images/item_1841235_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Hardwood Lapped & Capped Paling Fence",
+      "body": "* 100mm x 16mm Hardwood Palings\n* 100mm x 75mm Hardwood Posts concreted 600mm below ground level\n* 75mm x 38mm Hardwood Rails\n* 100mm x 38mm Hardwood",
+      "unit": "each",
+      "unit_price": 210,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 11,
+      "active": true,
+      "source_quote_item_id": 1875286,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875286_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Hardwood Paling Fence",
+      "body": "* 100mm x 16mm Hardwood Palings\n* 100mm x 75mm Hardwood Posts concreted 600mm below ground level\n* 75mm x 38mm Hardwood Rails\n* 45mm Galvanised Ring S",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 12,
+      "active": true,
+      "source_quote_item_id": 1240211,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240211_0.jpg",
+          "images/item_1240211_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Lapped and Capped Treated Pine Fence",
+      "body": "* 100mm x 16mm Treated Pine Palings\n* 75mm x 38mm Treated Pine Rails\n* 75mm x 38mm Treated Pine Top Cap\n* 100mm x 75mm Treated Pine Posts concreted 60",
+      "unit": "each",
+      "unit_price": 165,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 13,
+      "active": true,
+      "source_quote_item_id": 1582427,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1582427_0.jpg",
+          "images/item_1582427_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Powder Coated Aluminium Slat Fence - Horizontal",
+      "body": "* 65mm aluminium slats\n* 9mm gaps between each slat\n* Powder coated\n* 65mm x 65mm aluminium posts concreted 600mm below ground level",
+      "unit": "each",
+      "unit_price": 400,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 14,
+      "active": true,
+      "source_quote_item_id": 46773,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_46773_0.jpg",
+          "images/item_46773_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Powder Coated Aluminium Slat Fence - Vertical",
+      "body": "* 65mm aluminium slats\n* 9mm gaps between each slat\n* Powder coated finish\n* 50mm x 50mm aluminium posts concreted 600mm below ground level",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 15,
+      "active": true,
+      "source_quote_item_id": 2307449,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307449_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Powdercoated Aluminium Barr Fencing",
+      "body": "* 50mm x 25mm Barr Fencing Posts\n* 2200mm wide Barr Fencing Panels \n* 600mm Concrete Footings\n* Complies with Australian Pool Fencing Standards",
+      "unit": "each",
+      "unit_price": 450,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences",
+        "Security fences"
+      ],
+      "sort_order": 16,
+      "active": true,
+      "source_quote_item_id": 1789392,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1789392_0.jpg",
+          "images/item_1789392_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Treated Pine Horizontal Slat Fence",
+      "body": "* 90mm x 19mm treated pine horizontal slats\n* 100mm x 75mm treated pine posts concreted 600mm below ground level\n* 45mm galvanised ring shank nails\n*",
+      "unit": "each",
+      "unit_price": 165,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 17,
+      "active": true,
+      "source_quote_item_id": 1144350,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144350_0.jpg",
+          "images/item_1144350_1.jpg",
+          "images/item_1144350_2.jpg",
+          "images/item_1144350_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Treated Pine Paling Fence\n\nMaterials Only Add Labor",
+      "body": "* 100mm x 16mm treated pine palings\n* 75mm x 38mm treated pine rails\n* 100mm x 75mm treated pine posts concreted 600mm below ground level\n* 45mm ring",
+      "unit": "each",
+      "unit_price": 101.54,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 18,
+      "active": true,
+      "source_quote_item_id": 1240206,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240206_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1200mm High Treated Pine Paling Fence",
+      "body": "* 100mm x 16mm treated pine palings\n* 75mm x 38mm treated pine rails\n* 100mm x 75mm treated pine posts concreted 600mm below ground level\n* 45mm galva",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 19,
+      "active": true,
+      "source_quote_item_id": 2307452,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307452_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm Black Chain-link Fencing",
+      "body": "* 60mm PVC coated chain-link mesh\n* 50NB corner posts\n* 40NB intermediate posts\n* 40NB top rail\n* High tensile mid and bottom wires with black PVC coa",
+      "unit": "each",
+      "unit_price": 230,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 20,
+      "active": true,
+      "source_quote_item_id": 1875720,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875720_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm Chain-link Pedestrian Gate",
+      "body": "* 32NB black powder coated gate frames\n* 60mm chain-mesh\n* D latch\n* 50NB-32NB hinges",
+      "unit": "each",
+      "unit_price": 536.21,
+      "categories": [
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 21,
+      "active": true,
+      "source_quote_item_id": 1875724,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875724_0.jpg",
+          "images/item_1875724_1.jpg",
+          "images/item_1875724_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High\n40mm x 40mm Dressed Treated Pine Horizontal Battens\n10mm Gaps",
+      "body": "* 40mm x 40mm dressed treated pine horizontal slats\n* 100mm x 100mm skimp dressed treated pine posts\n* Two 100mm x 38mm skimp dressed rails\n* Concrete",
+      "unit": "each",
+      "unit_price": 517.24,
+      "categories": [
+        "Horizontal flat fences"
+      ],
+      "sort_order": 22,
+      "active": true,
+      "source_quote_item_id": 1878575,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878575_0.jpg",
+          "images/item_1878575_1.jpg",
+          "images/item_1878575_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High\n40mm x 40mm Dressed Treated Pine Vertical Battens\n10mm Gaps",
+      "body": "* 40mm x 40mm dressed treated pine vertical slats\n* 100mm x 100mm skimp dressed treated pine posts\n* Two 100mm x 38mm skimp dressed rails\n* Concreted",
+      "unit": "each",
+      "unit_price": 430,
+      "categories": [
+        "Vertical batten fences"
+      ],
+      "sort_order": 23,
+      "active": true,
+      "source_quote_item_id": 1841227,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1841227_0.jpg",
+          "images/item_1841227_1.jpg",
+          "images/item_1841227_2.jpg",
+          "images/item_1841227_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Black Flat Top Aluminium Pool Fence",
+      "body": "* 50 x 50 aluminium posts cemented 600mm deep\n* Meets Australian pool fencing standards",
+      "unit": "each",
+      "unit_price": 170,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 24,
+      "active": true,
+      "source_quote_item_id": 1878551,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878551_0.jpg",
+          "images/item_1878551_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Colorbond Fence",
+      "body": "",
+      "unit": "each",
+      "unit_price": 160,
+      "categories": [
+        "Colorbond fences"
+      ],
+      "sort_order": 25,
+      "active": true,
+      "source_quote_item_id": 1932726,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1932726_0.jpg",
+          "images/item_1932726_1.jpg",
+          "images/item_1932726_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Dressed Hardwood Fencing with Horizontal Corrugated Iron Cladding \n\nExposed Framing with",
+      "body": "100mm x 100mm Skim Dressed Hardwood Posts \n100mm x 50mm Top and Bottom Rails \n600mm Deep Concrete Footings \nColorbond Corrugated Roofing & Wall Claddi",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Colorbond fences",
+        "Gates"
+      ],
+      "sort_order": 26,
+      "active": true,
+      "source_quote_item_id": 2307489,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307489_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Dressed Treated Pine Decorative Top Picket Fence\n\n10mm Gaps Between Pickets",
+      "body": "100mm x 100mm Dressed Treated Pine Posts Concreted 600mm Below Ground Level\n100mm x 38mm Dressed Treated Pine Horizontal Rails\n90mm x 19mm x 1200mm Dr",
+      "unit": "each",
+      "unit_price": 190,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 27,
+      "active": true,
+      "source_quote_item_id": 1240204,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240204_0.jpg",
+          "images/item_1240204_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Hardwood Batten Fence\n42mm Battens\n10mm Gaps",
+      "body": "42mm x 19mm Hardwood Battens\n100mm x 38mm Skimp Dressed Hardwood Rails\n100mm x 100mm Skimp Dressed Hardwood Posts\n600mm Concrete Footings\nStainless Sc",
+      "unit": "each",
+      "unit_price": 327.53,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 28,
+      "active": true,
+      "source_quote_item_id": 1878542,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878542_0.jpg",
+          "images/item_1878542_1.jpg",
+          "images/item_1878542_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Hardwood Lapped & Capped Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n100mm x 38mm Hardwood Top Cap",
+      "unit": "each",
+      "unit_price": 280,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 29,
+      "active": true,
+      "source_quote_item_id": 1240220,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240220_0.jpg",
+          "images/item_1240220_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Hardwood Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n45mm Galvanised Ring Shank Nai",
+      "unit": "each",
+      "unit_price": 155,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 30,
+      "active": true,
+      "source_quote_item_id": 1240212,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240212_0.jpg",
+          "images/item_1240212_1.jpg",
+          "images/item_1240212_2.jpg",
+          "images/item_1240212_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Lapped and Capped Treated Pine Fence",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 38mm Treated Pine Top Cap\n100mm x 75mm Treated Pine Posts Concreted 600mm Bel",
+      "unit": "each",
+      "unit_price": 200,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 31,
+      "active": true,
+      "source_quote_item_id": 1582343,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1582343_0.jpg",
+          "images/item_1582343_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Powder Coated Aluminium Slat Fence - Horizontal",
+      "body": "65mm Aluminium Slats\n9mm Gaps Between Each Slat\nPowder Coated\n65mm x 65mm Aluminium Posts Concreted 600mm Below Ground Level",
+      "unit": "each",
+      "unit_price": 430,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 32,
+      "active": true,
+      "source_quote_item_id": 1144337,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144337_0.jpg",
+          "images/item_1144337_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Treated Pine Horizontal Slat Fence",
+      "body": "90mm x 19mm Treated Pine Horizontal Slats\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Galvanised Ring Shank Nails\nGalvaniz",
+      "unit": "each",
+      "unit_price": 185,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 33,
+      "active": true,
+      "source_quote_item_id": 1144351,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144351_0.jpg",
+          "images/item_1144351_1.jpg",
+          "images/item_1144351_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1500mm High Treated Pine Paling Fence\n\nMaterials Only Add Labor",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Ring Shank Ga",
+      "unit": "each",
+      "unit_price": 107.68,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 34,
+      "active": true,
+      "source_quote_item_id": 758620,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_758620_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm Barr Fencing",
+      "body": "50mm x 25mm Barr Fencing Posts\n2200mm Barr Fencing Panels \n600mm Concrete Footings\nComplies with Australian Pool Fencing Standards",
+      "unit": "each",
+      "unit_price": 483.6,
+      "categories": [
+        "Pool fences",
+        "Security fences"
+      ],
+      "sort_order": 35,
+      "active": true,
+      "source_quote_item_id": 1875717,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875717_0.jpg",
+          "images/item_1875717_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm Black Chain-link Fencing",
+      "body": "60mm PVC Coated Chain-link Mesh \n50NB Corner Posts\n40NB Intermediate Posts\n40NB Top Rail \nHigh Tensile Mid and Bottom Wires With Black PVC Coating \n60",
+      "unit": "each",
+      "unit_price": 230,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 36,
+      "active": true,
+      "source_quote_item_id": 1875721,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875721_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm Chain-link Pedestrian Gate",
+      "body": "32NB Black Powder Coated Gate Frames\n60mm Chain-mesh\nD-Latch\n50NB-32NB Hinges",
+      "unit": "each",
+      "unit_price": 536.21,
+      "categories": [
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 37,
+      "active": true,
+      "source_quote_item_id": 1875725,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875725_0.jpg",
+          "images/item_1875725_1.jpg",
+          "images/item_1875725_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm Colorbond Fencing with a Timber Finish \n\nPrice is per panel cost price from ourtown fencing",
+      "body": "",
+      "unit": "each",
+      "unit_price": 196.55,
+      "categories": [
+        "Colorbond fences"
+      ],
+      "sort_order": 38,
+      "active": true,
+      "source_quote_item_id": 2334508,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2334508_0.jpg",
+          "images/item_2334508_1.jpg",
+          "images/item_2334508_2.jpg",
+          "images/item_2334508_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High\n40mm x 40mm Dressed Treated Pine Horizontal Slats\n10mm Gaps",
+      "body": "40mm x 40mm Dressed Treated Pine Horizontal Slats\n100mm x 100mm Skimp Dressed Treated Pine Posts \n100mm x 38mm Skimp Dressed Rails\nConcreted 600mm Bel",
+      "unit": "each",
+      "unit_price": 636.21,
+      "categories": [
+        "Horizontal flat fences"
+      ],
+      "sort_order": 39,
+      "active": true,
+      "source_quote_item_id": 1801729,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1801729_0.jpg",
+          "images/item_1801729_1.jpg",
+          "images/item_1801729_2.jpg",
+          "images/item_1801729_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High\n40mm x 40mm Dressed Treated Pine Vertical Slats\n10mm Gaps",
+      "body": "40mm x 40mm Dressed Treated Pine Vertical Slats\n100mm x 100mm Skimp Dressed Treated Pine Posts\n100mm x 38mm Skimp Dressed Rails\nConcreted 600mm Below",
+      "unit": "each",
+      "unit_price": 670.69,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 40,
+      "active": true,
+      "source_quote_item_id": 1878578,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878578_0.jpg",
+          "images/item_1878578_1.jpg",
+          "images/item_1878578_2.jpg",
+          "images/item_1878578_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Aluminium Horizontal Slat Gate\n\n65mm Slats with 10mm Gaps",
+      "body": "* 65mm Aluminium Posts with 600mm Concrete Footings \n* 65mm x 16mm Slats \n* Lokklatch Key Lockable Latch \n* Stainless Steel Hinges",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 41,
+      "active": true,
+      "source_quote_item_id": 2329619,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2329619_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Aluminium Picket Fence \n\n65mm Vertical Pickets with 10mm Gaps",
+      "body": "* 1800mm x 2400mm Panels\n* 65mm x 16mm Pickets with 10mm Gaps\n* 40mm Rails\n* 65mm Aluminium Posts in 600mm Deep Concrete Footings\n* 1000mm x 1800mm Ga",
+      "unit": "each",
+      "unit_price": 550,
+      "categories": [
+        "Vertical batten fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 42,
+      "active": true,
+      "source_quote_item_id": 2308040,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2308040_0.jpg",
+          "images/item_2308040_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Aluminium Security Fencing",
+      "body": "2400mm Wide Security Panels\nBlack Powdercoat Finish \n65mm HD Post",
+      "unit": "each",
+      "unit_price": 290,
+      "categories": [
+        "Aluminium fences",
+        "Security fences"
+      ],
+      "sort_order": 43,
+      "active": true,
+      "source_quote_item_id": 1842158,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842158_0.jpg",
+          "images/item_1842158_1.jpg",
+          "images/item_1842158_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Black Flat Top Aluminium Pool Fence",
+      "body": "3 Horizontal Rails\n50mm x 50mm Aluminium Post Concreted 600mm Below Ground Level\nMeets Australian Pool Fencing Standards",
+      "unit": "each",
+      "unit_price": 300,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 44,
+      "active": true,
+      "source_quote_item_id": 1144335,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144335_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Black Flat Top Aluminium Pool Fence",
+      "body": "50 x 50 Aluminium Post Cemented 600mm Deep\nMeets Australian Pool Fencing Standards",
+      "unit": "each",
+      "unit_price": 170,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 45,
+      "active": true,
+      "source_quote_item_id": 1878553,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878553_0.jpg",
+          "images/item_1878553_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm high Brushwood fence using 50mm thick compressed factory packed panels\n\nRolled to(100mm)\n\nHar",
+      "body": "60mm Black Powdercoated Steel Post\nBlack Strainer Wire\nRolled Brush Capping\n100x75 Hardwood Timber Base\n\nPics from a recently finished job in Byron",
+      "unit": "each",
+      "unit_price": 480,
+      "categories": [
+        "Capped fences"
+      ],
+      "sort_order": 46,
+      "active": true,
+      "source_quote_item_id": 1285092,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1285092_0.jpg",
+          "images/item_1285092_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Chain Link Fence",
+      "body": "60mm Diamond Galvanized Chainmesh Fence\n40NB Galvanized Posts Concreted 600mm Below Ground Level\nTop, Bottom, Middle Double Strainer Wire, 3.15mm Galv",
+      "unit": "each",
+      "unit_price": 130,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 47,
+      "active": true,
+      "source_quote_item_id": 960394,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_960394_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Colorbond Fence",
+      "body": "",
+      "unit": "each",
+      "unit_price": 170,
+      "categories": [
+        "Colorbond fences"
+      ],
+      "sort_order": 48,
+      "active": true,
+      "source_quote_item_id": 1841236,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1841236_0.jpg",
+          "images/item_1841236_1.jpg",
+          "images/item_1841236_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm high Hampton White PVC Boundary Fence \nFull Privacy",
+      "body": "Not GST Inclusive",
+      "unit": "each",
+      "unit_price": 295,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 49,
+      "active": true,
+      "source_quote_item_id": 2092755,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2092755_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm high Hampton White PVC Boundary Fence \nPrivacy with topper",
+      "body": "Not GST Inclusive",
+      "unit": "each",
+      "unit_price": 310,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 50,
+      "active": true,
+      "source_quote_item_id": 2092756,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2092756_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Hardwood Batten Fence\n\nHardwood Sleepers Under Fence To Fill in Any Large Gaps Under Fen",
+      "body": "42mm x 19mm Hardwood Battens with 10mm Gaps \n100mm x 38mm Skimp Dressed Hardwood Rails\n100mm x 100mm Skimp Dressed Hardwood Posts\n600mm Concrete Footi",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Retaining walls"
+      ],
+      "sort_order": 51,
+      "active": true,
+      "source_quote_item_id": 2327497,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2327497_0.jpg",
+          "images/item_2327497_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Hardwood Batten Fence\n42mm Battens\n10mm Gaps",
+      "body": "42mm x 19mm Hardwood Battens \n100mm x 38mm Skimp Dressed Hardwood Rails   \n100mm x 100mm Skimp Dress Hardwood Posts\n600mm Concrete Footings\nStainless",
+      "unit": "each",
+      "unit_price": 370,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 52,
+      "active": true,
+      "source_quote_item_id": 1841231,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1841231_0.jpg",
+          "images/item_1841231_1.jpg",
+          "images/item_1841231_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Hardwood Batten Fence",
+      "body": "42mm x 19mm Hardwood Battens\n100mm x 38mm Skim Dressed Hardwood Rails\n100mm x 100mm Skim Dress Hardwood Posts\n600mm Concrete Footings\nStainless Screws",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 53,
+      "active": true,
+      "source_quote_item_id": 2307474,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "1800mm High Hardwood Lapped & Capped Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n100mm x 38mm Hardwood Top Cap",
+      "unit": "each",
+      "unit_price": 310,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 54,
+      "active": true,
+      "source_quote_item_id": 1240218,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240218_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Hardwood Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n45mm Galvanised Ring Shank Nai",
+      "unit": "each",
+      "unit_price": 220,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 55,
+      "active": true,
+      "source_quote_item_id": 963027,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_963027_0.jpg",
+          "images/item_963027_1.jpg",
+          "images/item_963027_2.jpg",
+          "images/item_963027_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Horizontal Treated Pine Slat Fence",
+      "body": "90mm x 19mm Treated Pine Horizontal Slats\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Galvanised Ring Shank Nails\nGalvaniz",
+      "unit": "each",
+      "unit_price": 180,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 56,
+      "active": true,
+      "source_quote_item_id": 54580,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_54580_0.jpg",
+          "images/item_54580_1.jpg",
+          "images/item_54580_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Lapped and Capped Treated Pine Fence",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 38mm Treated Pine Top Cap\n100mm x 75mm Treated Pine Posts Concreted 600mm Bel",
+      "unit": "each",
+      "unit_price": 220,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 57,
+      "active": true,
+      "source_quote_item_id": 29172,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_29172_0.jpg",
+          "images/item_29172_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Modular Wall - Slimwall",
+      "body": "https://modularwalls.com.au/products/slimwall/",
+      "unit": "each",
+      "unit_price": 550,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 58,
+      "active": true,
+      "source_quote_item_id": 1080152,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1080152_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Neighbour Friendly Horizontal Slat Fence",
+      "body": "90mm x 19mm Treated Pine Horizontal Slats\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Galvanised Ring Shank Nails\nGalvaniz",
+      "unit": "each",
+      "unit_price": 220,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 59,
+      "active": true,
+      "source_quote_item_id": 54579,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_54579_0.jpg",
+          "images/item_54579_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Neighbour Friendly Treated Pine Paling Fence",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 75mm Treated Pine Post Concreted 600mm Below Ground Level\n45mm Ring Shank Gal",
+      "unit": "each",
+      "unit_price": 210,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 60,
+      "active": true,
+      "source_quote_item_id": 1079865,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1079865_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Powder Coated Aluminium Slat Fence - Horizontal",
+      "body": "65mm Aluminium Slats\n9mm Gaps Between Each Slat\nPowder Coated\n65mm x 65mm Aluminium Posts Concreted 600mm Below Ground Level",
+      "unit": "each",
+      "unit_price": 450,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 61,
+      "active": true,
+      "source_quote_item_id": 1144338,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144338_0.jpg",
+          "images/item_1144338_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Powder Coated Aluminium Slat Fence - Horizontal",
+      "body": "65mm Aluminium Slats\n9mm Gaps Between Each Slat\nPowder Coated\n50mm x 50mm Aluminium Posts Concreted 600mm Below Ground Level",
+      "unit": "each",
+      "unit_price": 475,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 62,
+      "active": true,
+      "source_quote_item_id": 1878571,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878571_0.jpg",
+          "images/item_1878571_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Powder Coated Aluminium Slat Fence - Vertical",
+      "body": "65mm aluminium slats\n9mm gaps between each slat\nPowder coated finish\n50mm x 50mm aluminium posts concreted 600mm below ground level",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 63,
+      "active": true,
+      "source_quote_item_id": 2307448,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307448_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Steel Security Fencing",
+      "body": "2400mm wide security panels\nGalvanised and Powdercoated\n65mm Steel Post",
+      "unit": "each",
+      "unit_price": 254,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 64,
+      "active": true,
+      "source_quote_item_id": 1842153,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842153_0.jpg",
+          "images/item_1842153_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Treated Pine Paling Fence",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Ring Shank Ga",
+      "unit": "each",
+      "unit_price": 185,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 65,
+      "active": true,
+      "source_quote_item_id": 1243236,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1243236_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm High Treated Pine Paling Fence with a Top Cap and Exposed Posts",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Ring Shank Ga",
+      "unit": "each",
+      "unit_price": 260,
+      "categories": [
+        "Capped fences"
+      ],
+      "sort_order": 66,
+      "active": true,
+      "source_quote_item_id": 1769779,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1769779_0.jpg",
+          "images/item_1769779_1.jpg",
+          "images/item_1769779_2.jpg",
+          "images/item_1769779_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm x 1440mm Dual Leaf Colorbond Gates",
+      "body": "2 x Gates\n2 x Posts 60 x 60 x 2400 \nStainless Steel Hinges\nStainless Steel D-Latch\nGalvanized Drop Bolts",
+      "unit": "each",
+      "unit_price": 2030,
+      "categories": [
+        "Colorbond fences",
+        "Gates"
+      ],
+      "sort_order": 67,
+      "active": true,
+      "source_quote_item_id": 1938738,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1938738_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm x 2450mm Security Gate",
+      "body": "Black Powdercoat Finish \nKwik Fit Aluminium Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts",
+      "unit": "each",
+      "unit_price": 720,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 68,
+      "active": true,
+      "source_quote_item_id": 1842208,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842208_0.jpg",
+          "images/item_1842208_1.jpg",
+          "images/item_1842208_2.jpg",
+          "images/item_1842208_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm x 5000mm Dual Leaf Security Gates",
+      "body": "Black Powdercoat Finish \nKwik Fit Aluminium Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts\nPadlockable Drop-Bolt",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 69,
+      "active": true,
+      "source_quote_item_id": 1842169,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842169_0.jpg",
+          "images/item_1842169_1.jpg",
+          "images/item_1842169_2.jpg",
+          "images/item_1842169_3.jpg",
+          "images/item_1842169_4.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm x 880mm Colorbond Pedestrian Gate",
+      "body": "1 x Gate\n2 x Posts 60 x 60 x 2400 \nStainless Steel Hinges\nStainless Steel D-Latch",
+      "unit": "each",
+      "unit_price": 750,
+      "categories": [
+        "Colorbond fences",
+        "Gates"
+      ],
+      "sort_order": 70,
+      "active": true,
+      "source_quote_item_id": 1938730,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1938730_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm x 975mm Aluminium Security Gate",
+      "body": "Black Powdercoat Finish \nHD Kwik Fit Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts",
+      "unit": "each",
+      "unit_price": 600,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 71,
+      "active": true,
+      "source_quote_item_id": 1842167,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842167_0.jpg",
+          "images/item_1842167_1.jpg",
+          "images/item_1842167_2.jpg",
+          "images/item_1842167_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1800mm x 975mm Steel Security Gate",
+      "body": "Black Powdercoat Finish \nKwik Fit Aluminium Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts",
+      "unit": "each",
+      "unit_price": 550,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 72,
+      "active": true,
+      "source_quote_item_id": 1842175,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842175_0.jpg",
+          "images/item_1842175_1.jpg",
+          "images/item_1842175_2.jpg",
+          "images/item_1842175_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1m Wide Pedestrian Gate with Hardwood Batten Cladding",
+      "body": "50mm Aluminium Gate Frame \nAdjustable Self Closing Hinges \nD&D Deluxe Latch",
+      "unit": "each",
+      "unit_price": 650,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 73,
+      "active": true,
+      "source_quote_item_id": 2307480,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307480_0.jpg",
+          "images/item_2307480_1.jpg",
+          "images/item_2307480_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "1m Wide Pedestrian Gate with Hardwood Batten Cladding",
+      "body": "50mm Aluminium Gate Frame \nAdjustable Self Closing Hinges \nD&D Deluxe Latch",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 74,
+      "active": true,
+      "source_quote_item_id": 2307491,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307491_0.jpg",
+          "images/item_2307491_1.jpg",
+          "images/item_2307491_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm Black Chain-link Fencing",
+      "body": "60mm PVC Coated Chain-link Mesh \n50NB Corner Posts\n40NB Intermediate Posts\n40NB Top Rail \nHigh Tensile Mid and Bottom Wires With Black PVC Coating \n60",
+      "unit": "each",
+      "unit_price": 230,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 75,
+      "active": true,
+      "source_quote_item_id": 1875722,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875722_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm Chain-link Pedestrian Gate",
+      "body": "32NB Black Powder Coated Gate Frames\n60mm Chain-mesh\nD-Latch\n50NB-32NB Hinges",
+      "unit": "each",
+      "unit_price": 536.21,
+      "categories": [
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 76,
+      "active": true,
+      "source_quote_item_id": 1875726,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1875726_0.jpg",
+          "images/item_1875726_1.jpg",
+          "images/item_1875726_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High  Steel Security Fencing",
+      "body": "2400mm wide security panels\nGalvanised and Powdercoated\n65mm Steel Post",
+      "unit": "each",
+      "unit_price": 267,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 77,
+      "active": true,
+      "source_quote_item_id": 1250075,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1250075_0.jpg",
+          "images/item_1250075_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High Aluminium Security Fencing",
+      "body": "2400mm Wide Security Panels\nBlack Powdercoat Finish \n65mm HD Post",
+      "unit": "each",
+      "unit_price": 300,
+      "categories": [
+        "Aluminium fences",
+        "Security fences"
+      ],
+      "sort_order": 78,
+      "active": true,
+      "source_quote_item_id": 1842159,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842159_0.jpg",
+          "images/item_1842159_1.jpg",
+          "images/item_1842159_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High Colorbond Fence",
+      "body": "",
+      "unit": "each",
+      "unit_price": 197.41,
+      "categories": [
+        "Colorbond fences"
+      ],
+      "sort_order": 79,
+      "active": true,
+      "source_quote_item_id": 1871312,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1871312_0.jpg",
+          "images/item_1871312_1.jpg",
+          "images/item_1871312_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High Hardwood Lapped & Capped Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n100mm x 38mm Hardwood Top Cap",
+      "unit": "each",
+      "unit_price": 250,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 80,
+      "active": true,
+      "source_quote_item_id": 1240221,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240221_0.jpg",
+          "images/item_1240221_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High Hardwood Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n45mm Galvanised Ring Shank Nai",
+      "unit": "each",
+      "unit_price": 260,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 81,
+      "active": true,
+      "source_quote_item_id": 1240213,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240213_0.jpg",
+          "images/item_1240213_1.jpg",
+          "images/item_1240213_2.jpg",
+          "images/item_1240213_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High Horizontal Treated Pine Slat Fence",
+      "body": "90mm x 19mm Treated Pine Horizontal Slats\n100mm x 75mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Galvanised Ring Shank Nails\nGalvaniz",
+      "unit": "each",
+      "unit_price": 220,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 82,
+      "active": true,
+      "source_quote_item_id": 1144352,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144352_0.jpg",
+          "images/item_1144352_1.jpg",
+          "images/item_1144352_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm High Treated Pine Paling Fence",
+      "body": "100mm x 16mm Treated Pine Palings\n75mm x 38mm Treated Pine Rails\n100mm x 100mm Treated Pine Posts Concreted 600mm Below Ground Level\n45mm Ring Shank G",
+      "unit": "each",
+      "unit_price": 200,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 83,
+      "active": true,
+      "source_quote_item_id": 50578,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_50578_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm x 2450mm Security Gate",
+      "body": "Black Powdercoat Finish \nKwik Fit Aluminium Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts",
+      "unit": "each",
+      "unit_price": 738.65,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 84,
+      "active": true,
+      "source_quote_item_id": 1842193,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842193_0.jpg",
+          "images/item_1842193_1.jpg",
+          "images/item_1842193_2.jpg",
+          "images/item_1842193_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm x 5000mm Dual Leaf Security Gates",
+      "body": "Black Powdercoat Finish \nKwik Fit Aluminium Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts\nPadlockable Drop-Bolt",
+      "unit": "each",
+      "unit_price": 1320,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 85,
+      "active": true,
+      "source_quote_item_id": 1842198,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842198_0.jpg",
+          "images/item_1842198_1.jpg",
+          "images/item_1842198_2.jpg",
+          "images/item_1842198_3.jpg",
+          "images/item_1842198_4.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2100mm x 975mm Steel Security Gate",
+      "body": "Black Powdercoat Finish \nKwik Fit Aluminium Hinges\nD&D Technologies LokkLatch\nHeavy Duty 65mm Posts",
+      "unit": "each",
+      "unit_price": 555.27,
+      "categories": [
+        "Aluminium fences",
+        "Gates",
+        "Security fences"
+      ],
+      "sort_order": 86,
+      "active": true,
+      "source_quote_item_id": 1842179,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842179_0.jpg",
+          "images/item_1842179_1.jpg",
+          "images/item_1842179_2.jpg",
+          "images/item_1842179_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2400mm High Hardwood Lapped & Capped Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n100mm x 38mm Hardwood Top Cap",
+      "unit": "each",
+      "unit_price": 350,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 87,
+      "active": true,
+      "source_quote_item_id": 1240222,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240222_0.jpg",
+          "images/item_1240222_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2400mm High Hardwood Paling Fence",
+      "body": "100mm x 16mm Hardwood Palings\n100mm x 75mm Hardwood Posts Concreted 600mm Below Ground Level\n75mm x 38mm Hardwood Rails\n45mm Galvanised Ring Shank Nai",
+      "unit": "each",
+      "unit_price": 300,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 88,
+      "active": true,
+      "source_quote_item_id": 1240219,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240219_0.jpg",
+          "images/item_1240219_1.jpg",
+          "images/item_1240219_2.jpg",
+          "images/item_1240219_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2400mm High Lapped and Capped Treated Pine Fence",
+      "body": "100mm x 16mm Treated Pine Palings\n4 of 100mm x 38mm Treated Pine Rails\n100mm x 38mm Treated Pine Top Cap\n100mm x 75mm Hardwood Posts Concreted 600mm B",
+      "unit": "each",
+      "unit_price": 290,
+      "categories": [
+        "Lapped fences",
+        "Capped fences"
+      ],
+      "sort_order": 89,
+      "active": true,
+      "source_quote_item_id": 1582316,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1582316_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2400mm High Steel Security Fencing",
+      "body": "2400mm wide security panels\nGalvanised and Powdercoated\n65mm Steel Post",
+      "unit": "each",
+      "unit_price": 300,
+      "categories": [
+        "Security fences"
+      ],
+      "sort_order": 90,
+      "active": true,
+      "source_quote_item_id": 1842157,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1842157_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2400mm High Treated Pine Paling Fence",
+      "body": "100mm x 16mm Palings\n100mm x 38mm Rails\n65mm Steel Post Concreted 600mm Below Ground Level\n45mm Ring Shank Galvanized Nails\n100mm Galvanized Batten Sc",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Timber fences"
+      ],
+      "sort_order": 91,
+      "active": true,
+      "source_quote_item_id": 1240208,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1240208_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "2400mm Modular Wall Trendwall with 3m Bays",
+      "body": "Aluminium H-Beam Posts with 3000mm Spacings \n75mm Acoustic Panels \n700mm x 250mm x 250mm Concrete Footings \n\nhttps://modularwalls.com.au/product/trend",
+      "unit": "each",
+      "unit_price": 720,
+      "categories": [
+        "Aluminium fences"
+      ],
+      "sort_order": 92,
+      "active": true,
+      "source_quote_item_id": 1819654,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1819654_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "970mm High Summit Glass Balustrade",
+      "body": "970mm High \n12mm Thick Toughened Glass Balustrade\n50mm Square Polished Stainless 316 Spigots Core Drilled Or Base Plated\n40mm x 30mm Polished Stainles",
+      "unit": "each",
+      "unit_price": 350,
+      "categories": [
+        "Glass fences"
+      ],
+      "sort_order": 93,
+      "active": true,
+      "source_quote_item_id": 29169,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_29169_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Add D5 Smart motor to existing gate",
+      "body": "Centsys D5 Evo Smart Motor \n1x Hardware Mounting Pack\nBattery Backup and 18V Power Supply to house",
+      "unit": "each",
+      "unit_price": 2500,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 94,
+      "active": true,
+      "source_quote_item_id": 2327501,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2327501_0.jpg",
+          "images/item_2327501_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Additional Cost for 100 x 100 Treated Pine Post",
+      "body": "",
+      "unit": "each",
+      "unit_price": 4.5,
+      "categories": [
+        "Extras"
+      ],
+      "sort_order": 95,
+      "active": true,
+      "source_quote_item_id": 2041691,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Additional Cost for 65 x 65 Gal Steel Post",
+      "body": "",
+      "unit": "each",
+      "unit_price": 25,
+      "categories": [
+        "Extras"
+      ],
+      "sort_order": 96,
+      "active": true,
+      "source_quote_item_id": 2041778,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Additional cost for 65 x 65 Galvanized Steel Post",
+      "body": "",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Extras"
+      ],
+      "sort_order": 97,
+      "active": true,
+      "source_quote_item_id": 2041698,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Additional Cost for Dressed 90x35 Top Cap with Pencil Round Edges",
+      "body": "",
+      "unit": "each",
+      "unit_price": 4.5,
+      "categories": [
+        "Extras"
+      ],
+      "sort_order": 98,
+      "active": true,
+      "source_quote_item_id": 2041690,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Additional Cost For Raked Colorbond",
+      "body": "",
+      "unit": "each",
+      "unit_price": 20,
+      "categories": [
+        "Colorbond fences",
+        "Extras"
+      ],
+      "sort_order": 99,
+      "active": true,
+      "source_quote_item_id": 1841241,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Alumawood Horizontal Slat Aluminum Fence",
+      "body": "Advantages:\nLow maintenance product which does not require any up-keep.\nHighest quality Italian photo-image film manufactured in Australia.\nAesthetica",
+      "unit": "each",
+      "unit_price": 650,
+      "categories": [
+        "Horizontal flat fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 100,
+      "active": true,
+      "source_quote_item_id": 56877,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_56877_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Aluminium Framed Pedestrian Gate - \n\nCladded With Treated Pine Palings\n\n1000mm Wide",
+      "body": "50mm x 50mm Aluminium Gate Frame\nStainless Steel Butt Hinges\nStainless Steel D-Latch & Striker",
+      "unit": "each",
+      "unit_price": 500,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 101,
+      "active": true,
+      "source_quote_item_id": 25472,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_25472_0.jpg",
+          "images/item_25472_1.jpg",
+          "images/item_25472_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Aluminium gate frame 1m Wide X 1800 High\nMid Rail\n40mmX40mmX2mm",
+      "body": "",
+      "unit": "each",
+      "unit_price": 220,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 102,
+      "active": true,
+      "source_quote_item_id": 1324098,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Automatic Gate\n* One aluminium automatic swinging gate automated with a Centurion Vantage 500 motor.",
+      "body": "https://www.centsys.com.au/g-speak/",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 103,
+      "active": true,
+      "source_quote_item_id": 1247797,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1247797_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Automatic Gates\n* Two aluminium automatic swinging gates automated with Centurion Vantage 500 motors",
+      "body": "https://www.centsys.com.au/g-speak/",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 104,
+      "active": true,
+      "source_quote_item_id": 1247798,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1247798_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Automatic Gates - \n\n2 x Aluminium Automatic Swinging Gates\n\nPowder Coated Black\n\nSimilar to Design B",
+      "body": "https://www.centsys.com.au/g-speak/",
+      "unit": "each",
+      "unit_price": 10999,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 105,
+      "active": true,
+      "source_quote_item_id": 1247795,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1247795_0.jpg",
+          "images/item_1247795_1.jpg",
+          "images/item_1247795_2.jpg",
+          "images/item_1247795_3.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Automatic Sliding Gate 5m wide X 1.8m High- Frame and automation only",
+      "body": "Centsys D5 Evo Smart Motor \n1x Hardware Mounting Pack\nBattery Backup and 18V Power Supply to house\nGuide Post 90mm Galvanised with cap\n50mm Aluminium",
+      "unit": "each",
+      "unit_price": 5500,
+      "categories": [
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 106,
+      "active": true,
+      "source_quote_item_id": 1250066,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1250066_0.jpg",
+          "images/item_1250066_1.jpg",
+          "images/item_1250066_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Black Flat Top Aluminium Pool Gate 1200mm High",
+      "body": "D&D Technology Sprung hinges\nD&D Technology Magna Latch",
+      "unit": "each",
+      "unit_price": 495,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 107,
+      "active": true,
+      "source_quote_item_id": 1144330,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144330_0.jpg",
+          "images/item_1144330_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Black Flat Top Aluminium Pool Gate 1800mm High",
+      "body": "D&D Technology Sprung Hinges\nD&D Technology Magna Latch",
+      "unit": "each",
+      "unit_price": 650,
+      "categories": [
+        "Pool fences",
+        "Aluminium fences",
+        "Gates"
+      ],
+      "sort_order": 108,
+      "active": true,
+      "source_quote_item_id": 1144336,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1144336_0.jpg",
+          "images/item_1144336_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Colorbond Fence with Hardwood Posts and 300mm Horizontal Slat Hardwood Topper",
+      "body": "100mm x 100mm Skim Dressed Hardwood Posts \n90mm x 19mm Merbau Slats Fixed with Stainless Steel Screws \n600mm Deep Concrete Footings",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Horizontal flat fences",
+        "Colorbond fences"
+      ],
+      "sort_order": 109,
+      "active": true,
+      "source_quote_item_id": 2307490,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307490_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Concrete Sleeper Retaining Wall",
+      "body": "* Galvanized Steel H Beam Posts with Fencing Brackets \n* Concrete Sleepers \n* Concrete Footings \n* Geofabric Backing \n* Ag Line Drainage",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Retaining walls"
+      ],
+      "sort_order": 110,
+      "active": true,
+      "source_quote_item_id": 2329620,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2329620_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Cutting of colorbond sheets to suit slope level of ground",
+      "body": "",
+      "unit": "each",
+      "unit_price": 20,
+      "categories": [
+        "Colorbond fences",
+        "Extras"
+      ],
+      "sort_order": 111,
+      "active": true,
+      "source_quote_item_id": 1841240,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "E LOOP\nWireless Vehicle Exit System",
+      "body": "8-10 year batter life\n10 tonne load limit\n50 Meter range",
+      "unit": "each",
+      "unit_price": 1120,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 112,
+      "active": true,
+      "source_quote_item_id": 1240281,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Excavate and pour a 200mm W x 250mm D \nSteel Reinforced Concrete Strip Footing",
+      "body": "",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Extras"
+      ],
+      "sort_order": 113,
+      "active": true,
+      "source_quote_item_id": 1250077,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Excavate and pour footing for sliding gate to roll back on.",
+      "body": "",
+      "unit": "each",
+      "unit_price": 2700,
+      "categories": [
+        "Gates",
+        "Extras"
+      ],
+      "sort_order": 114,
+      "active": true,
+      "source_quote_item_id": 1250069,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "G Speak Ultra",
+      "body": "\"G Speak Ultra\":https://qga.com.au/product/centsys-g-speak-ultra/",
+      "unit": "each",
+      "unit_price": 890,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 115,
+      "active": true,
+      "source_quote_item_id": 2186714,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2186714_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Gate Automation Service call out fee",
+      "body": "",
+      "unit": "each",
+      "unit_price": 250,
+      "categories": [
+        "Gates",
+        "Extras"
+      ],
+      "sort_order": 116,
+      "active": true,
+      "source_quote_item_id": 1406667,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Install 100mm x 75mm Treated Pine Posts between Existing Posts",
+      "body": "* *H4 treated pine posts* (100mm x 75mm)\n* *600mm deep concrete footings*\n* *Galvanised batten screws*\n* Must be done in conjunction with gate install",
+      "unit": "each",
+      "unit_price": 600,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 117,
+      "active": true,
+      "source_quote_item_id": 2307535,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Kaba Mortice lock",
+      "body": "Install Narrow Style Mortice Lock On the Side Entry gates \n\nTotal of 8 Locks.",
+      "unit": "each",
+      "unit_price": 500,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 118,
+      "active": true,
+      "source_quote_item_id": 2316109,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2316109_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Marine Grade Coded Gate Latch on Pedestrian Gate",
+      "body": "Borg BL2601MG Pro ECP Marine Grade Latch",
+      "unit": "each",
+      "unit_price": 800,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 119,
+      "active": true,
+      "source_quote_item_id": 2327498,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2327498_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Modular Wall Pedestrian Gate",
+      "body": "",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 120,
+      "active": true,
+      "source_quote_item_id": 2371242,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2371242_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Option A \n\n24m Long 1500mm High Colorbond Fence with Hardwood Posts",
+      "body": "100mm x 100mm Skim Dressed Hardwood Posts \nBluescope Lysaght Product\n10 year product warranty\nwww.lysaght.com/fencing for more product info\nProfile Sm",
+      "unit": "each",
+      "unit_price": 4550,
+      "categories": [
+        "Colorbond fences"
+      ],
+      "sort_order": 121,
+      "active": true,
+      "source_quote_item_id": 2307477,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307477_0.jpg",
+          "images/item_2307477_1.jpg",
+          "images/item_2307477_2.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Option B\n\n24m of 1500mm High Dressed Hardwood Fencing with Horizontal Corrugated Iron Cladding \n\nExp",
+      "body": "100mm x 100mm Skim Dressed Hardwood Posts \n100mm x 50mm Top and Bottom Rails \n600mm Deep Concrete Footings \nColorbond Corrugated Roofing & Wall Claddi",
+      "unit": "each",
+      "unit_price": 7600,
+      "categories": [
+        "Colorbond fences",
+        "Gates"
+      ],
+      "sort_order": 122,
+      "active": true,
+      "source_quote_item_id": 2307478,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307478_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Option C\n\n24m of 1200mm High Colorbond Fence with Hardwood Posts and 300mm Horizontal Slat Hardwood",
+      "body": "1200mm x 2350mm Colorbond Panels \n100mm x 100mm Skim Dressed Hardwood Posts \n90mm x 19mm Merbau Slats Fixed with Stainless Steel Screws \n600mm Deep Co",
+      "unit": "each",
+      "unit_price": 8200,
+      "categories": [
+        "Horizontal flat fences",
+        "Colorbond fences"
+      ],
+      "sort_order": 123,
+      "active": true,
+      "source_quote_item_id": 2307479,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2307479_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Optional Infrared Safety Beams",
+      "body": "",
+      "unit": "each",
+      "unit_price": 603.34,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 124,
+      "active": true,
+      "source_quote_item_id": 1880457,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1880457_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Opyn 4g Intercom",
+      "body": "VIDEO INTERCOM. \nruns on 4g network, direct to mobile phone for video and voice chat, and remote gate actuation from anywhere. \n\nOpyn | IP - 4G Video",
+      "unit": "each",
+      "unit_price": 3660,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 125,
+      "active": true,
+      "source_quote_item_id": 2514501,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2514501_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Please see attachment below for Byron and Beyond Fencing Terms and Conditions",
+      "body": "",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 126,
+      "active": true,
+      "source_quote_item_id": 1086084,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Please see attachment below for NSW Government Legislation regarding Fencing",
+      "body": "",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 127,
+      "active": true,
+      "source_quote_item_id": 1086085,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Powdercoat Lever handles Surfmist",
+      "body": "",
+      "unit": "each",
+      "unit_price": 100,
+      "categories": [
+        "General"
+      ],
+      "sort_order": 128,
+      "active": true,
+      "source_quote_item_id": 2316110,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Premium Perforated Pool Fencing",
+      "body": "2400mm x 1200mm Clip Together Panels \n50mm Posts \nBlack Powdercoat Finish\n\nTo Comply With Australian Pool Fencing Standards",
+      "unit": "each",
+      "unit_price": 480,
+      "categories": [
+        "Pool fences"
+      ],
+      "sort_order": 129,
+      "active": true,
+      "source_quote_item_id": 1843416,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1843416_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Removal & Disposal Of Existing Fencing",
+      "body": "",
+      "unit": "each",
+      "unit_price": 35,
+      "categories": [
+        "Extras"
+      ],
+      "sort_order": 130,
+      "active": true,
+      "source_quote_item_id": 25471,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Replacement of IR Safety Beams for Gate Automation",
+      "body": "",
+      "unit": "each",
+      "unit_price": 400,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 131,
+      "active": true,
+      "source_quote_item_id": 1406665,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Semi Frameless Glass Panel Replacement",
+      "body": "* **Remove existing aluminium posts** and replace with new posts\n* **Supply and install new semi‑frameless glass panels**\n* Removal and disposal of ex",
+      "unit": "each",
+      "unit_price": 2650,
+      "categories": [
+        "Glass fences",
+        "Aluminium fences",
+        "Extras"
+      ],
+      "sort_order": 132,
+      "active": true,
+      "source_quote_item_id": 2307521,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    },
+    {
+      "title": "Semi-Frameless Glass Pool Fence",
+      "body": "50mm Aluminium Powdercoated Post\n10mm Clear Toughened Glass",
+      "unit": "each",
+      "unit_price": 320,
+      "categories": [
+        "Glass fences",
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 133,
+      "active": true,
+      "source_quote_item_id": 56879,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_56879_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Semi-Frameless Glass Pool Fence - Base Plated",
+      "body": "50mm Aluminum Powdercoated Post\n10mm Clear Toughened Glass",
+      "unit": "each",
+      "unit_price": 320,
+      "categories": [
+        "Glass fences",
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 134,
+      "active": true,
+      "source_quote_item_id": 1878520,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878520_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Semi-Frameless Glass Pool Fence - Face Mounted",
+      "body": "50mm Aluminium Powdercoated Post\n10mm Clear Toughened Glass",
+      "unit": "each",
+      "unit_price": 320,
+      "categories": [
+        "Glass fences",
+        "Pool fences",
+        "Aluminium fences"
+      ],
+      "sort_order": 135,
+      "active": true,
+      "source_quote_item_id": 1878521,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1878521_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "SuperSleeper Retaining Wall",
+      "body": "* Composite H Beam Posts with Fencing Brackets \n* Composite Sleepers \n* Concrete Footings \n* Geofabric Backing \n* Ag Line Drainage",
+      "unit": "each",
+      "unit_price": 0,
+      "categories": [
+        "Retaining walls"
+      ],
+      "sort_order": 136,
+      "active": true,
+      "source_quote_item_id": 2329621,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2329621_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Supply and Install of Solar powered Gate Automation for Dual Leaf gates.\nAutomated With Centsy Vanta",
+      "body": "\"Vantage Smart Motor\":https://www.centsys.com.au/v-series/",
+      "unit": "each",
+      "unit_price": 8620.69,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 137,
+      "active": true,
+      "source_quote_item_id": 1311239,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_1311239_0.jpg",
+          "images/item_1311239_1.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Supply Of Manufactured Steel Pool Fence ( Not Installed )",
+      "body": "Powdercoated \nIncluding 1m Pedestrian Gates.\nWith Extended Supports To Allow For Core Drilled Holes.",
+      "unit": "each",
+      "unit_price": 570,
+      "categories": [
+        "Pool fences",
+        "Gates"
+      ],
+      "sort_order": 138,
+      "active": true,
+      "source_quote_item_id": 2402672,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": [
+          "images/item_2402672_0.jpg"
+        ]
+      }
+    },
+    {
+      "title": "Supply, install and set up of G Speak Ultra Gate Motor Intercom",
+      "body": "",
+      "unit": "each",
+      "unit_price": 1970,
+      "categories": [
+        "Gates"
+      ],
+      "sort_order": 139,
+      "active": true,
+      "source_quote_item_id": 2514451,
+      "metadata": {
+        "source": "quotient-library-import",
+        "images": []
+      }
+    }
+  ]
+}

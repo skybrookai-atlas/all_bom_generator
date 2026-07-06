@@ -11,6 +11,9 @@ import {
   Copy,
   ArrowLeft,
   Loader2,
+  Heading1,
+  Text as TextIcon,
+  BookMarked,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "../components/layout/AppShell";
@@ -32,6 +35,10 @@ import {
   CatalogueSearchModal,
   type SupplierSearchItem,
 } from "../components/quote-editor/CatalogueSearchModal";
+import {
+  LibrarySearchModal,
+  type LibraryItem,
+} from "../components/quote-editor/LibrarySearchModal";
 import {
   TotalsPanel,
   computeQuoteTotals,
@@ -127,6 +134,7 @@ export function QuoteEditorPage() {
   const [fields, setFields] = useState<QuoteHeaderFields | null>(null);
   const [items, setItems] = useState<QuoteLineItemDraft[] | null>(null);
   const [showCatalogueModal, setShowCatalogueModal] = useState(false);
+  const [showLibraryModal, setShowLibraryModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
 
@@ -203,6 +211,36 @@ export function QuoteEditorPage() {
 
   const addManualLine = () => {
     setItems((prev) => [...(prev ?? []), blankDraft({ kind: "manual" })]);
+  };
+
+  const addHeading = () => {
+    setItems((prev) => [
+      ...(prev ?? []),
+      blankDraft({ kind: "heading", quantity: 0, unit_price: 0 }),
+    ]);
+  };
+
+  const addText = () => {
+    setItems((prev) => [
+      ...(prev ?? []),
+      blankDraft({ kind: "text", title: "Text", quantity: 0, unit_price: 0 }),
+    ]);
+  };
+
+  const addLibraryLine = (libItem: LibraryItem) => {
+    setItems((prev) => [
+      ...(prev ?? []),
+      blankDraft({
+        kind: "library",
+        title: libItem.title,
+        description: libItem.body ?? "",
+        quantity: 1,
+        unit: libItem.unit ?? "each",
+        unit_price: libItem.unit_price,
+        metadata: { library_item_id: libItem.id },
+      }),
+    ]);
+    setShowLibraryModal(false);
   };
 
   const addCatalogueLine = (item: SupplierSearchItem) => {
@@ -491,11 +529,35 @@ export function QuoteEditorPage() {
               <div className="flex flex-wrap gap-2 pt-1">
                 <button
                   type="button"
+                  onClick={addHeading}
+                  data-testid="add-heading-btn"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+                >
+                  <Heading1 size={14} /> Heading
+                </button>
+                <button
+                  type="button"
+                  onClick={addText}
+                  data-testid="add-text-btn"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+                >
+                  <TextIcon size={14} /> Text
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowLibraryModal(true)}
+                  data-testid="add-library-line-btn"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-accent bg-brand-accent/5 border border-brand-accent/40 rounded-lg hover:bg-brand-accent/15 transition-colors"
+                >
+                  <BookMarked size={14} /> Library item
+                </button>
+                <button
+                  type="button"
                   onClick={addManualLine}
                   data-testid="add-manual-line-btn"
                   className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
                 >
-                  <Plus size={14} /> Manual line
+                  <Plus size={14} /> Priced item
                 </button>
                 <button
                   type="button"
@@ -537,6 +599,12 @@ export function QuoteEditorPage() {
         <CatalogueSearchModal
           onPick={addCatalogueLine}
           onClose={() => setShowCatalogueModal(false)}
+        />
+      )}
+      {showLibraryModal && (
+        <LibrarySearchModal
+          onPick={addLibraryLine}
+          onClose={() => setShowLibraryModal(false)}
         />
       )}
     </AppShell>

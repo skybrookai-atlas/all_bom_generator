@@ -241,6 +241,34 @@ export function QuotesHistoryPage() {
 
   const { orgId } = useProfile();
   const [activeInstallers, setActiveInstallers] = useState<any[]>([]);
+  const [creatingQuote, setCreatingQuote] = useState(false);
+
+  /** Quotient-style blank quote: straight to the editor, no calculator. */
+  const createBlankQuote = async () => {
+    if (creatingQuote) return;
+    setCreatingQuote(true);
+    try {
+      const { data, error } = await supabase
+        .from("quotes")
+        .insert({
+          org_id: orgId,
+          user_id: user?.id,
+          fence_config: {},
+          bom: {},
+          contact: {},
+          notes: "",
+          status: "draft",
+          title: "Untitled quote",
+        })
+        .select("id")
+        .single();
+      if (error) throw error;
+      navigate(`/quote/${data.id}/edit`);
+    } catch (err) {
+      console.error("[QuotesHistoryPage] blank quote create failed", err);
+      setCreatingQuote(false);
+    }
+  };
 
   useEffect(() => {
     async function loadActiveInstallers() {
@@ -370,13 +398,25 @@ export function QuotesHistoryPage() {
                   : `${quotes.length} quote${quotes.length !== 1 ? "s" : ""} saved`}
             </p>
           </div>
-          <Link
-            to="/fence-calculator"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-accent hover:bg-brand-accent-hover text-white text-sm font-semibold rounded-lg transition-colors shrink-0"
-          >
-            <Plus size={16} />
-            New Quote
-          </Link>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => void createBlankQuote()}
+              disabled={creatingQuote}
+              data-testid="new-blank-quote-btn"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-accent hover:bg-brand-accent-hover text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+            >
+              <FileText size={16} />
+              {creatingQuote ? "Creating…" : "Write a quote"}
+            </button>
+            <Link
+              to="/fence-calculator"
+              className="inline-flex items-center gap-2 px-4 py-2.5 border border-brand-accent/50 text-brand-accent hover:bg-brand-accent/10 text-sm font-semibold rounded-lg transition-colors"
+            >
+              <Plus size={16} />
+              Calculator quote
+            </Link>
+          </div>
         </div>
 
         {/* --- Metrics Dashboard --- */}

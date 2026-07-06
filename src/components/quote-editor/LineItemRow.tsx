@@ -16,6 +16,9 @@ const KIND_LABELS: Record<QuoteLineItemDraft["kind"], string> = {
   calculated: "Calculator BOM",
   catalogue: "Catalogue",
   manual: "Manual",
+  library: "Library",
+  heading: "Heading",
+  text: "Text",
 };
 
 const NUM_INPUT_CLASS = "px-2 py-1.5 text-sm w-full text-right";
@@ -64,6 +67,61 @@ export function LineItemRow({
     key: K,
     value: QuoteLineItemDraft[K],
   ) => onChange({ ...item, [key]: value });
+
+  // ── Structure-only rows (Quotient-style headings / free text) ─────────────
+  if (item.kind === "heading" || item.kind === "text") {
+    return (
+      <div
+        data-testid="line-item-row"
+        className="group flex items-start gap-2 rounded-lg border border-transparent px-2 py-1.5 hover:border-brand-border/60"
+      >
+        <div className="flex shrink-0 flex-col gap-0.5 pt-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            type="button"
+            onClick={() => onMove(-1)}
+            disabled={index === 0}
+            title="Move up"
+            className="p-0.5 text-brand-muted hover:text-brand-text disabled:opacity-30"
+          >
+            <ArrowUp size={13} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onMove(1)}
+            disabled={index === count - 1}
+            title="Move down"
+            className="p-0.5 text-brand-muted hover:text-brand-text disabled:opacity-30"
+          >
+            <ArrowDown size={13} />
+          </button>
+        </div>
+        {item.kind === "heading" ? (
+          <input
+            value={item.title}
+            onChange={(e) => set("title", e.target.value)}
+            placeholder="Section heading"
+            className="min-w-0 flex-1 border-0 bg-transparent px-1 py-1 text-xl font-black tracking-tight text-brand-text outline-none placeholder:text-brand-muted/50"
+          />
+        ) : (
+          <textarea
+            value={item.description ?? ""}
+            onChange={(e) => set("description", e.target.value)}
+            placeholder="Write a note, terms, or any free text for the client…"
+            rows={Math.max(2, (item.description ?? "").split("\n").length)}
+            className="min-w-0 flex-1 resize-y rounded-md border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-brand-text outline-none placeholder:text-brand-muted/50"
+          />
+        )}
+        <ConfirmButton
+          onConfirm={onDelete}
+          confirmLabel={<span className="text-xs px-1">Confirm?</span>}
+          title={item.kind === "heading" ? "Delete heading" : "Delete text"}
+          className="shrink-0 p-1.5 mt-1 rounded-md text-brand-muted hover:text-brand-danger transition-colors border border-transparent opacity-0 group-hover:opacity-100"
+        >
+          <Trash2 size={15} />
+        </ConfirmButton>
+      </div>
+    );
+  }
 
   return (
     <div

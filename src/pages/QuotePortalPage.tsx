@@ -105,10 +105,14 @@ export function QuotePortalPage() {
   };
 
   const lineItemTotals = useMemo(() => {
-    const baseTotal = publicLineItems
+    // heading/text rows are document structure — never priced.
+    const pricedItems = publicLineItems.filter(
+      (item) => item.kind !== "heading" && item.kind !== "text",
+    );
+    const baseTotal = pricedItems
       .filter((item) => !item.is_optional)
       .reduce((sum, item) => sum + item.quantity * item.unit_price, 0);
-    const optionalTotal = publicLineItems
+    const optionalTotal = pricedItems
       .filter((item) => item.is_optional && activeOptionalLineIds.has(item.id))
       .reduce((sum, item) => sum + item.quantity * item.unit_price, 0);
     const subtotal = baseTotal + optionalTotal;
@@ -898,7 +902,30 @@ export function QuotePortalPage() {
                     </div>
                     {publicLineItems
                       .filter((item) => !item.is_optional)
-                      .map((item) => (
+                      .map((item) => {
+                        if (item.kind === "heading") {
+                          return (
+                            <h3
+                              key={item.id}
+                              data-testid="portal-line-heading"
+                              className="pt-3 text-sm font-black uppercase tracking-wide text-brand-text"
+                            >
+                              {item.title}
+                            </h3>
+                          );
+                        }
+                        if (item.kind === "text") {
+                          return (
+                            <p
+                              key={item.id}
+                              data-testid="portal-line-text"
+                              className="whitespace-pre-line text-xs leading-relaxed text-brand-muted"
+                            >
+                              {item.description}
+                            </p>
+                          );
+                        }
+                        return (
                         <div
                           key={item.id}
                           data-testid="portal-line-item"
@@ -920,7 +947,8 @@ export function QuotePortalPage() {
                             ${(item.quantity * item.unit_price).toFixed(2)}
                           </span>
                         </div>
-                      ))}
+                        );
+                      })}
                   </div>
 
                   {publicLineItems.some((item) => item.is_optional) && (
