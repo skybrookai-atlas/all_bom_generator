@@ -6,6 +6,7 @@ import {
   applyProductOptionRules,
   clampPostSpacing,
   initialVariablesForSystem,
+  isGenericSystem,
   MAX_POST_SPACING_MM,
   maxPanelWidthForSystem,
   MIN_POST_SPACING_MM,
@@ -16,7 +17,11 @@ import {
   SEGMENT_OPTION_KEYS,
   patchSegmentVariables,
 } from "../../lib/segmentTermination";
-import { SchemaDrivenForm, type SchemaField } from "./SchemaDrivenForm";
+import {
+  SchemaDrivenForm,
+  schemaFieldValueLabel,
+  type SchemaField,
+} from "./SchemaDrivenForm";
 import NumberInput from "../shared/NumberInput";
 import { SettingsDisclosureRow } from "./SettingsDisclosureRow";
 import { ColourPalette } from "./ColourPalette";
@@ -65,6 +70,7 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
   const isCustomPost = postSize === "custom";
   const isBayg = productCode === "BAYG";
   const isColorBond = productCode === "COLORBOND";
+  const isGeneric = isGenericSystem(productCode);
   const [postColourOpen, setPostColourOpen] = useState(() => {
     const colour = String(displayVariables.colour_code ?? "B");
     return Boolean(v.post_colour_code && String(v.post_colour_code) !== colour);
@@ -197,13 +203,15 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
       productCode
         ? applyProductOptionRules(
           productCode,
-          runFields
-            .map(shapePostField)
-            .filter((field): field is SchemaField => Boolean(field)),
+          isGeneric
+            ? runFields
+            : runFields
+              .map(shapePostField)
+              .filter((field): field is SchemaField => Boolean(field)),
           mergedJobDisplay,
         )
         : [],
-    [mergedJobDisplay, productCode, runFields],
+    [isGeneric, mergedJobDisplay, productCode, runFields],
   );
   const slatOptionFields = optionFields.filter(
     (field) => field.field_key !== "finish_family",
@@ -212,8 +220,9 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
     .map((field) => {
       const raw = mergedJobDisplay[field.field_key] ?? field.default_value_json;
       if (raw === undefined || raw === null || raw === "") return null;
-      const label =
-        raw === true
+      const label = isGeneric
+        ? schemaFieldValueLabel(field, mergedJobDisplay)
+        : raw === true
           ? "Yes"
           : raw === false
             ? "No"
@@ -237,7 +246,9 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
   }
   const postSummary = isColorBond
     ? `Channel post / ${effectiveMax}mm`
-    : `${POST_SIZE_LABELS[postSystem] ?? POST_SIZE_LABELS[postSize] ?? (postSize ? `${postSize}mm Post` : "Run default")} / ${effectiveMax}mm`;
+    : isGeneric
+      ? `${postSize || "Run default"} / ${effectiveMax}mm`
+      : `${POST_SIZE_LABELS[postSystem] ?? POST_SIZE_LABELS[postSize] ?? (postSize ? `${postSize}mm Post` : "Run default")} / ${effectiveMax}mm`;
 
   return (
     <div className="space-y-4">
@@ -264,7 +275,7 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
       {slatOptionFields.length > 0 || postColourField ? (
         <SettingsDisclosureRow
           id={`${seg.segmentId}-section-style`}
-          label={isColorBond ? "Profile and colours" : "Slats, colors, and spacings"}
+          label={isGeneric ? "Fence settings" : isColorBond ? "Profile and colours" : "Slats, colors, and spacings"}
           value={optionSummary || "Run defaults"}
         >
           <div className="space-y-4">
@@ -333,7 +344,7 @@ export function FenceSegmentDetails({ runId, seg }: Props) {
       {!isBayg && (
         <SettingsDisclosureRow
           id={`${seg.segmentId}-section-posts`}
-          label={isColorBond ? "Posts, mounting and bay width" : "Post size, mounting and spacing"}
+          label={isGeneric ? "Posts and spacing" : isColorBond ? "Posts, mounting and bay width" : "Post size, mounting and spacing"}
           value={postSummary}
         >
           {postFields.length > 0 && (

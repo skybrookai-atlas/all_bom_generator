@@ -1416,6 +1416,14 @@ function calculateColorBondRun(
     warnings.push("GO-Zag ColorBond panels are catalogue-listed for Brisbane, Gold Coast, and Newcastle depots.");
   }
 
+  // Amazing Fencing colour mapping helper
+  const COLOUR_MAP: Record<string, string> = {
+    "BS": "BA",  // Basalt Satin -> BA
+    "MN": "MO",  // Monument -> MO
+    "G": "SG",   // Slate Grey / Woodland Grey -> SG
+  };
+  const getAmazingColour = (c: string) => COLOUR_MAP[c] || c;
+
   for (const segment of run.segments) {
     if (segment.segmentKind === "gate_opening") {
       if (!gateWarningAdded) {
@@ -1457,10 +1465,16 @@ function calculateColorBondRun(
       panel_width_mm: Math.round(panelWidthMm),
     };
 
+    const cleanColour = getAmazingColour(colour);
+    const cleanPostColour = getAmazingColour(postColour);
+    const infillHeightShort = infillHeightMm === 1190 ? "12" : (infillHeightMm === 1490 ? "15" : (infillHeightMm === 1790 ? "17" : "20"));
+    const railLengthShort = railLengthMm === 2365 ? "23" : "31";
+    const profilePrefix = profile === "GLINE" ? "FMS" : (profile === "GZAG" ? "FZS" : "FNS");
+
     const base = { runId: run.runId, segmentId: segment.segmentId };
     emit(lines, {
       ...base,
-      sku: `CB-${profile}-${infillHeightMm}-${colour}`,
+      sku: `${profilePrefix}${cleanColour}${infillHeightShort}`,
       category: "screening",
       quantity: numPanels * infillSheetsPerPanel,
       unit: "each",
@@ -1468,7 +1482,7 @@ function calculateColorBondRun(
     });
     emit(lines, {
       ...base,
-      sku: `CB-RAIL-${railLengthMm}-${postColour}`,
+      sku: `FRM${cleanPostColour}${railLengthShort}`,
       category: "rail",
       quantity: numPanels * 2,
       unit: "length",
@@ -1476,11 +1490,11 @@ function calculateColorBondRun(
     });
     emit(lines, {
       ...base,
-      sku: `CB-TS-${postColour}-15PK`,
+      sku: `352 10 16 16 ${cleanPostColour} NS`,
       category: "screw",
       quantity: numPanels,
       unit: "pack",
-      notes: "One 15-pack of Tek screws per ColorBond bay",
+      notes: "One pack of Tek screws per ColorBond bay",
     });
     if (includeTimberSleeper) {
       emit(lines, {
@@ -1508,10 +1522,13 @@ function calculateColorBondRun(
     mountingType,
   );
   const postSegmentId = firstFenceSegment?.segmentId ?? run.runId;
+  const cleanRunPostColour = getAmazingColour(runPostColour);
+  const postHeightShort = postHeight === 1800 ? "18" : (postHeight === 2400 ? "24" : "30");
+
   emit(lines, {
     runId: run.runId,
     segmentId: postSegmentId,
-    sku: `CB-CPOST-${postHeight}-${runPostColour}`,
+    sku: `FNP${cleanRunPostColour}${postHeightShort}`,
     category: "post",
     quantity: postCount,
     unit: "length",
@@ -1543,7 +1560,7 @@ function calculateColorBondRun(
     emit(lines, {
       runId: run.runId,
       segmentId: postSegmentId,
-      sku: postCapType === "single" ? "CB-POSTCAP-SGL" : "CB-POSTCAP-DBL",
+      sku: postCapType === "single" ? "CB-POSTCAP-SGL" : `CCAP${cleanRunPostColour}`,
       category: "post_accessory",
       quantity: postCount,
       unit: "each",
@@ -1558,6 +1575,169 @@ function calculateColorBondRun(
       num_posts: postCount,
       channel_post_height_mm: postHeight,
       total_colorbond_bays: totalPanels,
+    };
+  }
+
+  return lines;
+}
+
+// ─── TP_PALING (treated pine paling) — mirrors supabase/seeds/glass-outlet/products/tp_paling.json rules ───
+
+const TP_POST_STOCK_LENGTHS = [1800, 2100, 2400, 2700, 3000];
+const TP_PALING_STOCK_LENGTHS = [900, 1200, 1500, 1800, 2100, 2400];
+const TP_MAX_POST_SPACING_MM = 2400;
+const TP_RAIL_STOCK_MM = 4800;
+const TP_NAILS_PER_BOX = 7500;
+
+function tpStockLength(lengths: number[], requiredMm: number): number {
+  return lengths.find((length) => requiredMm <= length) ?? lengths[lengths.length - 1];
+}
+
+function calculateTpPalingRun(
+  payload: CanonicalPayload,
+  run: CanonicalRun,
+  warnings: string[],
+  computed: LocalBomResult["computed"],
+): QtyLine[] {
+  const lines: QtyLine[] = [];
+  const firstFenceSegment = run.segments.find((s) => s.segmentKind !== "gate_opening");
+  const mergedRunVars = {
+    ...payload.variables,
+    ...(run.variables ?? {}),
+    ...(firstFenceSegment?.variables ?? {}),
+  };
+  let internalPanelPosts = 0;
+  let totalNails = 0;
+  let totalPanels = 0;
+
+  for (const segment of run.segments) {
+    if (segment.segmentKind === "gate_opening") {
+      lines.push(...calculateGateSegment(run, segment, mergedRunVars, warnings, computed));
+      continue;
+    }
+
+    const vars = { ...mergedRunVars, ...(segment.variables ?? {}) };
+    const palingStyle = ["butted", "lapped", "lapped-capped"].includes(String(vars.paling_style))
+      ? String(vars.paling_style)
+      : "lapped-capped";
+    const palingWidthMm = toNumber(vars.paling_width_mm, 100) === 150 ? 150 : 100;
+    const plinth = String(vars.plinth) === "single" ? "single" : "none";
+    const segmentWidthMm = toNumber(segment.segmentWidthMm, 0);
+    const targetHeightMm = toNumber(segment.targetHeightMm ?? vars.target_height_mm, 1800);
+    if (segmentWidthMm <= 0) continue;
+
+    // Derives — mirror seed rules: rail_rows, post/paling stock lengths, num_palings.
+    const railRows = targetHeightMm <= 1350 ? 2 : 3;
+    const postStockLengthMm = tpStockLength(TP_POST_STOCK_LENGTHS, targetHeightMm + 600);
+    const palingStockLengthMm = tpStockLength(TP_PALING_STOCK_LENGTHS, targetHeightMm);
+    const numPalings =
+      palingStyle === "butted"
+        ? Math.ceil(segmentWidthMm / palingWidthMm) + 1
+        : Math.ceil(segmentWidthMm / (palingWidthMm - 25)) + 1;
+    const railStocks = railRows * Math.ceil(segmentWidthMm / TP_RAIL_STOCK_MM);
+    const cappingStocks =
+      palingStyle === "lapped-capped" ? Math.ceil(segmentWidthMm / TP_RAIL_STOCK_MM) : 0;
+    const plinthStocks = plinth === "single" ? Math.ceil(segmentWidthMm / TP_RAIL_STOCK_MM) : 0;
+    const maxSpacing = Math.min(
+      clampPostSpacing(vars.max_panel_width_mm, TP_MAX_POST_SPACING_MM),
+      TP_MAX_POST_SPACING_MM,
+    );
+    const numPanels = Math.max(1, Math.ceil(segmentWidthMm / maxSpacing));
+    totalPanels += numPanels;
+    internalPanelPosts += Math.max(0, numPanels - 1);
+    totalNails += numPalings * railRows * 2;
+
+    computed[run.runId] = computed[run.runId] ?? {};
+    computed[run.runId][segment.segmentId] = {
+      actual_height_mm: targetHeightMm,
+      num_panels: numPanels,
+      panel_width_mm: Math.round(segmentWidthMm / numPanels),
+      rail_rows: railRows,
+      num_palings: numPalings,
+      post_stock_length_mm: postStockLengthMm,
+      paling_stock_length_mm: palingStockLengthMm,
+    };
+
+    const base = { runId: run.runId, segmentId: segment.segmentId };
+    emit(lines, {
+      ...base,
+      sku: `TP-PALING-${palingWidthMm}-${palingStockLengthMm}`,
+      category: "paling",
+      quantity: numPalings,
+      unit: "length",
+      notes:
+        palingStyle === "butted"
+          ? `Butted ${palingWidthMm}mm palings cut at fence height`
+          : `Lapped ${palingWidthMm}mm palings (25mm overlap) cut at fence height`,
+    });
+    emit(lines, {
+      ...base,
+      sku: "TP-RAIL-75X38-4800",
+      category: "rail",
+      quantity: railStocks,
+      unit: "length",
+      notes: `${railRows} rail rows (${targetHeightMm <= 1350 ? "2 rails up to 1350mm" : "3 rails above 1350mm"})`,
+    });
+    emit(lines, {
+      ...base,
+      sku: "TP-CAP-75X38-4800",
+      category: "capping",
+      quantity: cappingStocks,
+      unit: "length",
+      notes: "Top capping for lapped-and-capped style",
+    });
+    emit(lines, {
+      ...base,
+      sku: "TP-PLINTH-150X25-4800",
+      category: "plinth",
+      quantity: plinthStocks,
+      unit: "length",
+      notes: "150x25mm H4 plinth (kickboard) row",
+    });
+  }
+
+  // Posts are shared between segments — one line per run, like the other systems.
+  const postCount = runPostBoundaryCount(run) + internalPanelPosts;
+  if (postCount > 0 && firstFenceSegment) {
+    const runPostSize = String(mergedRunVars.post_size) === "100x100" ? "100x100" : "100x75";
+    const runHeight = toNumber(
+      firstFenceSegment.targetHeightMm ?? mergedRunVars.target_height_mm,
+      1800,
+    );
+    const runPostStock = tpStockLength(TP_POST_STOCK_LENGTHS, runHeight + 600);
+    const postSegmentId = firstFenceSegment.segmentId;
+    emit(lines, {
+      runId: run.runId,
+      segmentId: postSegmentId,
+      sku: `TP-POST-${runPostSize.toUpperCase()}-${runPostStock}`,
+      category: "post",
+      quantity: postCount,
+      unit: "length",
+      notes: `H4 posts set 600mm in concrete at max ${TP_MAX_POST_SPACING_MM}mm centres`,
+    });
+    emit(lines, {
+      runId: run.runId,
+      segmentId: postSegmentId,
+      sku: "RAPIDSET-20KG",
+      category: "concrete",
+      quantity: postCount * 2,
+      unit: "each",
+      notes: "2 rapid-set bags per post",
+    });
+    emit(lines, {
+      runId: run.runId,
+      segmentId: postSegmentId,
+      sku: "NAILS-GAL-45-2KG",
+      category: "nails",
+      quantity: Math.ceil(totalNails / TP_NAILS_PER_BOX),
+      unit: "pack",
+      notes: "Galvanised ring-shank nails — 2 per paling per rail row",
+    });
+    computed[run.runId] = computed[run.runId] ?? {};
+    computed[run.runId][postSegmentId] = {
+      ...(computed[run.runId][postSegmentId] ?? {}),
+      num_posts: postCount,
+      total_panels: totalPanels,
     };
   }
 
@@ -1593,6 +1773,10 @@ function calculateScreenRun(
 
   if (run.productCode === "COLORBOND") {
     return calculateColorBondRun(payload, run, warnings, computed);
+  }
+
+  if (run.productCode === "TP_PALING") {
+    return calculateTpPalingRun(payload, run, warnings, computed);
   }
 
   if (!SUPPORTED_PRODUCTS.has(run.productCode)) {

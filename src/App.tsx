@@ -12,10 +12,16 @@ import { LoginPage } from "./pages/LoginPage";
 import { QuotesHistoryPage } from "./pages/QuotesHistoryPage";
 import { CalculatorV3Page } from "./pages/CalculatorV3Page";
 import { CalculatorV4Page } from "./pages/CalculatorV4Page";
+import { QuotePortalPage } from "./pages/QuotePortalPage";
+import { InstantQuotePage } from "./pages/InstantQuotePage";
+import { QuoteEditorPage } from "./pages/QuoteEditorPage";
 import { ProductsIndexPage } from "./pages/admin/ProductsIndexPage";
 import { ProductDetailPage } from "./pages/admin/ProductDetailPage";
 import { ComponentsIndexPage } from "./pages/admin/ComponentsIndexPage";
 import { ColoursAdminPage } from "./pages/admin/ColoursAdminPage";
+import { SettingsAdminPage } from "./pages/admin/SettingsAdminPage";
+import { InstallersAdminPage } from "./pages/admin/InstallersAdminPage";
+import { CatalogueImportPage } from "./pages/admin/CatalogueImportPage";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { ProfileProvider } from "./context/ProfileContext";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -72,6 +78,23 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/quote/:quoteId/edit",
+        element: (
+          <AuthGuard>
+            <QuoteEditorPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/q/:quoteId",
+        element: <QuotePortalPage />,
+      },
+      {
+        // Public embeddable widget — no AuthGuard; identified by embed token.
+        path: "/embed/instant-quote",
+        element: <InstantQuotePage />,
+      },
+      {
         path: "/admin/products",
         element: (
           <AdminGuard>
@@ -100,6 +123,30 @@ const router = createBrowserRouter([
         element: (
           <AdminGuard>
             <ColoursAdminPage />
+          </AdminGuard>
+        ),
+      },
+      {
+        path: "/admin/installers",
+        element: (
+          <AdminGuard>
+            <InstallersAdminPage />
+          </AdminGuard>
+        ),
+      },
+      {
+        path: "/admin/catalogue",
+        element: (
+          <AdminGuard>
+            <CatalogueImportPage />
+          </AdminGuard>
+        ),
+      },
+      {
+        path: "/admin/settings",
+        element: (
+          <AdminGuard>
+            <SettingsAdminPage />
           </AdminGuard>
         ),
       },

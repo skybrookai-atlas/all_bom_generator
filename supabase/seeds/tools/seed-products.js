@@ -191,6 +191,17 @@ async function upsertProducts(orgId, rows) {
 
 async function upsertProductComponents(orgId, rows) {
   if (!rows?.length) return;
+  // Postgres rejects a single upsert batch that touches the same (org_id, sku)
+  // twice ("cannot affect row a second time"). Match the cross-file convention:
+  // second encounter = UPDATE, i.e. last occurrence wins.
+  const bySku = new Map();
+  for (const r of rows) {
+    if (bySku.has(r.sku)) {
+      console.warn(`  product_components: duplicate sku in file, keeping last: ${JSON.stringify(r.sku)}`);
+    }
+    bySku.set(r.sku, r);
+  }
+  rows = [...bySku.values()];
   const toUpsert = rows.map((r) => ({
     org_id: orgId,
     sku: r.sku,

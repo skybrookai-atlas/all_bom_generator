@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, ChevronUp, Plus, Settings, Trash2 } from "lucide-react";
 import { useCalculator } from "../../context/CalculatorContext";
+import { useProductVariables } from "../../hooks/useProductVariables";
 import type { CanonicalRun, CanonicalSegment } from "../../types/canonical.types";
 import { defaultGateVariables } from "../../lib/gateOptionRules";
 import {
   clampPostSpacing,
+  isGenericSystem,
   maxPanelWidthForSystem,
 } from "../../lib/productOptionRules";
 import { Button } from "../shared/Button";
 import { SegmentRow } from "./SegmentRow";
 import { colourName } from "./ColourPalette";
+import { schemaFieldValueLabel } from "./SchemaDrivenForm";
 import { RunSettingsEditor } from "./RunSettingsEditor";
 import { RUN_DEFAULTS_TEACHING_KEY } from "../../lib/uiCopy";
 import { ConfirmButton } from "../shared/ConfirmButton";
@@ -76,6 +79,19 @@ export function RunCard({ run, runIdx, autoOpenFirstSection = false, onAutoOpenC
   const slatGap = Number(runVariables.slat_gap_mm ?? 5);
   const mounting = String(runVariables.mounting_method ?? runVariables.mounting_type ?? "in_ground").replace(/_/g, " ");
   const isBayg = run.productCode === "BAYG";
+  const isGeneric = isGenericSystem(run.productCode);
+  // Generic systems summarise their real product_variables instead of the slat lines.
+  const { data: genericJobFields = [] } = useProductVariables(isGeneric ? run.productCode : null, "job");
+  const { data: genericRunFields = [] } = useProductVariables(isGeneric ? run.productCode : null, "run");
+  const genericSummaryBits = useMemo(() => {
+    if (!isGeneric) return [];
+    return [...genericJobFields, ...genericRunFields]
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((field) => ({
+        label: field.label,
+        value: schemaFieldValueLabel(field, runVariables),
+      }));
+  }, [isGeneric, genericJobFields, genericRunFields, runVariables]);
 
   useEffect(
     () => () => {
@@ -156,11 +172,19 @@ export function RunCard({ run, runIdx, autoOpenFirstSection = false, onAutoOpenC
           </span>
           <span className="flex flex-wrap gap-x-2.5 gap-y-1 text-sm text-brand-muted">
             <span>System Type: <strong className="text-brand-text">{run.productCode}</strong></span>
-            <span>Color: <strong className="text-brand-text">{colourName(runVariables.colour_code)}</strong></span>
-            <span>Slat size: <strong className="text-brand-text">{slatSize}mm</strong></span>
-            <span>Gap size: <strong className="text-brand-text">{slatGap}mm</strong></span>
-            <span>Post mounting: <strong className="text-brand-text">{isBayg ? "Not required" : MOUNTING_LABELS[mounting] ?? mounting}</strong></span>
-            <span>Max post spacing: <strong className="text-brand-text">{jobMax}mm</strong></span>
+            {isGeneric ? (
+              genericSummaryBits.map((bit) => (
+                <span key={bit.label}>{bit.label}: <strong className="text-brand-text">{bit.value}</strong></span>
+              ))
+            ) : (
+              <>
+                <span>Color: <strong className="text-brand-text">{colourName(runVariables.colour_code)}</strong></span>
+                <span>Slat size: <strong className="text-brand-text">{slatSize}mm</strong></span>
+                <span>Gap size: <strong className="text-brand-text">{slatGap}mm</strong></span>
+                <span>Post mounting: <strong className="text-brand-text">{isBayg ? "Not required" : MOUNTING_LABELS[mounting] ?? mounting}</strong></span>
+                <span>Max post spacing: <strong className="text-brand-text">{jobMax}mm</strong></span>
+              </>
+            )}
             <span>Corners: <strong className="text-brand-text">{run.corners?.length ?? 0}</strong></span>
           </span>
         </h3>
@@ -180,14 +204,15 @@ export function RunCard({ run, runIdx, autoOpenFirstSection = false, onAutoOpenC
                   return next;
                 })
               }
-              className={`ml-auto mb-2 inline-flex h-11 w-11 items-center justify-center rounded-lg border text-sm font-extrabold transition-colors ${runSettingsOpen
+              className={`ml-auto mb-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-lg border px-3 text-sm font-extrabold transition-colors ${runSettingsOpen
                 ? "border-brand-primary bg-brand-primary text-white"
                 : "border-brand-border text-brand-muted hover:border-brand-primary hover:text-brand-primary"
                 }`}
-              aria-label={runSettingsOpen ? "Collapse more options" : "Open more options"}
-              title={runSettingsOpen ? "Collapse more options" : "More options"}
+              aria-label={runSettingsOpen ? "Collapse fence type & options" : "Change fence type & options"}
+              title={runSettingsOpen ? "Collapse fence type & options" : "Change fence type & options"}
             >
               {runSettingsOpen ? <ChevronUp size={16} /> : <Settings size={16} />}
+              <span>{runSettingsOpen ? "Close" : "Change fence type & options"}</span>
             </button>
           </div>
         </div>

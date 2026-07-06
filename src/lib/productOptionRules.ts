@@ -5,6 +5,7 @@ import {
   nearestDerivedHeight,
   type DerivedHeight,
 } from "./heights";
+import { getLocalVariables, localProducts } from "./localSeedData";
 
 type Variables = Record<string, string | number | boolean>;
 
@@ -28,8 +29,65 @@ const SYSTEM_MAX_PANEL_WIDTH: Record<string, number> = {
   COLORBOND: 2365,
 };
 
+/** Systems whose run settings use the bespoke slat groups. */
+const SLAT_SYSTEMS = new Set(["QSHS", "VS", "XPL", "BAYG"]);
+
+export function isSlatSystem(productCode: string | null | undefined) {
+  return Boolean(productCode && SLAT_SYSTEMS.has(productCode));
+}
+
+/**
+ * Generic (data-driven) systems: everything that is neither a slat system nor
+ * COLORBOND. Their settings UI renders straight from `product_variables`
+ * (e.g. TP_PALING) instead of the hand-built slat groups.
+ */
+export function isGenericSystem(productCode: string | null | undefined): boolean {
+  return Boolean(productCode) && !SLAT_SYSTEMS.has(String(productCode)) && productCode !== "COLORBOND";
+}
+
+/** Job + run scoped product_variables for a generic system, in sort order. */
+export function genericSystemFields(productCode: string): SchemaField[] {
+  return [
+    ...getLocalVariables(productCode, "job"),
+    ...getLocalVariables(productCode, "run"),
+  ].sort((a, b) => a.sort_order - b.sort_order);
+}
+
+/** Variable keys owned by a generic system (empty for slat/COLORBOND systems). */
+export function genericVariableKeys(productCode: string): string[] {
+  if (!isGenericSystem(productCode)) return [];
+  return genericSystemFields(productCode).map((field) => field.field_key);
+}
+
+function genericSegmentHeightField(productCode: string): SchemaField | undefined {
+  return getLocalVariables(productCode, "segment").find(
+    (field) => field.field_key === "target_height_mm",
+  );
+}
+
+function optionValueOf(option: unknown): string | number | boolean {
+  if (option && typeof option === "object" && "value" in option) {
+    return (option as { value: string | number | boolean }).value;
+  }
+  return option as string | number | boolean;
+}
+
+/** Catalogue height options for a generic system, from its target_height_mm variable. */
+export function genericHeightOptionsForSystem(productCode: string): number[] {
+  const field = genericSegmentHeightField(productCode);
+  if (!field || !Array.isArray(field.options_json)) return [];
+  return field.options_json
+    .map((option) => Number(optionValueOf(option)))
+    .filter((height) => Number.isFinite(height) && height > 0);
+}
+
 export function maxPanelWidthForSystem(productCode: string | null | undefined) {
-  return productCode ? (SYSTEM_MAX_PANEL_WIDTH[productCode] ?? 2600) : 2600;
+  if (!productCode) return 2600;
+  if (SYSTEM_MAX_PANEL_WIDTH[productCode]) return SYSTEM_MAX_PANEL_WIDTH[productCode];
+  const metadata = localProducts.find((product) => product.system_type === productCode)
+    ?.metadata as { maxPanelWidth?: unknown } | undefined;
+  const metaMax = Number(metadata?.maxPanelWidth);
+  return Number.isFinite(metaMax) && metaMax > 0 ? metaMax : 2600;
 }
 
 export function clampPostSpacing(value: unknown, fallback = 2600) {
@@ -96,6 +154,7 @@ export function heightOptionsForSystem(productCode: string, variables: Variables
 export function heightEntriesForSystem(productCode: string, variables: Variables): DerivedHeight[] {
   if (productCode === "COLORBOND") return [];
   if (productCode === "VS") return [];
+  if (isGenericSystem(productCode)) return [];
   const slatSize = Number(variables.slat_size_mm ?? 65);
   const slatGap = Number(variables.slat_gap_mm ?? DEFAULT_SLAT_GAP_MM);
   if ((slatSize !== 65 && slatSize !== 90) || !Number.isFinite(slatGap) || slatGap < 0) return [];
@@ -127,8 +186,32 @@ export function postColourOptionsForSystem(variables: Variables, productCode?: s
 }
 
 export function initialVariablesForSystem(productCode: string): Variables {
+  if (isGenericSystem(productCode)) {
+    const variables: Variables = {};
+    for (const field of genericSystemFields(productCode)) {
+      const defaultValue = field.default_value_json;
+      if (
+        typeof defaultValue === "string" ||
+        typeof defaultValue === "number" ||
+        typeof defaultValue === "boolean"
+      ) {
+        variables[field.field_key] = defaultValue;
+      }
+    }
+    const heightDefault = Number(genericSegmentHeightField(productCode)?.default_value_json);
+    variables.target_height_mm =
+      Number.isFinite(heightDefault) && heightDefault > 0 ? heightDefault : 1800;
+    variables.max_panel_width_mm = maxPanelWidthForSystem(productCode);
+    return variables;
+  }
+
   if (productCode === "COLORBOND") {
+    const supplierField = getLocalVariables("COLORBOND", "job").find(
+      (field) => field.field_key === "supplier",
+    );
+    const supplierDefault = String(supplierField?.default_value_json ?? "amazing-fencing");
     return normaliseVariablesForSystem(productCode, {
+      supplier: supplierDefault,
       colour_code: "MN",
       post_colour_code: "MN",
       profile_code: "GZAG",
@@ -171,6 +254,79 @@ function boolValue(value: unknown) {
   return value === true || value === "true";
 }
 
+/**
+ * Keys owned by the slat/COLORBOND bespoke UI (and its fixings flow) that must
+ * never leak into a generic system's variables when switching product.
+ */
+const GENERIC_STRIP_KEYS = new Set([
+  "finish_family",
+  "slat_size_mm",
+  "slat_gap_mm",
+  "slat_gap_mode",
+  "slat_count",
+  "colour_code",
+  "post_colour_code",
+  "post_system",
+  "profile_code",
+  "include_65mm_support_posts",
+  "post_cap_type",
+  "include_timber_sleeper",
+  "louvre_treatment",
+  "mounting_type",
+  "mounting_method",
+  "post_fixing_material_sku",
+  "base_plate_substrate",
+]);
+
+/**
+ * Data-driven normalisation for generic systems: strip slat/COLORBOND-only
+ * keys, then coerce every seeded product_variable (job/run/segment scope) to a
+ * valid option, falling back to its seeded default.
+ */
+function normaliseGenericVariables(productCode: string, variables: Variables): Variables {
+  const next: Variables = {};
+  for (const [key, value] of Object.entries(variables)) {
+    if (GENERIC_STRIP_KEYS.has(key)) continue;
+    next[key] = value;
+  }
+
+  const fields = [
+    ...genericSystemFields(productCode),
+    ...getLocalVariables(productCode, "segment"),
+  ];
+  for (const field of fields) {
+    const raw = next[field.field_key];
+    const hasValue = raw !== undefined && raw !== null && raw !== "";
+    const options = Array.isArray(field.options_json)
+      ? field.options_json.map(optionValueOf)
+      : [];
+    const defaultValue = field.default_value_json;
+    const usableDefault =
+      typeof defaultValue === "string" ||
+      typeof defaultValue === "number" ||
+      typeof defaultValue === "boolean"
+        ? defaultValue
+        : undefined;
+    if (options.length > 0) {
+      const match = hasValue
+        ? options.find((option) => String(option) === String(raw))
+        : undefined;
+      next[field.field_key] = match !== undefined ? match : usableDefault ?? options[0];
+    } else if (!hasValue && usableDefault !== undefined) {
+      next[field.field_key] = usableDefault;
+    }
+  }
+
+  const systemMax = maxPanelWidthForSystem(productCode);
+  const requestedWidth = Number(next.max_panel_width_mm);
+  next.max_panel_width_mm =
+    Number.isFinite(requestedWidth) && requestedWidth > 0
+      ? Math.min(clampPostSpacing(requestedWidth, systemMax), systemMax)
+      : systemMax;
+
+  return next;
+}
+
 function normaliseColorBondVariables(variables: Variables): Variables {
   const next: Variables = { ...variables };
   delete next.finish_family;
@@ -179,6 +335,20 @@ function normaliseColorBondVariables(variables: Variables): Variables {
   delete next.slat_gap_mode;
   delete next.post_size;
   delete next.post_system;
+
+  const supplierField = getLocalVariables("COLORBOND", "job").find(
+    (field) => field.field_key === "supplier",
+  );
+  if (supplierField) {
+    const supplierOptions = (supplierField.options_json ?? []).map((option) =>
+      String(optionValueOf(option)),
+    );
+    if (!supplierOptions.includes(String(next.supplier))) {
+      next.supplier = String(
+        supplierField.default_value_json ?? supplierOptions[0] ?? "amazing-fencing",
+      );
+    }
+  }
 
   const profile = COLORBOND_PROFILES.includes(String(next.profile_code))
     ? String(next.profile_code)
@@ -221,6 +391,7 @@ export function normaliseVariablesForSystem(
   productCode: string,
   variables: Variables,
 ): Variables {
+  if (isGenericSystem(productCode)) return normaliseGenericVariables(productCode, variables);
   if (productCode === "COLORBOND") return normaliseColorBondVariables(variables);
 
   const finishOptions = finishOptionsForSystem(productCode);
@@ -350,6 +521,13 @@ export function applyProductOptionRules(
   fields: SchemaField[],
   variables: Variables,
 ): SchemaField[] {
+  if (isGenericSystem(productCode)) {
+    // Generic systems render their product_variables untouched — no synthetic
+    // slat/colour fields and no slat-specific reshaping.
+    return fields
+      .filter((field) => !field.field_key.endsWith("_stock_length_mm"))
+      .sort((a, b) => a.sort_order - b.sort_order);
+  }
   const byKey = new Map(fields.map((field) => [field.field_key, field]));
   const result: SchemaField[] =
     productCode === "COLORBOND"

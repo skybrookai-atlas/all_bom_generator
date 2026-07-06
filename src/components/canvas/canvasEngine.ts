@@ -4814,7 +4814,7 @@ export function initCanvasEngine(
         '"': "&quot;",
         "'": "&#39;",
       })[char] ?? char);
-    const jobName = escapeHtml(options.jobName?.trim() || "Untitled Glass Outlet job");
+    const jobName = escapeHtml(options.jobName?.trim() || "Untitled fencing job");
     const summaryHtml = layout.runs
       .map((run) => {
         const gatePart = run.gates.length ? ` · ${run.gates.length} gate${run.gates.length === 1 ? "" : "s"}` : "";
@@ -4904,7 +4904,7 @@ export function initCanvasEngine(
         '"': "&quot;",
         "'": "&#39;",
       })[char] ?? char);
-    const jobName = escapeHtml(options.jobName?.trim() || "Untitled Glass Outlet job");
+    const jobName = escapeHtml(options.jobName?.trim() || "Untitled fencing job");
     const propertyAddress = escapeHtml(options.propertyAddress?.trim() || "Not supplied");
     const printRuns: CanvasPrintRunSummary[] = options.runs?.length
       ? options.runs

@@ -1,0 +1,2005 @@
+{
+  "org_slug": "glass-outlet",
+  "products": [
+    {
+      "system_type": "TP_PALING",
+      "product_type": "fence",
+      "name": "Treated Pine Paling Fence",
+      "description": "Generic treated pine paling fence. H4 posts (100x75mm or 100x100mm) set in concrete 600mm deep, H3 75x38mm rails (2 rails up to 1350mm height, 3 above), H3 palings 100x16mm or 150x16mm cut at fence height in butted, lapped, or lapped-and-capped styles. Optional 150x25mm H4 plinth (kickboard). Timber is sourced from local merchants — SKUs are generic; prices to be filled in by the owner.",
+      "active": true,
+      "sort_order": 9,
+      "metadata": {
+        "maxPanelWidth": 2400,
+        "options": {
+          "palingStyle": [
+            "butted",
+            "lapped",
+            "lapped-capped"
+          ],
+          "palingWidth": [
+            "100",
+            "150"
+          ],
+          "postSize": [
+            "100x75",
+            "100x100"
+          ],
+          "heights": [
+            "1200",
+            "1500",
+            "1800",
+            "2100"
+          ],
+          "plinth": [
+            "none",
+            "single"
+          ]
+        },
+        "notes": "maxPanelWidth 2400 = max post spacing 2400mm centres. Post length = height + 600mm embedment, rounded up to stock (1800/2100/2400/2700/3000mm). Paling stock lengths 900/1200/1500/1800/2100/2400mm."
+      }
+    }
+  ],
+  "product_components": [
+    {
+      "sku": "TP-POST-100X75-1800",
+      "name": "Treated Pine Post 100x75mm H4 — 1800mm",
+      "description": "Treated pine H4 fence post 100x75mm, 1800mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 14.59,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-12-03"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X75-2100",
+      "name": "Treated Pine Post 100x75mm H4 — 2100mm",
+      "description": "Treated pine H4 fence post 100x75mm, 2100mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 16.82,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-12-03"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X75-2400",
+      "name": "Treated Pine Post 100x75mm H4 — 2400mm",
+      "description": "Treated pine H4 fence post 100x75mm, 2400mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 18.73,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-10-19"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X75-2700",
+      "name": "Treated Pine Post 100x75mm H4 — 2700mm",
+      "description": "Treated pine H4 fence post 100x75mm, 2700mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 21.23,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-08-05"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X75-3000",
+      "name": "Treated Pine Post 100x75mm H4 — 3000mm",
+      "description": "Treated pine H4 fence post 100x75mm, 3000mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 22.95,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-10-12"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X100-1800",
+      "name": "Treated Pine Post 100x100mm H4 — 1800mm",
+      "description": "Treated pine H4 fence post 100x100mm, 1800mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 19.82,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-11-10"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X100-2100",
+      "name": "Treated Pine Post 100x100mm H4 — 2100mm",
+      "description": "Treated pine H4 fence post 100x100mm, 2100mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 21.45,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers (skim dressed), last purchased 2025-09-18"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X100-2400",
+      "name": "Treated Pine Post 100x100mm H4 — 2400mm",
+      "description": "Treated pine H4 fence post 100x100mm, 2400mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 24.86,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-04-16"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X100-2700",
+      "name": "Treated Pine Post 100x100mm H4 — 2700mm",
+      "description": "Treated pine H4 fence post 100x100mm, 2700mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 30.27,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-11-16"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-POST-100X100-3000",
+      "name": "Treated Pine Post 100x100mm H4 — 3000mm",
+      "description": "Treated pine H4 fence post 100x100mm, 3000mm length. Set in concrete 600mm deep.",
+      "category": "post",
+      "unit": "length",
+      "default_price": 32.68,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, last purchased 2025-11-16"
+      },
+      "active": true,
+      "subCategory": "posts",
+      "sortPriority": 10
+    },
+    {
+      "sku": "TP-RAIL-75X38-4800",
+      "name": "Treated Pine Rail 75x38mm H3 — 4800mm",
+      "description": "Treated pine H3 fence rail 75x38mm, 4800mm stock length. Runs between posts along the fence run.",
+      "category": "rail",
+      "unit": "length",
+      "default_price": 12,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "frames_and_covers",
+        "price_source": "Xero bills import — B&B Timbers \"Sawn Treated Pine H3 75x38 4.8\", last purchased 2025-11-24"
+      },
+      "active": true,
+      "subCategory": "rails",
+      "sortPriority": 20
+    },
+    {
+      "sku": "TP-PALING-100-900",
+      "name": "Treated Pine Paling 100x16mm H3 — 900mm",
+      "description": "Treated pine H3 paling 100mm x 16mm, 900mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-100-1200",
+      "name": "Treated Pine Paling 100x16mm H3 — 1200mm",
+      "description": "Treated pine H3 paling 100mm x 16mm, 1200mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": 1.64,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "Xero bills import — B&B Timbers 8FPLBT, last purchased 2025-11-24"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-100-1500",
+      "name": "Treated Pine Paling 100x16mm H3 — 1500mm",
+      "description": "Treated pine H3 paling 100mm x 16mm, 1500mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": 1.91,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "Xero bills import — B&B Timbers 8FPLBT, last purchased 2025-11-23"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-100-1800",
+      "name": "Treated Pine Paling 100x16mm H3 — 1800mm",
+      "description": "Treated pine H3 paling 100mm x 16mm, 1800mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": 2.14,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "Xero bills import — B&B Timbers 8FPLBT, last purchased 2025-11-05"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-100-2100",
+      "name": "Treated Pine Paling 100x16mm H3 — 2100mm",
+      "description": "Treated pine H3 paling 100mm x 16mm, 2100mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": 2.73,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "Xero bills import — B&B Timbers 8FPLBT, last purchased 2025-11-16"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-100-2400",
+      "name": "Treated Pine Paling 100x16mm H3 — 2400mm",
+      "description": "Treated pine H3 paling 100mm x 16mm, 2400mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": 2.95,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "Xero bills import — B&B Timbers 8FPLBT, last purchased 2025-07-22"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-150-900",
+      "name": "Treated Pine Paling 150x16mm H3 — 900mm",
+      "description": "Treated pine H3 paling 150mm x 16mm, 900mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-150-1200",
+      "name": "Treated Pine Paling 150x16mm H3 — 1200mm",
+      "description": "Treated pine H3 paling 150mm x 16mm, 1200mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-150-1500",
+      "name": "Treated Pine Paling 150x16mm H3 — 1500mm",
+      "description": "Treated pine H3 paling 150mm x 16mm, 1500mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-150-1800",
+      "name": "Treated Pine Paling 150x16mm H3 — 1800mm",
+      "description": "Treated pine H3 paling 150mm x 16mm, 1800mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-150-2100",
+      "name": "Treated Pine Paling 150x16mm H3 — 2100mm",
+      "description": "Treated pine H3 paling 150mm x 16mm, 2100mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-PALING-150-2400",
+      "name": "Treated Pine Paling 150x16mm H3 — 2400mm",
+      "description": "Treated pine H3 paling 150mm x 16mm, 2400mm length (paling length = fence height).",
+      "category": "paling",
+      "unit": "length",
+      "default_price": null,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "screening",
+        "price_source": "pending — owner to confirm"
+      },
+      "active": true,
+      "subCategory": "palings",
+      "sortPriority": 30
+    },
+    {
+      "sku": "TP-CAP-75X38-4800",
+      "name": "Treated Pine Capping 75x38mm H3 — 4800mm",
+      "description": "Treated pine H3 top capping 75x38mm, 4800mm stock length. Used for lapped-and-capped style along the entire run.",
+      "category": "capping",
+      "unit": "length",
+      "default_price": 12,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "frames_and_covers",
+        "price_source": "Xero bills import — B&B Timbers — same 75x38 4.8 H3 profile as rails"
+      },
+      "active": true,
+      "subCategory": "capping",
+      "sortPriority": 40
+    },
+    {
+      "sku": "TP-PLINTH-150X25-4800",
+      "name": "Treated Pine Plinth 150x25mm H4 — 4800mm",
+      "description": "Treated pine H4 plinth (kickboard) 150x25mm, 4800mm stock length. Optional single row along the bottom of the run.",
+      "category": "plinth",
+      "unit": "length",
+      "default_price": 23.77,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "frames_and_covers",
+        "price_source": "Xero bills import — B&B Timbers \"Sawn Treated Pine H4 150X25 4.8\", last purchased 2025-10-13"
+      },
+      "active": true,
+      "subCategory": "plinth",
+      "sortPriority": 45
+    },
+    {
+      "sku": "RAPIDSET-20KG",
+      "name": "Rapid Set Concrete 20kg Bag",
+      "description": "Rapid set concrete 20kg bag for setting fence posts. 2 bags per post assumed.",
+      "category": "concrete",
+      "unit": "each",
+      "default_price": 9.23,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "posts_and_mounting",
+        "price_source": "Xero bills import — B&B Timbers, $9.23 across 31 bags 2024-2025 (was $10.50 Oxworks)"
+      },
+      "active": true,
+      "subCategory": "concrete",
+      "sortPriority": 50
+    },
+    {
+      "sku": "NAILS-GAL-45-2KG",
+      "name": "Galvanised Ring-Shank Nails 45mm — Box of 7,500 (F45/2.5)",
+      "description": "Premier Nails F45/2.5 RING MECH GAL, 7,500 nails per box",
+      "category": "nails",
+      "unit": "pack",
+      "default_price": 78,
+      "system_types": [
+        "TP_PALING"
+      ],
+      "metadata": {
+        "bomCategory": "fasteners_and_screws",
+        "price_source": "Xero bills import — Premier Nails F45/2.5 RING MECH GAL — box of 7,500 nails, $78",
+        "approx_nails_per_box": 500
+      },
+      "active": true,
+      "subCategory": "nails",
+      "sortPriority": 60
+    }
+  ],
+  "rule_sets": [
+    {
+      "product_system_type": "TP_PALING",
+      "name": "TP Paling Fence Rules",
+      "description": "Data-driven Treated Pine paling fence BOM rules v3",
+      "active": true
+    }
+  ],
+  "rule_versions": [
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "is_current": true,
+      "effective_from": "2026-07-04",
+      "notes": "Initial TP paling rules from owner quote specs. Lap overlap, rail thresholds and nail counts flagged for owner confirmation."
+    }
+  ],
+  "product_constraints": [
+    {
+      "product_system_type": "TP_PALING",
+      "name": "max_panel_width_mm",
+      "constraint_type": "max",
+      "value_text": "2400",
+      "unit": "mm",
+      "severity": "warning",
+      "applies_when_json": {},
+      "message": "Post spacing above 2400mm centres is not supported for paling fences; split into additional panels.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "allowed_height_mm",
+      "constraint_type": "enum",
+      "value_text": "[1200,1500,1800,2100]",
+      "unit": "mm",
+      "severity": "warning",
+      "applies_when_json": {},
+      "message": "Standard paling fence heights are 1200/1500/1800/2100mm. Other heights need stock-length checks.",
+      "active": true
+    }
+  ],
+  "product_variables": [
+    {
+      "product_system_type": "TP_PALING",
+      "name": "supplier",
+      "label": "Supplier",
+      "data_type": "enum",
+      "unit": null,
+      "required": true,
+      "default_value_json": "generic",
+      "options_json": [
+        "generic"
+      ],
+      "scope": "job",
+      "sort_order": 5,
+      "active": true,
+      "notes": "Single placeholder option 'generic' = Local timber merchant. Kept so the UI matches multi-supplier packs; extend when real suppliers are added."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "paling_style",
+      "label": "Paling Style",
+      "data_type": "enum",
+      "unit": null,
+      "required": true,
+      "default_value_json": "lapped-capped",
+      "options_json": [
+        "butted",
+        "lapped",
+        "lapped-capped"
+      ],
+      "scope": "job",
+      "sort_order": 10,
+      "active": true,
+      "notes": "Owner's most common build is lapped and capped, hence the default."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "paling_width_mm",
+      "label": "Paling Width",
+      "data_type": "enum",
+      "unit": "mm",
+      "required": true,
+      "default_value_json": 100,
+      "options_json": [
+        100,
+        150
+      ],
+      "scope": "job",
+      "sort_order": 20,
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "post_size",
+      "label": "Post Size",
+      "data_type": "enum",
+      "unit": "mm",
+      "required": true,
+      "default_value_json": "100x75",
+      "options_json": [
+        "100x75",
+        "100x100"
+      ],
+      "scope": "run",
+      "sort_order": 30,
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "plinth",
+      "label": "Plinth (Kickboard)",
+      "data_type": "enum",
+      "unit": null,
+      "required": true,
+      "default_value_json": "none",
+      "options_json": [
+        "none",
+        "single"
+      ],
+      "scope": "run",
+      "sort_order": 40,
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "target_height_mm",
+      "label": "Fence Height",
+      "data_type": "enum",
+      "unit": "mm",
+      "required": true,
+      "default_value_json": 1800,
+      "options_json": [
+        1200,
+        1500,
+        1800,
+        2100
+      ],
+      "scope": "segment",
+      "sort_order": 50,
+      "active": true
+    }
+  ],
+  "product_validations": [
+    {
+      "product_system_type": "TP_PALING",
+      "name": "height_allowed",
+      "expression": "target_height_mm == 1200 or target_height_mm == 1500 or target_height_mm == 1800 or target_height_mm == 2100",
+      "severity": "warning",
+      "message": "Height is outside the standard paling set (1200/1500/1800/2100mm) — check paling and post stock lengths.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "name": "run_length_positive",
+      "expression": "true",
+      "severity": "warning",
+      "message": "deprecated — replaced by engine geometry checks",
+      "active": false
+    }
+  ],
+  "product_rules": [
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "derive",
+      "name": "rail_rows",
+      "expression": "target_height_mm <= 1350 ? 2 : 3",
+      "output_key": "rail_rows",
+      "priority": 10,
+      "active": true,
+      "notes": "2 rails for heights <= 1350mm, 3 rails above. Owner to confirm threshold for their build style."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "derive",
+      "name": "post_length_required_mm",
+      "expression": "target_height_mm + 600",
+      "output_key": "post_length_required_mm",
+      "priority": 20,
+      "active": true,
+      "notes": "Post length = fence height + 600mm concrete embedment."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "derive",
+      "name": "post_stock_length_mm",
+      "expression": "post_length_required_mm <= 1800 ? 1800 : (post_length_required_mm <= 2100 ? 2100 : (post_length_required_mm <= 2400 ? 2400 : (post_length_required_mm <= 2700 ? 2700 : 3000)))",
+      "output_key": "post_stock_length_mm",
+      "priority": 30,
+      "active": true,
+      "notes": "Round required post length UP to nearest stock length (1800/2100/2400/2700/3000mm)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "derive",
+      "name": "paling_stock_length_mm",
+      "expression": "target_height_mm <= 900 ? 900 : (target_height_mm <= 1200 ? 1200 : (target_height_mm <= 1500 ? 1500 : (target_height_mm <= 1800 ? 1800 : (target_height_mm <= 2100 ? 2100 : 2400))))",
+      "output_key": "paling_stock_length_mm",
+      "priority": 40,
+      "active": true,
+      "notes": "Paling length = fence height, rounded up to nearest paling stock length (900/1200/1500/1800/2100/2400mm)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "derive",
+      "name": "num_palings",
+      "expression": "equalText(paling_style, \"butted\") ? ceil(segment_width_mm / paling_width_mm) + 1 : ceil(segment_width_mm / (paling_width_mm - 25)) + 1",
+      "output_key": "num_palings",
+      "priority": 50,
+      "active": true,
+      "notes": "ASSUMPTION for owner to confirm: butted = ceil(run/paling_width)+1 (side by side, +1 closer). Lapped and lapped-capped = ceil(run/(paling_width - 25))+1 — each paling overlaps its neighbour by 25mm, so effective coverage per paling is width-25. Correct the 25mm overlap here if the crew laps differently."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "stock",
+      "name": "rail_stocks",
+      "expression": "rail_rows * ceil(segment_width_mm / 4800)",
+      "output_key": "rail_stocks",
+      "priority": 60,
+      "active": true,
+      "notes": "Rails are continuous per rail-row along the run; 4800mm stock. Per-row ceil so joins land on posts (4800 = 2 x 2400 max bays). stocks() helper not used because it under-counts when a continuous run exceeds one stock length."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "stock",
+      "name": "capping_stocks",
+      "expression": "equalText(paling_style, \"lapped-capped\") ? ceil(segment_width_mm / 4800) : 0",
+      "output_key": "capping_stocks",
+      "priority": 70,
+      "active": true,
+      "notes": "75x38 H3 capping along the entire run for lapped-capped style only; 4800mm stock."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "stock",
+      "name": "plinth_stocks",
+      "expression": "equalText(plinth, \"single\") ? ceil(segment_width_mm / 4800) : 0",
+      "output_key": "plinth_stocks",
+      "priority": 80,
+      "active": true,
+      "notes": "Optional single 150x25 H4 plinth row along the run; 4800mm stock."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "accessory",
+      "name": "concrete_bags",
+      "expression": "num_posts * 2",
+      "output_key": "concrete_bags",
+      "priority": 90,
+      "active": true,
+      "notes": "2 x 20kg rapid set bags per post (100x75/100x100 post in 600mm deep footing). Owner to confirm bag count."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "accessory",
+      "name": "total_nails",
+      "expression": "num_palings * rail_rows * 2",
+      "output_key": "total_nails",
+      "priority": 100,
+      "active": true,
+      "notes": "2 nails per paling per rail."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "accessory",
+      "name": "nail_boxes",
+      "expression": "ceil(total_nails / 7500)",
+      "output_key": "nail_boxes",
+      "priority": 110,
+      "active": true,
+      "notes": "Premier Nails F45/2.5 boxes hold 7,500 nails ($78/box per Xero bills)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x75_1800",
+      "expression": "(equalText(post_size, \"100x75\") and post_stock_length_mm == 1800) ? num_posts : 0",
+      "output_key": "qty_post_100x75_1800",
+      "priority": 120,
+      "active": true,
+      "notes": "100x75mm H4 post at 1800mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x75_2100",
+      "expression": "(equalText(post_size, \"100x75\") and post_stock_length_mm == 2100) ? num_posts : 0",
+      "output_key": "qty_post_100x75_2100",
+      "priority": 121,
+      "active": true,
+      "notes": "100x75mm H4 post at 2100mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x75_2400",
+      "expression": "(equalText(post_size, \"100x75\") and post_stock_length_mm == 2400) ? num_posts : 0",
+      "output_key": "qty_post_100x75_2400",
+      "priority": 122,
+      "active": true,
+      "notes": "100x75mm H4 post at 2400mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x75_2700",
+      "expression": "(equalText(post_size, \"100x75\") and post_stock_length_mm == 2700) ? num_posts : 0",
+      "output_key": "qty_post_100x75_2700",
+      "priority": 123,
+      "active": true,
+      "notes": "100x75mm H4 post at 2700mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x75_3000",
+      "expression": "(equalText(post_size, \"100x75\") and post_stock_length_mm == 3000) ? num_posts : 0",
+      "output_key": "qty_post_100x75_3000",
+      "priority": 124,
+      "active": true,
+      "notes": "100x75mm H4 post at 3000mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x100_1800",
+      "expression": "(equalText(post_size, \"100x100\") and post_stock_length_mm == 1800) ? num_posts : 0",
+      "output_key": "qty_post_100x100_1800",
+      "priority": 125,
+      "active": true,
+      "notes": "100x100mm H4 post at 1800mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x100_2100",
+      "expression": "(equalText(post_size, \"100x100\") and post_stock_length_mm == 2100) ? num_posts : 0",
+      "output_key": "qty_post_100x100_2100",
+      "priority": 126,
+      "active": true,
+      "notes": "100x100mm H4 post at 2100mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x100_2400",
+      "expression": "(equalText(post_size, \"100x100\") and post_stock_length_mm == 2400) ? num_posts : 0",
+      "output_key": "qty_post_100x100_2400",
+      "priority": 127,
+      "active": true,
+      "notes": "100x100mm H4 post at 2400mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x100_2700",
+      "expression": "(equalText(post_size, \"100x100\") and post_stock_length_mm == 2700) ? num_posts : 0",
+      "output_key": "qty_post_100x100_2700",
+      "priority": 128,
+      "active": true,
+      "notes": "100x100mm H4 post at 2700mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_post_100x100_3000",
+      "expression": "(equalText(post_size, \"100x100\") and post_stock_length_mm == 3000) ? num_posts : 0",
+      "output_key": "qty_post_100x100_3000",
+      "priority": 129,
+      "active": true,
+      "notes": "100x100mm H4 post at 3000mm stock length. num_posts is engine-provided."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_100_900",
+      "expression": "(paling_width_mm == 100 and paling_stock_length_mm == 900) ? num_palings : 0",
+      "output_key": "qty_paling_100_900",
+      "priority": 140,
+      "active": true,
+      "notes": "100x16mm paling at 900mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_100_1200",
+      "expression": "(paling_width_mm == 100 and paling_stock_length_mm == 1200) ? num_palings : 0",
+      "output_key": "qty_paling_100_1200",
+      "priority": 141,
+      "active": true,
+      "notes": "100x16mm paling at 1200mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_100_1500",
+      "expression": "(paling_width_mm == 100 and paling_stock_length_mm == 1500) ? num_palings : 0",
+      "output_key": "qty_paling_100_1500",
+      "priority": 142,
+      "active": true,
+      "notes": "100x16mm paling at 1500mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_100_1800",
+      "expression": "(paling_width_mm == 100 and paling_stock_length_mm == 1800) ? num_palings : 0",
+      "output_key": "qty_paling_100_1800",
+      "priority": 143,
+      "active": true,
+      "notes": "100x16mm paling at 1800mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_100_2100",
+      "expression": "(paling_width_mm == 100 and paling_stock_length_mm == 2100) ? num_palings : 0",
+      "output_key": "qty_paling_100_2100",
+      "priority": 144,
+      "active": true,
+      "notes": "100x16mm paling at 2100mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_100_2400",
+      "expression": "(paling_width_mm == 100 and paling_stock_length_mm == 2400) ? num_palings : 0",
+      "output_key": "qty_paling_100_2400",
+      "priority": 145,
+      "active": true,
+      "notes": "100x16mm paling at 2400mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_150_900",
+      "expression": "(paling_width_mm == 150 and paling_stock_length_mm == 900) ? num_palings : 0",
+      "output_key": "qty_paling_150_900",
+      "priority": 146,
+      "active": true,
+      "notes": "150x16mm paling at 900mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_150_1200",
+      "expression": "(paling_width_mm == 150 and paling_stock_length_mm == 1200) ? num_palings : 0",
+      "output_key": "qty_paling_150_1200",
+      "priority": 147,
+      "active": true,
+      "notes": "150x16mm paling at 1200mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_150_1500",
+      "expression": "(paling_width_mm == 150 and paling_stock_length_mm == 1500) ? num_palings : 0",
+      "output_key": "qty_paling_150_1500",
+      "priority": 148,
+      "active": true,
+      "notes": "150x16mm paling at 1500mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_150_1800",
+      "expression": "(paling_width_mm == 150 and paling_stock_length_mm == 1800) ? num_palings : 0",
+      "output_key": "qty_paling_150_1800",
+      "priority": 149,
+      "active": true,
+      "notes": "150x16mm paling at 1800mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_150_2100",
+      "expression": "(paling_width_mm == 150 and paling_stock_length_mm == 2100) ? num_palings : 0",
+      "output_key": "qty_paling_150_2100",
+      "priority": 150,
+      "active": true,
+      "notes": "150x16mm paling at 2100mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_paling_150_2400",
+      "expression": "(paling_width_mm == 150 and paling_stock_length_mm == 2400) ? num_palings : 0",
+      "output_key": "qty_paling_150_2400",
+      "priority": 151,
+      "active": true,
+      "notes": "150x16mm paling at 2400mm length (fence height rounded up to paling stock)."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_rails",
+      "expression": "rail_stocks",
+      "output_key": "qty_rail",
+      "priority": 160,
+      "active": true,
+      "notes": "75x38 H3 rails, 4800mm stock lengths."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_capping",
+      "expression": "capping_stocks",
+      "output_key": "qty_capping",
+      "priority": 170,
+      "active": true,
+      "notes": "Top capping for lapped-capped style."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_plinth",
+      "expression": "plinth_stocks",
+      "output_key": "qty_plinth",
+      "priority": 180,
+      "active": true,
+      "notes": "Optional plinth row."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_concrete",
+      "expression": "concrete_bags",
+      "output_key": "qty_concrete",
+      "priority": 190,
+      "active": true,
+      "notes": "Rapid set 20kg bags, 2 per post."
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "rule_set_name": "TP Paling Fence Rules",
+      "version_label": "v1.0.0",
+      "stage": "component",
+      "name": "emit_nails",
+      "expression": "nail_boxes",
+      "output_key": "qty_nails",
+      "priority": 200,
+      "active": true,
+      "notes": "Galvanised nail boxes (2kg ~ 500 nails)."
+    }
+  ],
+  "product_component_selectors": [
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x75_1800",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x75_1800",
+      "sku_pattern": "TP-POST-100X75-1800",
+      "priority": 100,
+      "notes": "Treated pine 100x75mm H4 post, 1800mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x75_2100",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x75_2100",
+      "sku_pattern": "TP-POST-100X75-2100",
+      "priority": 100,
+      "notes": "Treated pine 100x75mm H4 post, 2100mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x75_2400",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x75_2400",
+      "sku_pattern": "TP-POST-100X75-2400",
+      "priority": 100,
+      "notes": "Treated pine 100x75mm H4 post, 2400mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x75_2700",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x75_2700",
+      "sku_pattern": "TP-POST-100X75-2700",
+      "priority": 100,
+      "notes": "Treated pine 100x75mm H4 post, 2700mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x75_3000",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x75_3000",
+      "sku_pattern": "TP-POST-100X75-3000",
+      "priority": 100,
+      "notes": "Treated pine 100x75mm H4 post, 3000mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x100_1800",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x100_1800",
+      "sku_pattern": "TP-POST-100X100-1800",
+      "priority": 100,
+      "notes": "Treated pine 100x100mm H4 post, 1800mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x100_2100",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x100_2100",
+      "sku_pattern": "TP-POST-100X100-2100",
+      "priority": 100,
+      "notes": "Treated pine 100x100mm H4 post, 2100mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x100_2400",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x100_2400",
+      "sku_pattern": "TP-POST-100X100-2400",
+      "priority": 100,
+      "notes": "Treated pine 100x100mm H4 post, 2400mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x100_2700",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x100_2700",
+      "sku_pattern": "TP-POST-100X100-2700",
+      "priority": 100,
+      "notes": "Treated pine 100x100mm H4 post, 2700mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_post_100x100_3000",
+      "component_category": "post",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_post_100x100_3000",
+      "sku_pattern": "TP-POST-100X100-3000",
+      "priority": 100,
+      "notes": "Treated pine 100x100mm H4 post, 3000mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_100_900",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_100_900",
+      "sku_pattern": "TP-PALING-100-900",
+      "priority": 100,
+      "notes": "Treated pine paling 100x16mm, 900mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_100_1200",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_100_1200",
+      "sku_pattern": "TP-PALING-100-1200",
+      "priority": 100,
+      "notes": "Treated pine paling 100x16mm, 1200mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_100_1500",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_100_1500",
+      "sku_pattern": "TP-PALING-100-1500",
+      "priority": 100,
+      "notes": "Treated pine paling 100x16mm, 1500mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_100_1800",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_100_1800",
+      "sku_pattern": "TP-PALING-100-1800",
+      "priority": 100,
+      "notes": "Treated pine paling 100x16mm, 1800mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_100_2100",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_100_2100",
+      "sku_pattern": "TP-PALING-100-2100",
+      "priority": 100,
+      "notes": "Treated pine paling 100x16mm, 2100mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_100_2400",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_100_2400",
+      "sku_pattern": "TP-PALING-100-2400",
+      "priority": 100,
+      "notes": "Treated pine paling 100x16mm, 2400mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_150_900",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_150_900",
+      "sku_pattern": "TP-PALING-150-900",
+      "priority": 100,
+      "notes": "Treated pine paling 150x16mm, 900mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_150_1200",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_150_1200",
+      "sku_pattern": "TP-PALING-150-1200",
+      "priority": 100,
+      "notes": "Treated pine paling 150x16mm, 1200mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_150_1500",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_150_1500",
+      "sku_pattern": "TP-PALING-150-1500",
+      "priority": 100,
+      "notes": "Treated pine paling 150x16mm, 1500mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_150_1800",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_150_1800",
+      "sku_pattern": "TP-PALING-150-1800",
+      "priority": 100,
+      "notes": "Treated pine paling 150x16mm, 1800mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_150_2100",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_150_2100",
+      "sku_pattern": "TP-PALING-150-2100",
+      "priority": 100,
+      "notes": "Treated pine paling 150x16mm, 2100mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_paling_150_2400",
+      "component_category": "paling",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_paling_150_2400",
+      "sku_pattern": "TP-PALING-150-2400",
+      "priority": 100,
+      "notes": "Treated pine paling 150x16mm, 2400mm.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_rail",
+      "component_category": "rail",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_rail",
+      "sku_pattern": "TP-RAIL-75X38-4800",
+      "priority": 100,
+      "notes": "Treated pine 75x38 H3 rail, 4800mm stock.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_capping",
+      "component_category": "capping",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_capping",
+      "sku_pattern": "TP-CAP-75X38-4800",
+      "priority": 100,
+      "notes": "Top capping for lapped-capped style.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_plinth",
+      "component_category": "plinth",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_plinth",
+      "sku_pattern": "TP-PLINTH-150X25-4800",
+      "priority": 100,
+      "notes": "Optional 150x25 H4 plinth.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_concrete",
+      "component_category": "concrete",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_concrete",
+      "sku_pattern": "RAPIDSET-20KG",
+      "priority": 100,
+      "notes": "Rapid set 20kg bags — 2 per post.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "selector_key": "tp_nails",
+      "component_category": "nails",
+      "selector_type": "exact",
+      "match_json": {},
+      "qty_key": "qty_nails",
+      "sku_pattern": "NAILS-GAL-45-2KG",
+      "priority": 100,
+      "notes": "Galvanised 45mm ring-shank nails, 2kg box.",
+      "active": true
+    }
+  ],
+  "product_warnings": [
+    {
+      "product_system_type": "TP_PALING",
+      "warning_key": "tp_post_spacing_info",
+      "severity": "info",
+      "condition_json": {},
+      "message": "Post spacing assumed max 2400mm centres.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "warning_key": "tp_rail_count_info",
+      "severity": "info",
+      "condition_json": {},
+      "message": "2 rails for heights up to 1350mm, 3 rails over — confirm for your build style.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "warning_key": "tp_lap_overlap_info",
+      "severity": "info",
+      "condition_json": {},
+      "message": "Lapped palings assume a 25mm overlap per paling.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "warning_key": "tp_prices_pending_info",
+      "severity": "info",
+      "condition_json": {},
+      "message": "Prices sourced from B&B Timbers / Premier Nails purchase history (Xero). Still unpriced: 900mm palings and all 150mm-wide palings — those lines show $0 until purchased or priced manually.",
+      "active": true
+    },
+    {
+      "product_system_type": "TP_PALING",
+      "warning_key": "tp_height_over_2100_warn",
+      "severity": "warning",
+      "condition_json": {
+        "target_height_mm": {
+          "gt": 2100
+        }
+      },
+      "message": "Fence height above 2100mm is non-standard for paling fences — check post and paling stock availability.",
+      "active": true
+    }
+  ],
+  "pricing_rules": [
+    {
+      "sku": "TP-POST-100X75-1800",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 14.59,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-1800",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 14.59,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-1800",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 14.59,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2100",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 16.82,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2100",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 16.82,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2100",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 16.82,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2400",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 18.73,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2400",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 18.73,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2400",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 18.73,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2700",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 21.23,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2700",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 21.23,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-2700",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 21.23,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-3000",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 22.95,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-3000",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 22.95,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X75-3000",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 22.95,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-1800",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 19.82,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-1800",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 19.82,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-1800",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 19.82,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2100",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 21.45,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2100",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 21.45,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2100",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 21.45,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2400",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 24.86,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2400",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 24.86,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2400",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 24.86,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2700",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 30.27,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2700",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 30.27,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-2700",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 30.27,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-3000",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 32.68,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-3000",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 32.68,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-POST-100X100-3000",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 32.68,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-RAIL-75X38-4800",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 12,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-RAIL-75X38-4800",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 12,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-RAIL-75X38-4800",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 12,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-CAP-75X38-4800",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 12,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-CAP-75X38-4800",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 12,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-CAP-75X38-4800",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 12,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1200",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 1.64,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1200",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 1.64,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1200",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 1.64,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1500",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 1.91,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1500",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 1.91,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1500",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 1.91,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1800",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 2.14,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1800",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 2.14,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-1800",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 2.14,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-2100",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 2.73,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-2100",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 2.73,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-2100",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 2.73,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-2400",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 2.95,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-2400",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 2.95,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PALING-100-2400",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 2.95,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PLINTH-150X25-4800",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 23.77,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PLINTH-150X25-4800",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 23.77,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "TP-PLINTH-150X25-4800",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 23.77,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "RAPIDSET-20KG",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 9.23,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "RAPIDSET-20KG",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 9.23,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "RAPIDSET-20KG",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 9.23,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "NAILS-GAL-45-2KG",
+      "tier_code": "tier1",
+      "rule": null,
+      "price": 78,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "NAILS-GAL-45-2KG",
+      "tier_code": "tier2",
+      "rule": null,
+      "price": 78,
+      "priority": 0,
+      "active": true
+    },
+    {
+      "sku": "NAILS-GAL-45-2KG",
+      "tier_code": "tier3",
+      "rule": null,
+      "price": 78,
+      "priority": 0,
+      "active": true
+    }
+  ]
+}

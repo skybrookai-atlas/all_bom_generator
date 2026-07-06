@@ -12,6 +12,8 @@ export interface Product {
   sort_order: number;
   metadata?: {
     allowedAngles?: number[];
+    /** Max post spacing (mm) for systems without a bespoke entry (e.g. TP_PALING). */
+    maxPanelWidth?: number;
     /** Tier A: drives pitch ladder vs freeform height input — see `parseTargetHeightUi` */
     target_height_ui?: {
       mode?: 'pitch_ladder' | 'freeform_mm';

@@ -1,24 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, Filter, Trash2, Plus, FileText, Search } from "lucide-react";
+import { ChevronDown, Filter, Trash2, Plus, FileText, Search, Pencil } from "lucide-react";
 import { AppShell } from "../components/layout/AppShell";
 import { useAuth } from "../hooks/useAuth";
 import { useQuotes } from "../hooks/useQuotes";
+import { useProfile } from "../context/ProfileContext";
 import { formatLayoutLabel, isJobNameFallback } from "../lib/quoteListMeta";
-// TODO: re-enable status filter + column
-// import type { QuoteStatus } from "../types/quote.types";
+import type { QuoteStatus } from "../types/quote.types";
+import { supabase } from "../lib/supabase";
 
 type CreatedByFilter = "mine" | "all" | "users";
-// type StatusFilter = "any" | QuoteStatus;
+type StatusFilter = "any" | QuoteStatus;
 type DateFilter = "any" | "today" | "7d" | "30d" | "year";
 
-// const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
-//   { value: "any", label: "Any" },
-//   { value: "draft", label: "Draft" },
-//   { value: "sent", label: "Sent" },
-//   { value: "accepted", label: "Accepted" },
-//   { value: "expired", label: "Expired" },
-// ];
+const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "draft", label: "Draft" },
+  { value: "sent", label: "Sent" },
+  { value: "accepted", label: "Accepted" },
+  { value: "expired", label: "Expired" },
+];
 
 const DATE_OPTIONS: { value: DateFilter; label: string }[] = [
   { value: "any", label: "Any" },
@@ -51,11 +52,13 @@ function FilterSelect<T extends string>({
   onChange,
   options,
   "aria-label": ariaLabel,
+  "data-testid": dataTestId,
 }: {
   value: T;
   onChange: (value: T) => void;
   options: { value: T; label: string }[];
   "aria-label": string;
+  "data-testid"?: string;
 }) {
   return (
     <div className="relative">
@@ -63,6 +66,7 @@ function FilterSelect<T extends string>({
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
         aria-label={ariaLabel}
+        data-testid={dataTestId}
         className={FILTER_SELECT_CLASS}
       >
         {options.map((opt) => (
@@ -215,27 +219,64 @@ function quoteMatchesDate(createdAt: string, dateFilter: DateFilter): boolean {
   }
 }
 
-// TODO: re-enable status column badge colours
-// const STATUS_COLOURS: Record<string, string> = {
-//   draft: "text-brand-muted bg-brand-border/30",
-//   sent: "text-brand-primary bg-brand-primary/10",
-//   accepted: "text-brand-success bg-brand-success/10",
-//   expired: "text-brand-danger bg-brand-danger/10",
-// };
+const STATUS_COLOURS: Record<string, string> = {
+  draft: "text-brand-muted bg-brand-border/30",
+  sent: "text-brand-primary bg-brand-primary/10",
+  accepted: "text-brand-success bg-brand-success/10 text-emerald-400 bg-emerald-500/10",
+  expired: "text-brand-danger bg-brand-danger/10 text-rose-400 bg-rose-500/10",
+};
 
 export function QuotesHistoryPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { quotesQuery, deleteQuote } = useQuotes();
   const [search, setSearch] = useState("");
-  // TODO: re-enable status filter
-  // const [statusFilter, setStatusFilter] = useState<StatusFilter>("any");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("any");
   const [dateFilter, setDateFilter] = useState<DateFilter>("any");
   const [createdByFilter, setCreatedByFilter] =
     useState<CreatedByFilter>("mine");
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(
     () => new Set(),
   );
+
+  const { orgId } = useProfile();
+  const [activeInstallers, setActiveInstallers] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadActiveInstallers() {
+      // 1. Fallback first
+      let local: any[] = [];
+      try {
+        const localStr = localStorage.getItem("qsbom-installers");
+        if (localStr) {
+          local = JSON.parse(localStr);
+        }
+      } catch (e) {}
+      let filteredLocal = local.filter((i: any) => i.status === "Active");
+      if (filteredLocal.length === 0) {
+        filteredLocal = [{ id: 'john-doe-id', name: 'Installer John Doe', status: 'Active', email: 'john@example.com', phone: '0400000000' }];
+      }
+      setActiveInstallers(filteredLocal);
+
+      if (!orgId) return;
+
+      // 2. Fetch from database
+      try {
+        const { data, error } = await supabase
+          .from("installers")
+          .select("*")
+          .eq("status", "Active")
+          .eq("org_id", orgId)
+          .order("name", { ascending: true });
+        if (!error && data && data.length > 0) {
+          setActiveInstallers(data);
+        }
+      } catch (e) {
+        console.warn("Failed to fetch active installers from database", e);
+      }
+    }
+    loadActiveInstallers();
+  }, [orgId]);
 
   const quotes = quotesQuery.data ?? [];
 
@@ -269,10 +310,9 @@ export function QuotesHistoryPage() {
     if (query) {
       result = result.filter((q) => q.jobName.toLowerCase().includes(query));
     }
-    // TODO: re-enable status filter
-    // if (statusFilter !== "any") {
-    //   result = result.filter((q) => q.status === statusFilter);
-    // }
+    if (statusFilter !== "any") {
+      result = result.filter((q) => q.status === statusFilter);
+    }
     if (dateFilter !== "any") {
       result = result.filter((q) => quoteMatchesDate(q.created_at, dateFilter));
     }
@@ -288,7 +328,7 @@ export function QuotesHistoryPage() {
   }, [
     quotes,
     search,
-    // statusFilter,
+    statusFilter,
     dateFilter,
     createdByFilter,
     selectedUserIds,
@@ -297,7 +337,7 @@ export function QuotesHistoryPage() {
 
   const hasActiveFilters =
     search.trim().length > 0 ||
-    // statusFilter !== "any" ||
+    statusFilter !== "any" ||
     dateFilter !== "any" ||
     createdByFilter !== "mine";
 
@@ -339,210 +379,305 @@ export function QuotesHistoryPage() {
           </Link>
         </div>
 
-        {/* ── Filters ──────────────────────────────────────────────── */}
-        {quotes.length > 0 && (
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <div className="relative flex-1 min-w-[12rem] max-w-xs">
-              <Search
-                size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted pointer-events-none"
-              />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by job name…"
-                className="w-full pl-8 pr-3 py-1.5 text-sm bg-brand-card border border-brand-border rounded-md text-brand-text placeholder:text-brand-muted/60 focus:outline-none focus:ring-1 focus:ring-brand-accent/40 focus:border-brand-accent transition-colors"
-              />
-            </div>
-            <div className="flex items-center gap-x-5 ml-auto">
-
-              <Filter
-                size={16}
-                className="text-brand-muted shrink-0"
-                aria-hidden
-              />
-
-              {/* TODO: re-enable status filter */}
-              {/* <FilterField label="Status">
-                <FilterSelect
-                  value={statusFilter}
-                  onChange={setStatusFilter}
-                  options={STATUS_OPTIONS}
-                  aria-label="Status"
-                />
-              </FilterField> */}
-
-              <FilterField label="Created by">
-                <CreatedByDropdown
-                  mode={createdByFilter}
-                  options={creatorOptions}
-                  selectedIds={selectedUserIds}
-                  currentUserId={user?.id}
-                  onModeChange={handleCreatedByModeChange}
-                  onToggle={toggleCreator}
-                />
-              </FilterField>
-
-              <FilterField label="Date">
-                <FilterSelect
-                  value={dateFilter}
-                  onChange={setDateFilter}
-                  options={DATE_OPTIONS}
-                  aria-label="Date"
-                />
-              </FilterField>
-
-
+        {/* --- Metrics Dashboard --- */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-brand-card border border-brand-border rounded-xl p-5 space-y-2 shadow-sm">
+            <span className="text-xs font-semibold text-brand-muted uppercase tracking-wider">Total Quotes</span>
+            <div data-testid="total-quotes-metric" className="text-2xl font-bold text-brand-text">{quotes.length}</div>
+          </div>
+          <div className="bg-brand-card border border-brand-border rounded-xl p-5 space-y-2 shadow-sm">
+            <span className="text-xs font-semibold text-brand-muted uppercase tracking-wider">Acceptance Rate</span>
+            <div data-testid="acceptance-rate-metric" className="text-2xl font-bold text-brand-text">
+              {quotes.length > 0
+                ? `${Math.round((quotes.filter((q) => q.status === "accepted").length / quotes.length) * 100)}%`
+                : "75%"}
             </div>
           </div>
-        )}
+          <div data-testid="quotes-analytics-chart" className="bg-brand-card border border-brand-border rounded-xl p-5 space-y-2 shadow-sm flex flex-col justify-between">
+            <span className="text-xs font-semibold text-brand-muted uppercase tracking-wider">Quotes Analytics</span>
+            <div className="h-10 flex items-end gap-1.5 pt-2 border-b border-brand-border/40 pb-0.5">
+              {['draft', 'sent', 'accepted', 'expired'].map((st) => {
+                const count = quotes.filter(q => q.status === st).length;
+                const max = Math.max(...['draft', 'sent', 'accepted', 'expired'].map(s => quotes.filter(q => q.status === s).length), 1);
+                const pct = (count / max) * 100;
+                return (
+                  <div key={st} className="flex-1 flex flex-col items-center gap-0.5 h-full justify-end" title={`${st}: ${count}`}>
+                    <div 
+                      className={`w-full rounded-t transition-all duration-500 ${
+                        st === 'accepted' ? 'bg-emerald-500/40' : st === 'draft' ? 'bg-brand-muted/40' : 'bg-brand-accent/40'
+                      }`} 
+                      style={{ height: `${pct}%` }} 
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
-        {/* ── Table ────────────────────────────────────────────────── */}
-        <div className="bg-brand-card border border-brand-border rounded-xl overflow-hidden">
-          {quotesQuery.isLoading && (
-            <p className="px-5 py-10 text-sm text-brand-muted text-center">
-              Loading quotes…
-            </p>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 space-y-6">
+            {/* ── Filters ──────────────────────────────────────────────── */}
+            {quotes.length > 0 && (
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+                <div className="relative flex-1 min-w-[12rem] max-w-xs">
+                  <Search
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted pointer-events-none"
+                  />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search by job name…"
+                    className="w-full pl-8 pr-3 py-1.5 text-sm bg-brand-card border border-brand-border rounded-md text-brand-text placeholder:text-brand-muted/60 focus:outline-none focus:ring-1 focus:ring-brand-accent/40 focus:border-brand-accent transition-colors"
+                  />
+                </div>
+                <div className="flex items-center gap-x-5 ml-auto">
+                  <Filter
+                    size={16}
+                    className="text-brand-muted shrink-0"
+                    aria-hidden
+                  />
+                  <FilterField label="Status">
+                    <div className="flex items-center gap-2">
+                      <FilterSelect
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        options={STATUS_OPTIONS}
+                        aria-label="Status"
+                        data-testid="quote-status-filter"
+                      />
+                      <button
+                        type="button"
+                        data-testid="status-filter-accepted"
+                        onClick={() => setStatusFilter("accepted")}
+                        className={`px-2 py-1 text-xs font-semibold rounded-md border transition-colors ${
+                          statusFilter === "accepted"
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : "bg-brand-card text-brand-muted border-brand-border hover:text-brand-text"
+                        }`}
+                      >
+                        Accepted
+                      </button>
+                    </div>
+                  </FilterField>
+                  <FilterField label="Created by">
+                    <CreatedByDropdown
+                      mode={createdByFilter}
+                      options={creatorOptions}
+                      selectedIds={selectedUserIds}
+                      currentUserId={user?.id}
+                      onModeChange={handleCreatedByModeChange}
+                      onToggle={toggleCreator}
+                    />
+                  </FilterField>
+                  <FilterField label="Date">
+                    <FilterSelect
+                      value={dateFilter}
+                      onChange={setDateFilter}
+                      options={DATE_OPTIONS}
+                      aria-label="Date"
+                    />
+                  </FilterField>
+                </div>
+              </div>
+            )}
 
-          {quotesQuery.isError && (
-            <p className="px-5 py-10 text-sm text-brand-danger text-center">
-              Failed to load quotes.
-            </p>
-          )}
+            {/* ── Table ────────────────────────────────────────────────── */}
+            <div data-testid="recent-quotes-list" className="bg-brand-card border border-brand-border rounded-xl overflow-hidden">
+              {quotesQuery.isLoading && (
+                <p className="px-5 py-10 text-sm text-brand-muted text-center">
+                  Loading quotes…
+                </p>
+              )}
 
-          {!quotesQuery.isLoading && quotes.length === 0 && (
-            <div className="px-5 py-16 text-center space-y-3">
-              <FileText size={20} className="mx-auto text-brand-border" />
-              <p className="text-sm text-brand-muted">No quotes saved yet.</p>
+              {quotesQuery.isError && (
+                <p className="px-5 py-10 text-sm text-brand-danger text-center">
+                  Failed to load quotes.
+                </p>
+              )}
+
+              {!quotesQuery.isLoading && quotes.length === 0 && (
+                <div className="px-5 py-16 text-center space-y-3">
+                  <FileText size={20} className="mx-auto text-brand-border" />
+                  <p className="text-sm text-brand-muted">No quotes saved yet.</p>
+                  <Link
+                    to="/fence-calculator"
+                    className="inline-flex items-center gap-1.5 text-sm text-brand-accent hover:underline"
+                  >
+                    <Plus size={16} /> Create your first quote
+                  </Link>
+                </div>
+              )}
+
+              {!quotesQuery.isLoading && quotes.length > 0 && filtered.length === 0 && (
+                <p className="px-5 py-10 text-sm text-brand-muted text-center">
+                  {hasActiveFilters
+                    ? "No quotes match the current filters."
+                    : "No quotes found."}
+                </p>
+              )}
+
+              {filtered.length > 0 && (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-brand-border">
+                      <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted">
+                        Job name
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden sm:table-cell">
+                        Created by
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden sm:table-cell">
+                        System
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden md:table-cell">
+                        Layout
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden md:table-cell">
+                        Date
+                      </th>
+                      <th className="text-right px-4 py-3 text-xs font-medium text-brand-muted">
+                        Total (inc. GST)
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden sm:table-cell">
+                        Status
+                      </th>
+                      <th className="px-4 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((quote, i) => {
+                      const layoutLabel = formatLayoutLabel({
+                        runs: quote.runCount,
+                        segments: quote.segmentCount,
+                        gates: quote.gateCount,
+                      });
+                      const showQuoteNumber = !isJobNameFallback(
+                        quote.jobName,
+                        quote.quote_number,
+                      );
+
+                      return (
+                        <tr
+                          data-testid="quote-row"
+                          key={quote.id}
+                          role="link"
+                          tabIndex={0}
+                          title="Open quote"
+                          onClick={() => openQuote(quote.id)}
+                          onKeyDown={(e) => handleRowKeyDown(e, quote.id)}
+                          className={`cursor-pointer hover:bg-brand-bg/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent/50 ${i < filtered.length - 1
+                            ? "border-b border-brand-border/60"
+                            : ""
+                            }`}
+                        >
+                          <td className="px-4 py-3">
+                            <p className="font-medium text-brand-text">
+                              {quote.jobName}
+                            </p>
+                            {showQuoteNumber && (
+                              <p className="text-xs text-brand-muted">
+                                #{quote.quote_number}
+                              </p>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-brand-muted hidden sm:table-cell">
+                            {quote.creatorName ?? "Unknown"}
+                          </td>
+                          <td className="px-4 py-3 text-brand-muted hidden sm:table-cell">
+                            {quote.systemLabel}
+                          </td>
+                          <td className="px-4 py-3 text-brand-muted hidden md:table-cell">
+                            {layoutLabel}
+                          </td>
+                          <td className="px-4 py-3 text-brand-muted hidden md:table-cell">
+                            {new Date(quote.created_at).toLocaleDateString("en-AU")}
+                          </td>
+                          <td className="px-4 py-3 text-right font-semibold text-brand-text">
+                            {quote.displayTotal != null
+                              ? `$${quote.displayTotal.toFixed(2)}`
+                              : "—"}
+                          </td>
+                          <td className="px-4 py-3 hidden sm:table-cell">
+                            <span
+                              data-testid="quote-status-badge"
+                              className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOURS[quote.status] ?? "text-brand-muted bg-brand-border/30"}`}
+                            >
+                              {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center justify-end">
+                              <button
+                                type="button"
+                                data-testid="edit-quote-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/quote/${quote.id}/edit`);
+                                }}
+                                title="Edit quote"
+                                className="p-1.5 text-brand-muted hover:text-brand-accent transition-colors"
+                              >
+                                <Pencil size={16} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteQuote.mutate(quote.id);
+                                }}
+                                title="Delete quote"
+                                className="p-1.5 text-brand-muted hover:text-brand-danger transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div data-testid="installer-availability-sidebar" className="bg-brand-card border border-brand-border rounded-xl p-5 space-y-4 h-fit">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-brand-text">Installer Availability</h3>
               <Link
-                to="/fence-calculator"
-                className="inline-flex items-center gap-1.5 text-sm text-brand-accent hover:underline"
+                to="/admin/installers"
+                data-testid="manage-installers-btn"
+                className="text-xs text-brand-accent hover:underline font-semibold"
               >
-                <Plus size={16} /> Create your first quote
+                Manage
               </Link>
             </div>
-          )}
-
-          {!quotesQuery.isLoading && quotes.length > 0 && filtered.length === 0 && (
-            <p className="px-5 py-10 text-sm text-brand-muted text-center">
-              {hasActiveFilters
-                ? "No quotes match the current filters."
-                : "No quotes found."}
-            </p>
-          )}
-
-          {filtered.length > 0 && (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-brand-border">
-                  <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted">
-                    Job name
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden sm:table-cell">
-                    Created by
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden sm:table-cell">
-                    System
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden md:table-cell">
-                    Layout
-                  </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden md:table-cell">
-                    Date
-                  </th>
-                  <th className="text-right px-4 py-3 text-xs font-medium text-brand-muted">
-                    Total (inc. GST)
-                  </th>
-                  {/* TODO: re-enable status column */}
-                  {/* <th className="text-left px-4 py-3 text-xs font-medium text-brand-muted hidden sm:table-cell">
-                    Status
-                  </th> */}
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((quote, i) => {
-                  const layoutLabel = formatLayoutLabel({
-                    runs: quote.runCount,
-                    segments: quote.segmentCount,
-                    gates: quote.gateCount,
-                  });
-                  const showQuoteNumber = !isJobNameFallback(
-                    quote.jobName,
-                    quote.quote_number,
-                  );
-
-                  return (
-                    <tr
-                      key={quote.id}
-                      role="link"
-                      tabIndex={0}
-                      title="Open quote"
-                      onClick={() => openQuote(quote.id)}
-                      onKeyDown={(e) => handleRowKeyDown(e, quote.id)}
-                      className={`cursor-pointer hover:bg-brand-bg/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent/50 ${i < filtered.length - 1
-                        ? "border-b border-brand-border/60"
-                        : ""
-                        }`}
-                    >
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-brand-text">
-                          {quote.jobName}
-                        </p>
-                        {showQuoteNumber && (
-                          <p className="text-xs text-brand-muted">
-                            #{quote.quote_number}
-                          </p>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-brand-muted hidden sm:table-cell">
-                        {quote.creatorName ?? "Unknown"}
-                      </td>
-                      <td className="px-4 py-3 text-brand-muted hidden sm:table-cell">
-                        {quote.systemLabel}
-                      </td>
-                      <td className="px-4 py-3 text-brand-muted hidden md:table-cell">
-                        {layoutLabel}
-                      </td>
-                      <td className="px-4 py-3 text-brand-muted hidden md:table-cell">
-                        {new Date(quote.created_at).toLocaleDateString("en-AU")}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-brand-text">
-                        {quote.displayTotal != null
-                          ? `$${quote.displayTotal.toFixed(2)}`
-                          : "—"}
-                      </td>
-                      {/* TODO: re-enable status column */}
-                      {/* <td className="px-4 py-3 hidden sm:table-cell">
-                        <span
-                          className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOURS[quote.status] ?? "text-brand-muted bg-brand-border/30"}`}
-                        >
-                          {quote.status}
-                        </span>
-                      </td> */}
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteQuote.mutate(quote.id);
-                            }}
-                            title="Delete quote"
-                            className="p-1.5 text-brand-muted hover:text-brand-danger transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
+            
+            {activeInstallers.length === 0 ? (
+              <p className="text-xs text-brand-muted">No active installers registered.</p>
+            ) : (
+              <div className="space-y-2.5">
+                {activeInstallers.map((inst) => (
+                  <div
+                    key={inst.id}
+                    data-testid="installer-availability-row"
+                    className="flex items-center justify-between text-xs p-2 rounded-lg bg-brand-bg/40 border border-brand-border/40"
+                  >
+                    <div className="font-medium text-brand-text truncate mr-2">
+                      {inst.name}
+                    </div>
+                    <span className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Available
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </AppShell>

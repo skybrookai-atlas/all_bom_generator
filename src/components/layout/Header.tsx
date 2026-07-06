@@ -2,9 +2,10 @@ import { Eye, EyeOff, LogOut, Menu, Moon, Plus, PlayCircle, Sun, Trash2, WifiOff
 import { useEffect, useState, type ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { supabase } from '../../lib/supabase';
+import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../context/ThemeContext';
+import { DEFAULT_BRAND } from '../../lib/brand';
 import type { TenantBranding } from '../../lib/tenantThemes';
 import { INSTALL_VIDEOS, type InstallVideoKey } from '../../lib/installVideos';
 import { InstallVideoQR } from '../calculator-v3/InstallVideoQR';
@@ -26,8 +27,8 @@ export function Header({
   branding,
   actions,
   mobileTitle,
-  brandLogoSrc,
-  brandLogoAlt = "The Glass Outlet",
+  brandLogoSrc = DEFAULT_BRAND.logoUrl,
+  brandLogoAlt = DEFAULT_BRAND.companyName,
   priceLabel,
   customerMode = false,
   onCustomerModeChange,
@@ -74,26 +75,27 @@ export function Header({
       {/* ── Brand + Nav ───────────────────────────────────────────── */}
       <div className="flex min-w-0 items-center gap-3 sm:gap-4">
         <div className="flex min-w-0 items-center gap-3 py-2 sm:py-3">
-          {brandLogoSrc ? (
+          {brandLogoSrc && (
             <img
               src={brandLogoSrc}
               alt={brandLogoAlt}
               className="h-8 w-auto max-w-[9rem] shrink-0 object-contain sm:h-10 sm:max-w-[12rem]"
             />
-          ) : (
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-base font-black tracking-tight text-brand-text sm:text-lg">
-                {branding?.title ?? 'The Glass Outlet'}{branding?.titleItalic && <em>{branding.titleItalic}</em>}
-              </p>
-              <p className="truncate text-xs font-semibold text-brand-muted">
-                {branding?.subtitle ?? 'QuickScreen BOM Generator'}
-                {!branding && <span className="hidden sm:inline"> · Powered by SkyBrookAI</span>}
-              </p>
-            </div>
           )}
+          <div className={`min-w-0 leading-tight ${brandLogoSrc ? 'hidden md:block' : ''}`}>
+            <p className="truncate text-base font-black tracking-tight text-brand-text sm:text-lg">
+              {branding?.title ?? DEFAULT_BRAND.title}{' '}
+              {(branding ? branding.titleItalic : DEFAULT_BRAND.titleItalic) && (
+                <em>{branding ? branding.titleItalic : DEFAULT_BRAND.titleItalic}</em>
+              )}
+            </p>
+            <p className="truncate text-xs font-semibold text-brand-muted">
+              {branding?.subtitle ?? DEFAULT_BRAND.subtitle}
+            </p>
+          </div>
         </div>
 
-        {user && (
+        {(user || !isSupabaseConfigured) && (
           <nav className="hidden sm:flex items-center gap-0.5 ml-2">
             <NavLink to="/" end className={navLinkCls}>
               Home
@@ -138,7 +140,7 @@ export function Header({
           {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
         </button>
 
-        {user && (
+        {(user || !isSupabaseConfigured) && (
           <>
             {onCustomerModeChange && (
               <button
@@ -151,20 +153,44 @@ export function Header({
                 <span>{customerMode ? "Cost mode" : "Customer mode"}</span>
               </button>
             )}
-            <div
-              title={user.email ?? ''}
-              className="hidden h-7 w-7 select-none items-center justify-center rounded-full border border-brand-accent/30 bg-brand-accent/15 text-xs font-semibold text-brand-accent sm:flex"
-            >
-              {initials}
-            </div>
-            <button
-              onClick={handleSignOut}
-              title="Sign out"
-              className="hidden items-center gap-1.5 rounded-md px-2.5 py-2 text-xs text-brand-muted transition-colors hover:bg-brand-border/30 hover:text-brand-text sm:flex"
-            >
-              <LogOut size={16} />
-              <span className="hidden sm:inline">Sign out</span>
-            </button>
+            {user ? (
+              <>
+                <div
+                  title={user.email ?? ''}
+                  className="hidden h-7 w-7 select-none items-center justify-center rounded-full border border-brand-accent/30 bg-brand-accent/15 text-xs font-semibold text-brand-accent sm:flex"
+                >
+                  {initials}
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  title="Sign out"
+                  className="hidden items-center gap-1.5 rounded-md px-2.5 py-2 text-xs text-brand-muted transition-colors hover:bg-brand-border/30 hover:text-brand-text sm:flex"
+                >
+                  <LogOut size={16} />
+                  <span className="hidden sm:inline">Sign out</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <div
+                  title="Running in offline preview mode without Supabase backend"
+                  className="hidden items-center gap-1 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-400 sm:flex"
+                >
+                  Preview Mode
+                </div>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('qsbom-preview-without-backend');
+                    window.location.assign('/login');
+                  }}
+                  title="Return to Login"
+                  className="hidden items-center gap-1.5 rounded-md px-2.5 py-2 text-xs text-brand-muted transition-colors hover:bg-brand-border/30 hover:text-brand-text sm:flex"
+                >
+                  <LogOut size={16} />
+                  <span className="hidden sm:inline">Exit Preview</span>
+                </button>
+              </>
+            )}
           </>
         )}
         {priceLabel && (
@@ -266,7 +292,33 @@ export function Header({
                 {customerMode ? "Show cost mode" : "Show customer mode"}
               </button>
             )}
-            {user && (
+            {(user || !isSupabaseConfigured) && (
+              <>
+                <NavLink
+                  to="/"
+                  end
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-border px-3 py-2 text-left text-sm font-bold text-brand-text"
+                >
+                  Home
+                </NavLink>
+                <NavLink
+                  to="/quotes"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-border px-3 py-2 text-left text-sm font-bold text-brand-text"
+                >
+                  Quotes
+                </NavLink>
+                <NavLink
+                  to="/fence-calculator"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-accent/50 px-3 py-2 text-left text-sm font-bold text-brand-accent"
+                >
+                  New Quote
+                </NavLink>
+              </>
+            )}
+            {user ? (
               <button
                 type="button"
                 onClick={handleSignOut}
@@ -274,6 +326,18 @@ export function Header({
               >
                 <LogOut size={18} />
                 Sign out
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem('qsbom-preview-without-backend');
+                  window.location.assign('/login');
+                }}
+                className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-border px-3 py-2 text-left text-sm font-bold text-brand-text"
+              >
+                <LogOut size={18} />
+                Exit Preview
               </button>
             )}
           </div>
@@ -297,7 +361,7 @@ export function Header({
                   Install videos
                 </p>
                 <h2 className="mt-1 text-lg font-black text-brand-text">
-                  Glass Outlet installation help
+                  {DEFAULT_BRAND.companyName} installation help
                 </h2>
               </div>
               <button

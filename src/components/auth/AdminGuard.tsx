@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useProfile } from '../../context/ProfileContext';
+import { isSupabaseConfigured } from '../../lib/supabase';
 
 interface AdminGuardProps {
   children: React.ReactNode;
@@ -7,6 +8,10 @@ interface AdminGuardProps {
 
 export function AdminGuard({ children }: AdminGuardProps) {
   const { user, isAdmin, isLoading } = useProfile();
+
+  if (!isSupabaseConfigured) {
+    return <>{children}</>;
+  }
 
   if (isLoading) {
     return (

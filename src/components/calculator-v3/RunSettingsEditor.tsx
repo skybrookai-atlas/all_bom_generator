@@ -7,6 +7,7 @@ import { defaultGateBuildForMovement, gateMovementOrDefault } from "../../lib/ga
 import {
   applyProductOptionRules,
   initialVariablesForSystem,
+  isGenericSystem,
   maxPanelWidthForSystem,
   normaliseVariablesForSystem,
 } from "../../lib/productOptionRules";
@@ -17,7 +18,11 @@ import {
   isPreferredGroutSku,
 } from "../../lib/postFixingOptions";
 import { getPreferredGroutSku, setPreferredGroutSku } from "../../lib/userPrefs";
-import { SchemaDrivenForm, type SchemaField } from "./SchemaDrivenForm";
+import {
+  SchemaDrivenForm,
+  schemaFieldValueLabel,
+  type SchemaField,
+} from "./SchemaDrivenForm";
 import { colourName } from "./ColourPalette";
 import { SettingsDisclosureRow } from "./SettingsDisclosureRow";
 
@@ -116,7 +121,7 @@ function fieldValueLabel(field: SchemaField, variables: Record<string, string | 
   if (raw === false) return "No";
   if (raw === undefined || raw === null || raw === "") return "Default";
   if (VALUE_LABELS[String(raw)]) return VALUE_LABELS[String(raw)];
-  return `${raw}${field.unit ? field.unit : ""}`;
+  return schemaFieldValueLabel(field, variables);
 }
 
 function postLabel(productCode: string, variables: Record<string, string | number | boolean>) {
@@ -136,6 +141,7 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
   const [fixingsOpen, setFixingsOpen] = useState(false);
   const productCode = run.productCode;
   const isColorBond = productCode === "COLORBOND";
+  const isGeneric = isGenericSystem(productCode);
   const { data: jobFields = [] } = useProductVariables(productCode, "job");
   const { data: runFields = [] } = useProductVariables(productCode, "run");
   const variables = {
@@ -143,12 +149,24 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
     ...(run.variables ?? {}),
   } as Record<string, string | number | boolean>;
 
+  // Generic (data-driven) systems render every job+run scoped product_variable
+  // as-is instead of the bespoke slat/COLORBOND groups below.
+  const genericFields = useMemo(
+    () =>
+      isGeneric
+        ? [...jobFields, ...runFields]
+          .filter((field) => !HIDDEN_FIELD_KEYS.has(field.field_key))
+          .sort((a, b) => a.sort_order - b.sort_order)
+        : [],
+    [isGeneric, jobFields, runFields],
+  );
+
   const fields = applyProductOptionRules(
     productCode,
     [
       ...jobFields.filter((field) => !HIDDEN_FIELD_KEYS.has(field.field_key)),
       ...runFields
-        .map((field) => shapeRunField(field, productCode))
+        .map((field) => (isGeneric ? field : shapeRunField(field, productCode)))
         .filter((field): field is SchemaField => Boolean(field)),
     ],
     variables,
@@ -183,6 +201,7 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
   }
 
   useEffect(() => {
+    if (isGeneric) return;
     if (run.variables?.post_fixing_material_sku) return;
     dispatch({
       type: "UPSERT_RUN",
@@ -194,7 +213,7 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
         },
       },
     });
-  }, [dispatch, run]);
+  }, [dispatch, isGeneric, run]);
 
   function updateRunVariables(
     key: string,
@@ -246,6 +265,9 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
       "post_cap_type",
       "include_timber_sleeper",
     ]);
+    // Generic systems: every schema-driven field cascades to sections the same
+    // way the slat fields do (clears per-segment copies of the changed key).
+    for (const field of genericFields) syncKeys.add(field.field_key);
     const resetSectionKeys = [
       key,
       ...(key === "colour_code" ? ["colour_code", "post_colour_code"] : []),
@@ -346,8 +368,9 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
       </p>
       <SettingsDisclosureRow
         id={`${run.runId}-system-type`}
-        label="System type"
+        label="Fence type"
         value={run.productCode}
+        defaultOpen
       >
         <div className="flex flex-wrap gap-2 border-t border-brand-border/50 p-3">
           {localFenceProducts.map((product) => (
@@ -362,11 +385,33 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
                 }`}
             >
               {product.system_type === run.productCode && <Check size={16} aria-hidden />}
-              {product.system_type}
+              {product.name || product.system_type}
             </button>
           ))}
         </div>
       </SettingsDisclosureRow>
+      {isGeneric && (
+        <SettingsDisclosureRow
+          id={`${run.runId}-fence-settings`}
+          label="Fence settings"
+          value={
+            genericFields
+              .filter((field) => field.field_key !== "supplier")
+              .slice(0, 3)
+              .map((field) => schemaFieldValueLabel(field, variables))
+              .join(" / ") || "Defaults"
+          }
+        >
+          <div className="space-y-4">
+            <SchemaDrivenForm
+              fields={genericFields}
+              variables={variables}
+              onChange={updateRunVariables}
+            />
+          </div>
+        </SettingsDisclosureRow>
+      )}
+      {!isGeneric && (
       <SettingsDisclosureRow
         id={`${run.runId}-slats-colours-spacings`}
         label={isColorBond ? "Profile and colours" : "Slats, colors, and spacings"}
@@ -377,6 +422,7 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
         }
       >
         <div className="space-y-4">
+          {isColorBond && renderField("supplier")}
           {renderField("profile_code")}
           {renderField("finish_family")}
           {renderField("colour_code")}
@@ -425,7 +471,8 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
           )}
         </div>
       </SettingsDisclosureRow>
-      {productCode !== "BAYG" && (
+      )}
+      {!isGeneric && productCode !== "BAYG" && (
         <SettingsDisclosureRow
           id={`${run.runId}-post-mounting`}
           label={isColorBond ? "Posts, mounting and bay width" : "Post size, mounting and spacing"}

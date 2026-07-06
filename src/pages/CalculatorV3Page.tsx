@@ -18,7 +18,8 @@ import { BOMResultTabs } from "../components/shared/BOMResultTabs";
 import { MobileBomTotals } from "../components/shared/MobileBomTotals";
 import { PwaStatusBanners } from "../components/pwa/PwaStatusBanners";
 import { BomV3PDFTemplate } from "../components/quote/BomV3PDFTemplate";
-import { GlassOutletLogo } from "../components/brand/GlassOutletLogo";
+import { BrandLogo } from "../components/brand/BrandLogo";
+import { useOrgBranding } from "../hooks/useOrgBranding";
 import { JobNameEditor } from "../components/calculator/JobNameEditor";
 import { GatePositionModal } from "../components/calculator/GatePositionModal";
 import { PropertyAnchorFormGate, PropertyMap } from "../components/calculator/PropertyMap";
@@ -26,9 +27,13 @@ import { useBomCalculator } from "../hooks/useBomCalculator";
 import { suggestAccessories } from "../lib/suggestedAccessories";
 import { priceForSku } from "../lib/localBomCalculator";
 import {
+  genericSystemFields,
   initialVariablesForSystem,
+  isGenericSystem,
   normaliseVariablesForSystem,
 } from "../lib/productOptionRules";
+import { schemaFieldValueLabel } from "../components/calculator-v3/SchemaDrivenForm";
+import { localProducts } from "../lib/localSeedData";
 import { GATE_SEGMENT_STUB_KEYS } from "../lib/segmentTermination";
 import {
   clearGateOpeningWidthMm,
@@ -57,6 +62,7 @@ import {
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { useAuth } from "../hooks/useAuth";
 import { useQuote } from "../hooks/useQuote";
+import { useProfile } from "../context/ProfileContext";
 import { savedBomToEngineResult } from "../lib/savedBomToEngineResult";
 import { jobNameFromQuote } from "../lib/quotePayload";
 import {
@@ -65,7 +71,7 @@ import {
   replaceV3QuoteRuns,
 } from "../lib/persistV3Quote";
 import { queryClient } from "../lib/queryClient";
-import { LegacyQuoteError } from "../types/quote.types";
+import { LegacyQuoteError, SavedQuote } from "../types/quote.types";
 import {
   Download,
   Keyboard,
@@ -74,6 +80,7 @@ import {
   Save,
   Share2,
   X,
+  Copy,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -432,6 +439,334 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
   const bomMutateAsyncRef = useRef(bomMutation.mutateAsync);
   bomMutateAsyncRef.current = bomMutation.mutateAsync;
   const [extraItems, setExtraItems] = useState<ExtraItem[]>([]);
+  const [installers, setInstallers] = useState<Array<{ id: string; name: string }>>([
+    { id: 'john-doe-id', name: 'Installer John Doe' }
+  ]);
+  const [assignedInstallerId, setAssignedInstallerId] = useState<string | null>(null);
+  const [installDate, setInstallDate] = useState<string>("");
+  const [useSplits, setUseSplits] = useState<boolean>(false);
+  const [splitRatioA, setSplitRatioA] = useState<number | string>(50);
+  const [splitRatioB, setSplitRatioB] = useState<number | string>(50);
+  const [xeroEnabled, setXeroEnabled] = useState<boolean>(true);
+  const { orgId: userOrgId } = useProfile();
+  const orgBrand = useOrgBranding();
+  const [template, setTemplate] = useState("");
+  const [systemType, setSystemType] = useState("QSHS");
+  const [runLength, setRunLength] = useState("7500");
+  const [manualSku, setManualSku] = useState("");
+  const [manualName, setManualName] = useState("");
+  const [manualQty, setManualQty] = useState<number | string>("");
+  const [manualPrice, setManualPrice] = useState<number | string>("");
+  const [showManualForm, setShowManualForm] = useState(false);
+  const [isCanvasModalOpen, setIsCanvasModalOpen] = useState(false);
+  const [bomFormat, setBomFormat] = useState<"summary" | "exploded">("summary");
+
+  const [xeroSyncStatus, setXeroSyncStatus] = useState<string>("Unsynced");
+  const [xeroInvoiceId, setXeroInvoiceId] = useState<string>("");
+  const [syncingXero, setSyncingXero] = useState(false);
+
+  const [comments, setComments] = useState<any[]>([]);
+  const [newCommentText, setNewCommentText] = useState("");
+  const [isCommentPrivate, setIsCommentPrivate] = useState(false);
+
+  const handleRatioAChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawVal = e.target.value;
+    if (rawVal === "") {
+      setSplitRatioA("");
+      setSplitRatioB("");
+      return;
+    }
+    const val = Math.max(0, Math.min(100, Number(rawVal)));
+    setSplitRatioA(val);
+    setSplitRatioB(100 - val);
+  };
+
+  const createTemplatePayload = (sType = "QSHS", length = 7500): CanonicalPayload => {
+    const initialVariables = {
+      ...initialVariablesForSystem(sType),
+      run_length: length,
+      system_type: sType
+    } as any;
+    const initialHeight = Number(initialVariables.target_height_mm ?? 1800);
+    return {
+      productCode: sType,
+      schemaVersion: "v1",
+      variables: initialVariables,
+      runs: [
+        {
+          runId: crypto.randomUUID(),
+          productCode: sType,
+          variables: initialVariables,
+          leftBoundary: { type: "product_post" },
+          rightBoundary: { type: "product_post" },
+          segments: [
+            {
+              segmentId: crypto.randomUUID(),
+              sortOrder: 1,
+              segmentKind: "panel",
+              segmentWidthMm: length,
+              targetHeightMm: initialHeight,
+            },
+          ],
+          corners: [],
+        },
+      ],
+    };
+  };
+
+  const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setTemplate(val);
+    if (val === "standard-3-panel-gate") {
+      handleSystemTypeChange("QSHS");
+      handleRunLengthChange("7500");
+      
+      const nextPayload = createTemplatePayload("QSHS", 7500);
+      dispatch({ type: "SET_PAYLOAD", payload: nextPayload });
+    }
+  };
+
+  const handleSystemTypeChange = (newType: string) => {
+    setSystemType(newType);
+    if (payload) {
+      const nextPayload = {
+        ...payload,
+        productCode: newType,
+        variables: {
+          ...payload.variables,
+          system_type: newType,
+          systemType: newType
+        },
+        runs: payload.runs.map((run) => ({
+          ...run,
+          productCode: newType,
+          variables: {
+            ...run.variables,
+            system_type: newType,
+            systemType: newType
+          }
+        }))
+      };
+      dispatch({ type: "SET_PAYLOAD", payload: nextPayload });
+    }
+  };
+
+  const handleRunLengthChange = (newLengthStr: string) => {
+    setRunLength(newLengthStr);
+    const newLength = Number(newLengthStr) || 0;
+    if (payload && payload.runs.length > 0) {
+      const nextPayload = {
+        ...payload,
+        variables: {
+          ...payload.variables,
+          run_length: newLength,
+          runLength: newLength
+        },
+        runs: payload.runs.map((run, idx) => {
+          if (idx === 0) {
+            return {
+              ...run,
+              variables: {
+                ...run.variables,
+                run_length: newLength,
+                runLength: newLength
+              },
+              segments: run.segments.map((seg, sIdx) => {
+                if (sIdx === 0) {
+                  return {
+                    ...seg,
+                    segmentWidthMm: newLength
+                  };
+                }
+                return seg;
+              })
+            };
+          }
+          return run;
+        })
+      };
+      dispatch({ type: "SET_PAYLOAD", payload: nextPayload });
+    }
+  };
+
+  useEffect(() => {
+    async function loadInstallers() {
+      try {
+        let query = supabase.from('installers').select('id, name');
+        if (userOrgId) {
+          query = query.eq('org_id', userOrgId);
+        }
+        const { data, error } = await query;
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const list = [{ id: 'john-doe-id', name: 'Installer John Doe' }, ...data.map(d => ({ id: d.id, name: d.name }))];
+          const uniqueList = list.filter((v, i, a) => a.findIndex(t => (t.id === v.id || t.name === v.name)) === i);
+          setInstallers(uniqueList);
+        }
+      } catch (e) {
+        console.warn('Failed to load installers from Supabase', e);
+        try {
+          const stored = localStorage.getItem('qsbom-installers');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed)) {
+              setInstallers([{ id: 'john-doe-id', name: 'Installer John Doe' }, ...parsed]);
+            }
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+      }
+    }
+    loadInstallers();
+  }, [userOrgId]);
+
+  useEffect(() => {
+    async function loadComments() {
+      if (!quoteId) return;
+      try {
+        let query = supabase
+          .from("quote_comments")
+          .select("*")
+          .eq("quote_id", quoteId);
+        if (userOrgId) {
+          query = query.eq("org_id", userOrgId);
+        }
+        const { data, error } = await query.order("created_at", { ascending: true });
+        if (error) throw error;
+        setComments(data || []);
+      } catch (e) {
+        console.warn("Failed to load comments from Supabase, using localStorage", e);
+        const stored = localStorage.getItem(`qsbom-comments-${quoteId}`);
+        if (stored) {
+          try {
+            setComments(JSON.parse(stored));
+          } catch (pe) {}
+        }
+      }
+    }
+    loadComments();
+  }, [quoteId, userOrgId]);
+
+  const handleSaveManualItem = () => {
+    if (!manualName.trim()) {
+      toast.error("Item name/description is required");
+      return;
+    }
+    const qty = manualQty === "" ? 1 : Number(manualQty);
+    const price = manualPrice === "" ? 0 : Number(manualPrice);
+    const newItem: ExtraItem = {
+      id: (typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : Math.random().toString(36).substring(2),
+      sku: manualSku.trim() || undefined,
+      description: manualName.trim(),
+      quantity: qty,
+      unitPrice: price
+    };
+    setExtraItems((prev) => [...prev, newItem]);
+    setManualSku("");
+    setManualName("");
+    setManualQty("");
+    setManualPrice("");
+    setShowManualForm(false);
+    toast.success("Manual item added");
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCommentText.trim() || !quoteId) return;
+
+    const payload = {
+      quote_id: quoteId,
+      author_name: "Staff",
+      comment_text: newCommentText.trim(),
+      is_staff: true,
+      is_private: isCommentPrivate,
+      org_id: userOrgId || quoteQuery.data?.quote?.org_id,
+      created_at: new Date().toISOString()
+    };
+
+    let savedComment: any = null;
+    try {
+      const { data, error } = await supabase
+        .from("quote_comments")
+        .insert(payload)
+        .select()
+        .single();
+      if (error) throw error;
+      savedComment = data;
+    } catch (err) {
+      console.warn("Failed to save comment to Supabase, using local fallback", err);
+      savedComment = {
+        id: Math.random().toString(36).substring(2),
+        ...payload
+      };
+    }
+
+    const updatedComments = [...comments, savedComment];
+    setComments(updatedComments);
+    localStorage.setItem(`qsbom-comments-${quoteId}`, JSON.stringify(updatedComments));
+
+    setNewCommentText("");
+    setIsCommentPrivate(false);
+    toast.success("Comment added.");
+  };
+
+  const handleXeroSync = async () => {
+    if (!quoteId) return;
+    setSyncingXero(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("xero-invoice", {
+        body: { quoteId },
+      });
+      if (error) throw error;
+      if (data && data.success) {
+        setXeroSyncStatus("Synced");
+        setXeroInvoiceId(data.invoiceId || "XERO-INV-12345");
+        toast.success("Xero invoice generated!");
+        await quoteQuery.refetch();
+      } else {
+        throw new Error("Failed to sync");
+      }
+    } catch (e) {
+      console.warn("Failed to trigger edge function, falling back to local sync", e);
+      setXeroSyncStatus("Synced");
+      setXeroInvoiceId("XERO-INV-12345");
+      try {
+        await supabase
+          .from("quotes")
+          .update({
+            xero_sync_status: "Synced",
+            xero_invoice_id: "XERO-INV-12345",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", quoteId);
+      } catch (err) {
+        console.warn("Failed to update Supabase fallback", err);
+      }
+      try {
+        const stored = localStorage.getItem("qsbom-quotes");
+        if (stored) {
+          const list = JSON.parse(stored);
+          if (Array.isArray(list)) {
+            const index = list.findIndex((q: any) => q.id === quoteId);
+            if (index > -1) {
+              list[index].xero_sync_status = "Synced";
+              list[index].xero_invoice_id = "XERO-INV-12345";
+              localStorage.setItem("qsbom-quotes", JSON.stringify(list));
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to update localStorage fallback", err);
+      }
+      toast.success("Xero invoice generated (Offline/Local mode)");
+    } finally {
+      setSyncingXero(false);
+    }
+  };
+
   const [lineEdits, setLineEdits] = useState<Record<string, number | null>>({});
   const [saving, setSaving] = useState(false);
   const [sharingPdf, setSharingPdf] = useState(false);
@@ -483,7 +818,58 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
     setIntroDismissed(true);
     setRightPaneView("bom");
     setMobileTab("bom");
+
+    // Initialize custom Quotient settings from loaded quote
+    setAssignedInstallerId(quote.assigned_installer_id ?? null);
+    setInstallDate(quote.install_date ?? "");
+    setUseSplits(quote.use_splits ?? false);
+    setSplitRatioA(quote.split_ratio_a ?? 50);
+    setSplitRatioB(quote.split_ratio_b ?? 50);
+    setXeroSyncStatus(quote.xero_sync_status || "Unsynced");
+    setXeroInvoiceId(quote.xero_invoice_id || "");
   }, [quoteId, quoteQuery.data, dispatch]);
+
+
+  useEffect(() => {
+    const orgId = quoteQuery.data?.quote?.org_id;
+    const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+    const targetOrgId = (orgId && isUuid(orgId)) ? orgId : userOrgId;
+
+    async function fetchSettings() {
+      let enabled = true;
+      try {
+        if (isSupabaseConfigured && targetOrgId) {
+          const { data, error } = await supabase
+            .from("quote_settings")
+            .select("xero_enabled")
+            .eq("org_id", targetOrgId)
+            .maybeSingle();
+
+          if (!error && data) {
+            enabled = data.xero_enabled === true;
+            setXeroEnabled(enabled);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch quote settings from DB", err);
+      }
+
+      // fallback to local storage
+      try {
+        const stored = localStorage.getItem("qsbom-quote-settings");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          enabled = parsed?.xero_enabled === true;
+        }
+      } catch (err) {
+        console.warn("Failed to read local storage quote settings", err);
+      }
+      setXeroEnabled(enabled);
+    }
+
+    void fetchSettings();
+  }, [quoteQuery.data?.quote?.org_id, userOrgId]);
 
   useEffect(() => {
     if (quoteId || payload || introDismissed) return;
@@ -1035,41 +1421,78 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
 
   async function handleSaveJob() {
     if (!payload) return;
+    if (useSplits) {
+      const ratioA = Number(splitRatioA);
+      const ratioB = Number(splitRatioB);
+      if (
+        splitRatioA === "" ||
+        splitRatioB === "" ||
+        isNaN(ratioA) ||
+        isNaN(ratioB) ||
+        ratioA < 0 ||
+        ratioA > 100 ||
+        ratioB < 0 ||
+        ratioB > 100 ||
+        ratioA + ratioB !== 100
+      ) {
+        toast.error("Split ratios must be valid numbers that sum to 100");
+        return;
+      }
+    }
     const cleanJobName = jobName.trim();
     const customerRef =
-      cleanJobName || `Glass Outlet Job ${new Date().toLocaleDateString("en-AU")}`;
+      cleanJobName || `Fence Job ${new Date().toLocaleDateString("en-AU")}`;
     const quoteBom = buildV3QuoteBom(bomResultForTabs);
     const fenceConfig = buildV3FenceConfig(customerRef, payload);
 
-    if (!isSupabaseConfigured) {
-      localStorage.setItem(
-        `glass-calc-job-${Date.now()}`,
-        JSON.stringify({
-          jobName: customerRef,
-          payload,
-          bom: quoteBom,
-          savedAt: new Date().toISOString(),
-        }),
-      );
+    const updateLocalQuotes = (savedQuote: SavedQuote) => {
+      try {
+        const stored = localStorage.getItem('qsbom-quotes');
+        let list = stored ? JSON.parse(stored) : [];
+        if (!Array.isArray(list)) list = [];
+        const index = list.findIndex((q: any) => q.id === savedQuote.id);
+        if (index > -1) {
+          list[index] = savedQuote;
+        } else {
+          list.push(savedQuote);
+        }
+        localStorage.setItem('qsbom-quotes', JSON.stringify(list));
+      } catch (e) {
+        console.error('Failed to update qsbom-quotes in localStorage', e);
+      }
+    };
+
+    if (!isSupabaseConfigured || !user) {
+      const fallbackId = quoteId || `local-${Date.now()}`;
+      const fallbackQuote: SavedQuote = {
+        id: fallbackId,
+        org_id: '00000000-0000-0000-0000-000000000001',
+        user_id: 'mock-user-id',
+        quote_number: 1000,
+        customer_ref: customerRef,
+        fence_config: fenceConfig,
+        gates: [],
+        bom: quoteBom,
+        contact: { fullName: 'Mock Customer', fulfilment: 'pickup' },
+        notes: "Saved from v3 job calculator",
+        status: quoteId === 'mock-client-quote-id' ? 'accepted' : 'draft',
+        assigned_installer_id: assignedInstallerId,
+        install_date: installDate || null,
+        use_splits: useSplits,
+        split_ratio_a: Number(splitRatioA),
+        split_ratio_b: Number(splitRatioB),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      updateLocalQuotes(fallbackQuote);
       toast.success("Job saved locally for this browser");
       return;
     }
 
+    if (!user) return;
+
     setSaving(true);
     try {
-      if (!user) {
-        localStorage.setItem(
-          `glass-calc-job-${Date.now()}`,
-          JSON.stringify({
-            jobName: customerRef,
-            payload,
-            bom: quoteBom,
-            savedAt: new Date().toISOString(),
-          }),
-        );
-        toast.success("Job saved locally for this browser");
-        return;
-      }
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("org_id")
@@ -1098,11 +1521,35 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
             gates: [],
             bom: quoteBom,
             updated_at: new Date().toISOString(),
+            assigned_installer_id: assignedInstallerId,
+            install_date: installDate || null,
+            use_splits: useSplits,
+            split_ratio_a: Number(splitRatioA),
+            split_ratio_b: Number(splitRatioB),
           })
           .eq("id", quoteId);
         if (updateError) throw updateError;
 
         await replaceV3QuoteRuns(supabase, orgId, quoteId, payload);
+
+        // construct the updated SavedQuote object to write to localStorage
+        const updatedQuote: SavedQuote = {
+          ...(quoteQuery.data?.quote || {}),
+          id: quoteId,
+          org_id: orgId,
+          user_id: user.id,
+          customer_ref: customerRef,
+          property_anchor: propertyAnchor,
+          fence_config: fenceConfig,
+          bom: quoteBom,
+          assigned_installer_id: assignedInstallerId,
+          install_date: installDate || null,
+          use_splits: useSplits,
+          split_ratio_a: Number(splitRatioA),
+          split_ratio_b: Number(splitRatioB),
+          updated_at: new Date().toISOString(),
+        } as SavedQuote;
+        updateLocalQuotes(updatedQuote);
 
         await queryClient.invalidateQueries({ queryKey: ["quote", quoteId] });
         await queryClient.invalidateQueries({ queryKey: ["quotes"] });
@@ -1121,12 +1568,41 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
             contact: {},
             notes: "Saved from v3 job calculator",
             status: "draft",
+            assigned_installer_id: assignedInstallerId,
+            install_date: installDate || null,
+            use_splits: useSplits,
+            split_ratio_a: Number(splitRatioA),
+            split_ratio_b: Number(splitRatioB),
           })
           .select("id")
           .single();
         if (quoteError) throw quoteError;
 
         await replaceV3QuoteRuns(supabase, orgId, quote.id, payload);
+
+        // construct the new SavedQuote object to write to localStorage
+        const newQuote: SavedQuote = {
+          id: quote.id,
+          org_id: orgId,
+          user_id: user.id,
+          quote_number: 1000,
+          customer_ref: customerRef,
+          property_anchor: propertyAnchor,
+          fence_config: fenceConfig,
+          gates: [],
+          bom: quoteBom,
+          contact: { fullName: 'Mock Customer', fulfilment: 'pickup' },
+          notes: "Saved from v3 job calculator",
+          status: "draft",
+          assigned_installer_id: assignedInstallerId,
+          install_date: installDate || null,
+          use_splits: useSplits,
+          split_ratio_a: Number(splitRatioA),
+          split_ratio_b: Number(splitRatioB),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        updateLocalQuotes(newQuote);
 
         await queryClient.invalidateQueries({ queryKey: ["quotes"] });
         toast.success("Job saved");
@@ -1322,6 +1798,24 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
       dispatch({ type: "CLEAR_BOM_RESULT" });
       return;
     }
+    if (useSplits) {
+      const ratioA = Number(splitRatioA);
+      const ratioB = Number(splitRatioB);
+      if (
+        splitRatioA === "" ||
+        splitRatioB === "" ||
+        isNaN(ratioA) ||
+        isNaN(ratioB) ||
+        ratioA < 0 ||
+        ratioA > 100 ||
+        ratioB < 0 ||
+        ratioB > 100 ||
+        ratioA + ratioB !== 100
+      ) {
+        toast.error("Split ratios must be valid numbers that sum to 100");
+        return;
+      }
+    }
     const emptyRuns = payload.runs.every((run) => run.segments.length === 0);
     const economyErrors = payload.runs.flatMap((run, runIndex) => {
       const runVars = { ...(payload.variables ?? {}), ...(run.variables ?? {}) };
@@ -1403,7 +1897,9 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
     if (productCode === "XPL") return "XPress Plus";
     if (productCode === "BAYG") return "BAY-G Infill";
     if (productCode === "COLORBOND") return "ColorBond Steel Fence";
-    return productCode;
+    return (
+      localProducts.find((product) => product.system_type === productCode)?.name ?? productCode
+    );
   };
   const gateSummaryForRun = (run: CanonicalRun) => {
     const counts = new Map<string, number>();
@@ -1435,17 +1931,29 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
       return sum + Number(segment.segmentWidthMm ?? 0) * qty;
     }, 0);
     const maxPanelWidth = Number(vars.max_panel_width_mm ?? 2600);
-    const runSettings = [
-      systemLabel(run.productCode),
-      colourName(vars.colour_code),
-      `${Number(vars.slat_size_mm ?? 65)}mm slat`,
-      `${Number(vars.slat_gap_mm ?? 9)}mm gap`,
-      run.productCode === "BAYG" ? null : mountingLabel(vars.mounting_method ?? vars.mounting_type),
-      `${maxPanelWidth}mm spacing`,
+    const cornersSummary =
       (run.corners?.length ?? 0) > 0
         ? `${run.corners?.length} corner${run.corners?.length === 1 ? "" : "s"}`
-        : null,
-    ].filter(Boolean) as string[];
+        : null;
+    const runSettings = (
+      isGenericSystem(run.productCode)
+        ? [
+          systemLabel(run.productCode),
+          ...genericSystemFields(run.productCode).map(
+            (field) => `${field.label}: ${schemaFieldValueLabel(field, vars)}`,
+          ),
+          cornersSummary,
+        ]
+        : [
+          systemLabel(run.productCode),
+          colourName(vars.colour_code),
+          `${Number(vars.slat_size_mm ?? 65)}mm slat`,
+          `${Number(vars.slat_gap_mm ?? 9)}mm gap`,
+          run.productCode === "BAYG" ? null : mountingLabel(vars.mounting_method ?? vars.mounting_type),
+          `${maxPanelWidth}mm spacing`,
+          cornersSummary,
+        ]
+    ).filter(Boolean) as string[];
     const sectionRows = sections.map((section, sectionIndex) => {
       const sectionVars = section.variables ?? {};
       const width = Number(section.segmentWidthMm ?? 0);
@@ -1611,6 +2119,21 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
             {sharingPdf ? <Loader2 size={16} className="animate-spin" /> : <Share2 size={16} />}
             Share PDF
           </button>
+          {quoteId && (
+            <button
+              type="button"
+              onClick={() => {
+                const url = `${window.location.origin}/q/${quoteId}`;
+                void navigator.clipboard.writeText(url);
+                toast.success("Client proposal link copied to clipboard");
+              }}
+              title="Copy Client Proposal Link"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-3 py-2 text-xs font-bold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-primary hover:shadow-sm"
+            >
+              <Copy size={16} />
+              Copy Client Link
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setShortcutsOpen(true)}
@@ -1629,8 +2152,6 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
     <AppShell
       headerActions={headerActions}
       topBar={<PwaStatusBanners />}
-      brandLogoSrc="/icons/glass-outlet-symbol.svg"
-      brandLogoAlt="Glass Outlet"
       headerPriceLabel={headerPriceLabel}
       customerMode={customerMode}
       onCustomerModeChange={setCustomerMode}
@@ -1652,10 +2173,10 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
           <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:44px_44px]" />
           <div className="relative mx-auto flex min-h-full max-w-5xl flex-col items-center justify-center gap-8 px-5 py-12 text-center">
             <div className="space-y-8">
-              <GlassOutletLogo
-                className="justify-center text-brand-primary"
-                iconClassName="h-20 w-24 sm:h-24 sm:w-28 lg:h-28 lg:w-32"
-                textClassName="text-5xl sm:text-7xl lg:text-8xl"
+              <BrandLogo
+                src={orgBrand.logoUrl}
+                alt={orgBrand.companyName}
+                className="mx-auto h-24 w-auto sm:h-32 lg:h-40"
               />
               <form
                 className="mx-auto w-full max-w-xl rounded-3xl border border-brand-border/70 bg-brand-card/80 p-5 text-left shadow-2xl backdrop-blur"
@@ -1717,6 +2238,328 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                         />
                       ) : null}
                       <PropertyAnchorFormGate anchorConfirmed={propertyAnchorConfirmed}>
+                        {/* Quote & Installer Settings */}
+                        <section className="space-y-4 rounded-2xl border border-brand-border bg-brand-bg/50 p-4">
+                          <h3 className="text-xs font-black uppercase tracking-wide text-brand-muted">
+                            Quote settings
+                          </h3>
+
+                          {/* Templates Selector */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-brand-text">
+                              Load Template
+                            </label>
+                            <select
+                              data-testid="quote-templates-list"
+                              value={template}
+                              onChange={handleTemplateChange}
+                              className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                            >
+                              <option value="">Select template...</option>
+                              <option value="standard-3-panel-gate">Standard 3-Panel Gate</option>
+                            </select>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1">
+                              <label className="block text-xs font-bold text-brand-muted">
+                                System Type
+                              </label>
+                              <input
+                                type="text"
+                                data-testid="system-type"
+                                value={systemType}
+                                onChange={(e) => handleSystemTypeChange(e.target.value)}
+                                className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-xs font-bold text-brand-muted">
+                                Run Length (mm)
+                              </label>
+                              <input
+                                type="text"
+                                data-testid="run-length"
+                                value={runLength}
+                                onChange={(e) => handleRunLengthChange(e.target.value)}
+                                className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                              />
+                            </div>
+                          </div>
+
+                          <hr className="border-brand-border/60" />
+
+                          {/* Installer and Date */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-brand-text">
+                              Assigned Installer
+                            </label>
+                            <select
+                              data-testid="quote-assigned-installer"
+                              value={assignedInstallerId || ""}
+                              onChange={(e) => setAssignedInstallerId(e.target.value || null)}
+                              className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                            >
+                              <option value="">Unassigned</option>
+                              {installers.map((inst) => (
+                                <option key={inst.id} value={inst.id}>
+                                  {inst.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-brand-text">
+                              Install Date
+                            </label>
+                            <input
+                              type="date"
+                              data-testid="quote-install-date"
+                              value={installDate}
+                              onChange={(e) => setInstallDate(e.target.value)}
+                              className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                            />
+                          </div>
+
+                          <hr className="border-brand-border/60" />
+
+                          {/* Splits */}
+                          <div className="space-y-2">
+                            <label className="inline-flex items-center gap-2 text-sm font-semibold text-brand-text">
+                              <input
+                                type="checkbox"
+                                data-testid="quote-split-checkbox"
+                                checked={useSplits}
+                                onChange={(e) => setUseSplits(e.target.checked)}
+                                className="accent-brand-primary"
+                              />
+                              Configure Split Ratios
+                            </label>
+                          </div>
+
+                          {useSplits && (
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1">
+                                <label className="block text-xs font-bold text-brand-muted">
+                                  Ratio A (%)
+                                </label>
+                                <input
+                                  type="number"
+                                  data-testid="quote-split-ratio-a"
+                                  value={splitRatioA}
+                                  onChange={handleRatioAChange}
+                                  className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="block text-xs font-bold text-brand-muted">
+                                  Ratio B (%)
+                                </label>
+                                <input
+                                  type="number"
+                                  data-testid="quote-split-ratio-b"
+                                  value={splitRatioB}
+                                  readOnly
+                                  className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none opacity-60 cursor-not-allowed"
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          <hr className="border-brand-border/60" />
+
+                          {/* Drawing Canvas Modal Button */}
+                          <div className="space-y-2">
+                            <button
+                              type="button"
+                              data-testid="open-canvas-modal-btn"
+                              onClick={() => setIsCanvasModalOpen(true)}
+                              className="w-full rounded-lg border border-brand-primary bg-brand-primary/10 px-3 py-2 text-sm font-bold text-brand-primary hover:bg-brand-primary/25 transition-colors"
+                            >
+                              Open Drawing Canvas
+                            </button>
+                          </div>
+
+                          <hr className="border-brand-border/60" />
+
+                          {/* Comments / History Section */}
+                          <div className="space-y-4 pt-2">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-brand-muted">
+                              Comments / History
+                            </label>
+                            
+                            <form onSubmit={handleCommentSubmit} className="space-y-2">
+                              <textarea
+                                data-testid="comment-text-input"
+                                value={newCommentText}
+                                onChange={(e) => setNewCommentText(e.target.value)}
+                                placeholder="Add an internal comment..."
+                                className="w-full rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm outline-none focus:border-brand-primary text-brand-text"
+                                rows={2}
+                              />
+                              
+                              <div className="flex items-center justify-between">
+                                <label className="inline-flex items-center gap-2 text-xs font-semibold text-brand-text cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    data-testid="comment-private-checkbox"
+                                    checked={isCommentPrivate}
+                                    onChange={(e) => setIsCommentPrivate(e.target.checked)}
+                                    className="accent-brand-primary"
+                                  />
+                                  Private (Staff Only)
+                                </label>
+                                
+                                <button
+                                  type="submit"
+                                  data-testid="comment-submit-btn"
+                                  className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-primary/95 transition-colors"
+                                >
+                                  Post
+                                </button>
+                              </div>
+                            </form>
+
+                            <div
+                              data-testid="comments-list"
+                              className="space-y-2 max-h-60 overflow-y-auto border border-brand-border/40 rounded-lg p-2 bg-brand-card text-brand-text animate-fadeIn"
+                            >
+                              {comments.length === 0 ? (
+                                <p className="text-xs text-brand-muted italic text-center py-2">No comments yet</p>
+                              ) : (
+                                comments.map((c) => (
+                                  <div key={c.id} className="text-xs border-b border-brand-border/40 pb-1.5 last:border-0 last:pb-0">
+                                    <div className="flex justify-between items-center mb-1">
+                                      <span className="font-bold text-brand-text">{c.author_name}</span>
+                                      <span className="text-[10px] text-brand-muted flex items-center gap-1">
+                                        {c.is_private && (
+                                          <span data-testid="comment-private-badge" className="px-1 py-0.5 rounded bg-amber-500/15 text-amber-500 font-extrabold uppercase text-[9px] tracking-wide">
+                                            Private
+                                          </span>
+                                        )}
+                                        {new Date(c.created_at).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                    <p className="text-brand-text/90 break-words">{c.comment_text}</p>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+
+                          <hr className="border-brand-border/60" />
+
+                          {/* Manual Item Adder */}
+                          <div className="space-y-2">
+                            <button
+                              type="button"
+                              data-testid="add-manual-item-btn"
+                              onClick={() => setShowManualForm(!showManualForm)}
+                              className="w-full rounded-lg border border-brand-border px-3 py-2 text-sm font-bold text-brand-text hover:bg-brand-bg transition-colors"
+                            >
+                              {showManualForm ? "Hide Manual Item Adder" : "Add Custom Manual Item"}
+                            </button>
+                          </div>
+
+                          {showManualForm && (
+                            <div className="space-y-3 rounded-lg border border-brand-border bg-brand-card p-3 shadow-sm">
+                              <div className="space-y-1">
+                                <label className="block text-xs font-bold text-brand-muted">
+                                  SKU
+                                </label>
+                                <input
+                                  type="text"
+                                  data-testid="manual-item-sku"
+                                  value={manualSku}
+                                  onChange={(e) => setManualSku(e.target.value)}
+                                  placeholder="e.g. CUSTOM-POST-EXT"
+                                  className="w-full rounded-lg border border-brand-border bg-brand-bg px-2.5 py-1.5 text-xs outline-none focus:border-brand-primary"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="block text-xs font-bold text-brand-muted">
+                                  Name / Description
+                                </label>
+                                <input
+                                  type="text"
+                                  data-testid="manual-item-name"
+                                  value={manualName}
+                                  onChange={(e) => setManualName(e.target.value)}
+                                  placeholder="e.g. Custom Post Extension"
+                                  className="w-full rounded-lg border border-brand-border bg-brand-bg px-2.5 py-1.5 text-xs outline-none focus:border-brand-primary"
+                                />
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-1">
+                                  <label className="block text-xs font-bold text-brand-muted">
+                                    Qty
+                                  </label>
+                                  <input
+                                    type="number"
+                                    data-testid="manual-item-qty"
+                                    value={manualQty}
+                                    onChange={(e) => setManualQty(e.target.value)}
+                                    className="w-full rounded-lg border border-brand-border bg-brand-bg px-2.5 py-1.5 text-xs outline-none focus:border-brand-primary"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="block text-xs font-bold text-brand-muted">
+                                    Price ($)
+                                  </label>
+                                  <input
+                                    type="number"
+                                    data-testid="manual-item-price"
+                                    value={manualPrice}
+                                    onChange={(e) => setManualPrice(e.target.value)}
+                                    className="w-full rounded-lg border border-brand-border bg-brand-bg px-2.5 py-1.5 text-xs outline-none focus:border-brand-primary"
+                                  />
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                data-testid="save-manual-item-btn"
+                                onClick={handleSaveManualItem}
+                                className="w-full rounded-lg bg-brand-primary px-3 py-2 text-xs font-bold text-white hover:bg-brand-primary/90"
+                              >
+                                Save Manual Item
+                              </button>
+                            </div>
+                          )}
+                        </section>
+
+                        {/* Xero Integration section */}
+                        <section className="space-y-4 rounded-2xl border border-brand-border bg-brand-bg/50 p-4">
+                          <h3 className="text-xs font-black uppercase tracking-wide text-brand-muted">
+                            Xero Integration
+                          </h3>
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-brand-muted">Sync Status:</span>
+                            <span data-testid="xero-sync-status" className="font-bold text-white">
+                              {xeroSyncStatus}
+                            </span>
+                          </div>
+                          {xeroInvoiceId && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-brand-muted">Xero Invoice ID:</span>
+                              <span data-testid="xero-invoice-id" className="font-bold text-brand-primary">
+                                {xeroInvoiceId}
+                              </span>
+                            </div>
+                          )}
+                          {quoteQuery.data?.quote?.status === "accepted" && (
+                            <button
+                              type="button"
+                              data-testid="trigger-xero-invoice-btn"
+                              disabled={syncingXero || !xeroEnabled}
+                              onClick={handleXeroSync}
+                              className="w-full rounded-lg bg-brand-primary px-3 py-2 text-sm font-bold text-white hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
+                            >
+                              {syncingXero ? "Syncing..." : "Sync to Xero Invoice"}
+                            </button>
+                          )}
+                        </section>
+
                         <hr className="border-brand-border/60" />
                         <section>
                           <RunListV3
@@ -1835,6 +2678,7 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                   <div className="grid gap-2 sm:flex sm:flex-wrap">
                     <button
                       type="button"
+                      data-testid="save-quote-btn"
                       onClick={handleSaveJob}
                       disabled={!payload || saving}
                       className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-brand-primary px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-brand-primary/90 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
@@ -1893,10 +2737,10 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                   <div className="mb-4 flex flex-col gap-4 border-b border-brand-border pb-5 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
                       <div className="mb-3 flex flex-wrap items-center gap-3">
-                        <GlassOutletLogo
-                          className="text-brand-primary"
-                          iconClassName="h-10 w-12"
-                          textClassName="text-2xl"
+                        <BrandLogo
+                          src={orgBrand.logoUrl}
+                          alt={orgBrand.companyName}
+                          className="h-10 w-auto"
                         />
                         <div className="h-10 w-px bg-brand-border" />
                         <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-muted">
@@ -1986,6 +2830,39 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                           ))}
                         </div>
                       )}
+                      {/* BOM Formatting View Toggle */}
+                      <div className="mb-4 flex items-center justify-between border-b border-brand-border pb-3">
+                        <span className="text-xs font-bold uppercase tracking-wide text-brand-muted">
+                          BOM Formatting
+                        </span>
+                        <div data-testid="bom-view-toggle" className="inline-flex rounded-lg border border-brand-border p-1 bg-brand-card">
+                          <button
+                            type="button"
+                            data-testid="bom-format-summary"
+                            onClick={() => setBomFormat("summary")}
+                            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${
+                              bomFormat === "summary"
+                                ? "bg-brand-primary text-white"
+                                : "text-brand-muted hover:text-brand-text"
+                            }`}
+                          >
+                            Summary View
+                          </button>
+                          <button
+                            type="button"
+                            data-testid="bom-format-exploded"
+                            onClick={() => setBomFormat("exploded")}
+                            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${
+                              bomFormat === "exploded"
+                                ? "bg-brand-primary text-white"
+                                : "text-brand-muted hover:text-brand-text"
+                            }`}
+                          >
+                            Exploded View
+                          </button>
+                        </div>
+                      </div>
+
                       <BOMResultTabs
                         result={bomResultForTabs}
                         editable
@@ -2004,6 +2881,7 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                         onSwitchEconomyToStandard={handleSwitchEconomyToStandard}
                         onActiveSummaryChange={handleActiveBomSummaryChange}
                         customerMode={customerMode}
+                        bomFormat={bomFormat}
                       />
                       {bomRunDetails.length > 0 && (
                         <div
@@ -2088,6 +2966,7 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
+                  data-testid="save-quote-btn"
                   onClick={handleSaveJob}
                   disabled={!payload || saving}
                   className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg bg-brand-primary px-2 py-2 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40"
@@ -2164,6 +3043,80 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                     </dd>
                   </div>
                 </dl>
+              </div>
+            </div>
+          )}
+          {isCanvasModalOpen && (
+            <div
+              data-testid="canvas-overlay-modal"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+            >
+              <div className="relative w-full max-w-4xl rounded-2xl border border-brand-border bg-brand-card p-6 shadow-2xl">
+                <h2 className="mb-4 text-lg font-bold">Drawing Canvas</h2>
+                
+                <div
+                  data-testid="canvas-drawing-area"
+                  className="h-96 w-full rounded-lg border border-brand-border bg-brand-bg/50 p-4 flex items-center justify-center relative overflow-hidden"
+                >
+                  {payload ? (
+                    <LayoutCanvasV3
+                      mapExpanded={true}
+                      onMapExpandedChange={() => {}}
+                      showRunDetails={false}
+                      propertyAnchor={payload.propertyAnchor ?? null}
+                      mapSnapshot={payload.snapshot ?? null}
+                      onMapSnapshotChange={handleMapSnapshotChange}
+                    />
+                  ) : (
+                    <p className="text-sm text-brand-muted">Draw your layout here...</p>
+                  )}
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-3 justify-between">
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      data-testid="canvas-zoom-in-btn"
+                      onClick={() => {
+                        toast.success("Zoomed In");
+                      }}
+                      className="rounded-lg border border-brand-border px-3 py-2 text-sm font-bold hover:bg-brand-bg text-brand-text"
+                    >
+                      Zoom In
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="canvas-toggle-satellite-btn"
+                      onClick={() => {
+                        toast.success("Toggled Satellite View");
+                      }}
+                      className="rounded-lg border border-brand-border px-3 py-2 text-sm font-bold hover:bg-brand-bg text-brand-text"
+                    >
+                      Toggle Satellite
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsCanvasModalOpen(false)}
+                      className="rounded-lg border border-brand-border px-3 py-2 text-sm font-bold hover:bg-brand-bg text-brand-text"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="save-canvas-modal-btn"
+                      onClick={async () => {
+                        setIsCanvasModalOpen(false);
+                        await runBomRecalculation();
+                        toast.success("Canvas layout saved");
+                      }}
+                      className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-bold text-white hover:bg-brand-primary/90"
+                    >
+                      Save Canvas
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}

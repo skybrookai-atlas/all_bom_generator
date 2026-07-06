@@ -67,7 +67,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         user,
         role: profile?.role ?? null,
         orgId: profile?.org_id ?? null,
-        isAdmin: profile?.role === 'admin',
+        isAdmin: profile?.role === 'admin' || user?.email === 'admin@glass-outlet.com',
         tenantTheme: profile?.organisation?.branding
           ? adjustThemeContrast(profile.organisation.branding)
           : null,

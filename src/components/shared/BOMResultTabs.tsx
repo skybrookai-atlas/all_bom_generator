@@ -36,6 +36,7 @@ interface BOMResultTabsProps {
     grandTotal: number;
   }) => void;
   customerMode?: boolean;
+  bomFormat?: 'summary' | 'exploded';
 }
 
 const CATEGORY_ORDER = BOM_CATEGORY_ORDER;
@@ -220,6 +221,7 @@ function BOMTable({
   onRemoveLine,
   onSwitchEconomyToStandard,
   customerMode,
+  bomFormat,
 }: {
   items: BOMLineItem[];
   editable?: boolean;
@@ -227,6 +229,7 @@ function BOMTable({
   onRemoveLine?: (item: BOMLineItem) => void;
   onSwitchEconomyToStandard?: (item: BOMLineItem) => void;
   customerMode?: boolean;
+  bomFormat?: 'summary' | 'exploded';
 }) {
   const sorted = sortItems(items);
   const groups = groupByCategory(sorted);
@@ -240,6 +243,10 @@ function BOMTable({
     );
   }
 
+  const tableClassName = `w-full text-left border-collapse ${
+    bomFormat === "summary" ? "bom-summary-format" : "bom-exploded-format"
+  }`;
+
   return (
     <>
     <BOMMobileCards
@@ -252,7 +259,7 @@ function BOMTable({
       customerMode={customerMode}
     />
     <div className="hidden overflow-x-auto md:block" data-testid="bom-desktop-table">
-      <table className="w-full text-left border-collapse">
+      <table className={tableClassName} data-testid="bom-table">
         <thead>
           <tr className="bg-brand-bg/80">
             <th className="py-2.5 px-3 text-xs font-semibold text-brand-muted uppercase tracking-wider whitespace-nowrap">
@@ -388,7 +395,7 @@ function BOMMobileCard({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <GateDiagramBadges numbers={diagramNumbers} />
-            <span className="font-mono text-xs font-bold text-brand-muted">
+            <span className="font-mono text-xs font-bold text-brand-muted" data-testid="bom-row-code">
               {item.sku}
             </span>
             <PageChip sku={item.sku} />
@@ -417,16 +424,17 @@ function BOMMobileCard({
               }
               className="mt-1 h-11 w-20 rounded-lg border border-brand-border bg-brand-card px-2 text-right text-sm font-black text-brand-text outline-none focus:border-brand-primary"
               aria-label={`Quantity for ${item.sku}`}
+              data-testid="bom-row-qty"
             />
           ) : (
-            <p className="text-xl font-black text-brand-text">{item.quantity}</p>
+            <p className="text-xl font-black text-brand-text" data-testid="bom-row-qty">{item.quantity}</p>
           )}
           {!customerMode && (
             <>
-              <p className="mt-2 text-xs font-semibold text-brand-muted">
+              <p className="mt-2 text-xs font-semibold text-brand-muted" data-testid="bom-row-unit-price">
                 {item.unitPrice > 0 ? `$${formatMoney(item.unitPrice)}` : "-"} / {unitLabel(item)}
               </p>
-              <p className="mt-1 text-base font-black text-brand-primary">
+              <p className="mt-1 text-base font-black text-brand-primary" data-testid="bom-row-line-total">
                 {item.unitPrice > 0 ? `$${formatMoney(item.lineTotal)}` : "-"}
               </p>
             </>
@@ -553,7 +561,7 @@ function ItemGroup({
               : "hover:bg-brand-accent/5"
           }`}
         >
-          <td className="py-2.5 px-3 text-xs font-mono text-brand-accent whitespace-nowrap">
+          <td className="py-2.5 px-3 text-xs font-mono text-brand-accent whitespace-nowrap" data-testid="bom-row-code">
             <span className="inline-flex flex-wrap items-center gap-1.5">
               <GateDiagramBadges numbers={diagramNumbers} />
               {item.sku}
@@ -619,7 +627,7 @@ function ItemGroup({
           <td className="hidden py-2.5 px-3 text-sm text-brand-muted text-center sm:table-cell">
             {unitLabel(item)}
           </td>
-          <td className="py-2.5 px-3 text-sm text-brand-text text-right tabular-nums">
+          <td className="py-2.5 px-3 text-sm text-brand-text text-right tabular-nums" data-testid="bom-row-qty">
             {editable ? (
               <>
                 <input
@@ -641,10 +649,10 @@ function ItemGroup({
           </td>
           {!customerMode && (
             <>
-              <td className="hidden py-2.5 px-3 text-sm text-brand-muted text-right tabular-nums sm:table-cell">
+              <td className="hidden py-2.5 px-3 text-sm text-brand-muted text-right tabular-nums sm:table-cell" data-testid="bom-row-unit-price">
                 {item.unitPrice > 0 ? `$${formatMoney(item.unitPrice)}` : "-"}
               </td>
-              <td className="py-2.5 px-3 text-sm text-brand-text font-medium text-right tabular-nums">
+              <td className="py-2.5 px-3 text-sm text-brand-text font-medium text-right tabular-nums" data-testid="bom-row-line-total">
                 {item.unitPrice > 0 ? `$${formatMoney(item.lineTotal)}` : "-"}
               </td>
             </>
@@ -676,6 +684,7 @@ export function BOMResultTabs({
   onSwitchEconomyToStandard,
   onActiveSummaryChange,
   customerMode,
+  bomFormat,
 }: BOMResultTabsProps) {
   const [activeTab, setActiveTab] = useState("all");
   const [viewMode, setViewMode] = useState<"line_items" | "cut_list">("line_items");
@@ -783,6 +792,7 @@ export function BOMResultTabs({
           onRemoveLine={onRemoveLine}
           onSwitchEconomyToStandard={onSwitchEconomyToStandard}
           customerMode={customerMode}
+          bomFormat={bomFormat}
         />
       )}
 

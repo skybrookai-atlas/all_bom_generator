@@ -30,9 +30,14 @@ import {
 } from "../../lib/gateConstraints";
 import {
   clampPostSpacing,
+  genericHeightOptionsForSystem,
+  genericSystemFields,
+  genericVariableKeys,
   heightEntriesForSystem,
+  isGenericSystem,
   maxPanelWidthForSystem,
 } from "../../lib/productOptionRules";
+import { schemaFieldValueLabel } from "./SchemaDrivenForm";
 import {
   derivedHeightForSlatCount,
   nearestDerivedHeight,
@@ -179,11 +184,14 @@ export function SegmentRow({
   const productCode = String(seg.variables?.product_code ?? runProductCode);
   const isBayg = productCode === "BAYG";
   const isColorBond = productCode === "COLORBOND";
+  const isGeneric = isGenericSystem(productCode);
+  const genericHeightOptions = isGeneric ? genericHeightOptionsForSystem(productCode) : [];
   const heightEntries = run
     ? heightEntriesForSystem(productCode, segmentVariables)
     : [];
   const heightInputsReady =
     isColorBond ||
+    isGeneric ||
     productCode === "VS" ||
     (Number.isFinite(Number(segmentVariables.slat_size_mm)) &&
       Number.isFinite(Number(segmentVariables.slat_gap_mm)));
@@ -199,6 +207,12 @@ export function SegmentRow({
     );
   const selectedHeight =
     selectedHeightEntry?.height ?? Number(seg.targetHeightMm ?? segmentVariables.target_height_mm ?? 1800);
+  const genericSelectedHeight =
+    genericHeightOptions.length > 0
+      ? genericHeightOptions.reduce((best, option) =>
+        Math.abs(option - selectedHeight) < Math.abs(best - selectedHeight) ? option : best,
+      )
+      : selectedHeight;
   const fenceColour = String(segmentVariables.colour_code ?? "B");
   const postColour = String(segmentVariables.post_colour_code ?? fenceColour);
   const maxSpacing = clampPostSpacing(
@@ -268,6 +282,7 @@ export function SegmentRow({
       "include_65mm_support_posts",
       "post_cap_type",
       "include_timber_sleeper",
+      ...genericVariableKeys(productCode),
       SEGMENT_TERMINATION_KEYS.leftNonSystemSubtype,
       SEGMENT_TERMINATION_KEYS.rightNonSystemSubtype,
     ];
@@ -380,6 +395,27 @@ export function SegmentRow({
         { label: "Bay Count", value: panelCount, changed: !sameValue(panelCount, masterPanelCount) },
         { label: "Bay width", value: panelWidthSummary, changed: !sameValue(maxSpacing, masterMaxSpacing) },
       ]
+      : isGeneric
+        ? [
+          {
+            label: "Height",
+            value: `${selectedHeight}mm`,
+            changed: !sameValue(
+              selectedHeight,
+              masterVariables.target_height_mm ?? 1800,
+            ),
+          },
+          {
+            label: "System",
+            value: productCode,
+            changed: !sameValue(productCode, runProductCode),
+          },
+          ...genericSystemFields(productCode).map((field) => ({
+            label: field.label,
+            value: schemaFieldValueLabel(field, segmentVariables as Record<string, string | number | boolean>),
+            changed: !sameValue(segmentVariables[field.field_key], masterVariables[field.field_key]),
+          })),
+        ]
       : [
       {
         label: "Height",
@@ -590,6 +626,7 @@ export function SegmentRow({
           include_65mm_support_posts: null,
           post_cap_type: null,
           include_timber_sleeper: null,
+          ...Object.fromEntries(genericVariableKeys(productCode).map((key) => [key, null])),
         }),
       },
     });
@@ -776,6 +813,18 @@ export function SegmentRow({
                       </option>
                     ))}
                   </select>
+                ) : isGeneric && genericHeightOptions.length > 0 ? (
+                  <select
+                    value={genericSelectedHeight}
+                    onChange={(event) => updateGeometry("targetHeightMm", Number(event.target.value))}
+                    className="w-44 rounded-lg border border-brand-border bg-brand-card px-3 py-2 text-sm font-semibold text-brand-text shadow-sm outline-none transition-colors focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
+                  >
+                    {genericHeightOptions.map((height) => (
+                      <option key={height} value={height}>
+                        {height}mm
+                      </option>
+                    ))}
+                  </select>
                 ) : productCode === "VS" ? (
                   <>
 
@@ -815,6 +864,8 @@ export function SegmentRow({
                 )}
                 {isColorBond ? (
                   <span className="text-xs text-brand-muted/70">Catalogue finished heights</span>
+                ) : isGeneric ? (
+                  <span className="text-xs text-brand-muted/70">Standard heights for {productCode}</span>
                 ) : productCode === "VS" ? (
                   <span className="text-xs text-brand-muted/70">Custom height</span>
                 ) : (

@@ -1,4 +1,5 @@
 import { Header } from "./Header";
+import { useOrgBranding } from "../../hooks/useOrgBranding";
 import type { TenantBranding } from "../../lib/tenantThemes";
 
 interface AppShellProps {
@@ -30,14 +31,28 @@ export function AppShell({
   onClearJobRequest,
   clearJobDisabled,
 }: AppShellProps) {
+  // Org-driven branding (merged over DEFAULT_BRAND). Explicit props win.
+  const orgBrand = useOrgBranding();
+
+  const effectiveBranding: TenantBranding = branding ?? {
+    title: orgBrand.title,
+    titleItalic: orgBrand.titleItalic,
+    subtitle: orgBrand.subtitle,
+    hideThemeToggle: false,
+    companyName: orgBrand.companyName,
+    tagline: orgBrand.tagline,
+    website: orgBrand.website,
+    logoUrl: orgBrand.logoUrl,
+  };
+
   return (
     <div className="flex h-screen h-dvh flex-col overflow-hidden bg-brand-bg text-brand-text">
       <Header
-        branding={branding}
+        branding={effectiveBranding}
         actions={headerActions}
         mobileTitle={mobileTitle}
-        brandLogoSrc={brandLogoSrc}
-        brandLogoAlt={brandLogoAlt}
+        brandLogoSrc={brandLogoSrc ?? orgBrand.logoUrl}
+        brandLogoAlt={brandLogoAlt ?? orgBrand.companyName}
         priceLabel={headerPriceLabel}
         customerMode={customerMode}
         onCustomerModeChange={onCustomerModeChange}

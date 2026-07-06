@@ -5,6 +5,14 @@ export type TenantBranding = {
   titleItalic?: string;
   subtitle: string;
   hideThemeToggle: boolean;
+  /** Full legal/trading name, e.g. shown in PDF headers and footers. */
+  companyName?: string;
+  /** Short strapline shown under the company name where space allows. */
+  tagline?: string;
+  /** Public website (display form, no protocol required). */
+  website?: string;
+  /** Path or URL to the brand logo image. */
+  logoUrl?: string;
 };
 
 export type TenantTheme = {

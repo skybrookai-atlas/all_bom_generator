@@ -54,7 +54,7 @@ export function BomTableRow({ line, onRemove, onQtyChange }: Props) {
         <td
           colSpan={2}
           className="px-3 py-2 text-right"
-          title="No confirmed price for this SKU — please check with The Glass Outlet."
+          title="No confirmed price for this SKU — please confirm pricing with your supplier."
         >
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25">
             Price TBC

@@ -4,6 +4,8 @@ import { LoginForm } from '../components/auth/LoginForm';
 import { SignUpForm } from '../components/auth/SignUpForm';
 import { useAuth } from '../hooks/useAuth';
 import { enablePreviewMode, isSupabaseConfigured } from '../lib/supabase';
+import { BrandLogo } from '../components/brand/BrandLogo';
+import { DEFAULT_BRAND } from '../lib/brand';
 
 export function LoginPage() {
   const { user, loading } = useAuth();
@@ -29,13 +31,11 @@ export function LoginPage() {
     <div className="min-h-screen bg-brand-bg flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <p className="text-brand-accent text-sm font-semibold tracking-widest uppercase mb-2">
-            SkybrookAI
-          </p>
+          <BrandLogo className="mx-auto mb-4 h-20 w-auto" />
           <h1 className="text-brand-text text-2xl font-bold">
-            QuickScreen BOM Generator
+            {DEFAULT_BRAND.companyName}
           </h1>
-          <p className="text-brand-muted text-sm mt-1">The Glass Outlet</p>
+          <p className="text-brand-muted text-sm mt-1">{DEFAULT_BRAND.tagline}</p>
         </div>
 
         <div className="bg-brand-card border border-brand-border rounded-lg p-6">

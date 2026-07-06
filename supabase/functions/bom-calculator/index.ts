@@ -40,18 +40,22 @@ import {
 async function loadPricing(
   orgId: string,
   tier: PricingTier,
+  skus: string[],
 ): Promise<Map<string, PricingRule[]>> {
   const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
+  // Filter to the SKUs in this BOM: an unfiltered org+tier query silently
+  // truncates at supabase-js's 1000-row cap once the price book grows.
   const { data, error } = await supabaseAdmin
     .from("pricing_rules_with_sku")
     .select("sku, price, rule, priority")
     .eq("org_id", orgId)
     .eq("tier_code", tier)
     .eq("active", true)
+    .in("sku", skus)
     .order("priority", { ascending: false });
 
   if (error) throw new Error(`Pricing lookup failed: ${error.message}`);
@@ -67,6 +71,7 @@ async function loadPricing(
 
 async function loadComponentNames(
   orgId: string,
+  skus: string[],
 ): Promise<Map<string, { name: string; description: string; defaultPrice: number | null }>> {
   const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -76,7 +81,8 @@ async function loadComponentNames(
     .from("product_components")
     .select("sku, name, description, default_price")
     .eq("org_id", orgId)
-    .eq("active", true);
+    .eq("active", true)
+    .in("sku", skus);
   const map = new Map<string, { name: string; description: string; defaultPrice: number | null }>();
   for (const row of data ?? []) {
     map.set(row.sku, {
@@ -143,36 +149,60 @@ Deno.serve(async (req: Request) => {
   if (corsResponse) return corsResponse;
 
   try {
-    // Step 1b — JWT + profile
+    // Step 1b — JWT + profile.
+    // Internal trusted path: other edge functions (e.g. instant-quote) may call
+    // this engine server-to-server by presenting the service role key itself as
+    // the bearer token plus an explicit internalOrgId. The service role key
+    // never leaves the server, so this cannot be spoofed by clients.
     const jwt = extractJwt(req);
-    const { orgId, pricingTier: defaultTier } = await resolveUserProfile(jwt);
+    const isInternalCall = jwt === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-    // Step 2 — resolve role for admin trace gating
+    // Step 3 (moved up) — parse + minimally validate payload
+    const body = (await req.json()) as {
+      payload: CanonicalPayload;
+      pricingTier?: PricingTier;
+      debug?: boolean;
+      internalOrgId?: string;
+    };
+
+    let orgId: string;
+    let defaultTier: PricingTier | undefined;
+    let isAdmin = false;
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const {
-      data: { user },
-    } = await supabaseAdmin.auth.getUser(jwt);
-    const { data: profileWithRole } = user
-      ? await supabaseAdmin
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single()
-      : { data: null };
+    if (isInternalCall) {
+      if (!body.internalOrgId) {
+        return Response.json(
+          { error: "internalOrgId required for internal calls" },
+          { status: 400, headers: corsHeaders },
+        );
+      }
+      orgId = body.internalOrgId;
+      defaultTier = "tier1";
+    } else {
+      const resolved = await resolveUserProfile(jwt);
+      orgId = resolved.orgId;
+      defaultTier = resolved.pricingTier;
 
-    const role: string = profileWithRole?.role ?? "user";
-    const isAdmin = role === "admin";
+      // Step 2 — resolve role for admin trace gating
+      const {
+        data: { user },
+      } = await supabaseAdmin.auth.getUser(jwt);
+      const { data: profileWithRole } = user
+        ? await supabaseAdmin
+            .from("profiles")
+            .select("role")
+            .eq("id", user.id)
+            .single()
+        : { data: null };
 
-    // Step 3 — parse + minimally validate payload
-    const body = (await req.json()) as {
-      payload: CanonicalPayload;
-      pricingTier?: PricingTier;
-      debug?: boolean;
-    };
+      const role: string = profileWithRole?.role ?? "user";
+      isAdmin = role === "admin";
+    }
 
     const { payload, pricingTier: reqTier, debug } = body;
     const pricingTier: PricingTier = reqTier ?? defaultTier ?? "tier1";
@@ -893,10 +923,15 @@ Deno.serve(async (req: Request) => {
       gateProductCodeSet.has(l.productCode ?? ""),
     );
 
-    // Step 12 — pricing + component name lookup (parallel)
+    // Step 12 — pricing + component name lookup (parallel), scoped to BOM SKUs
+    const bomSkus = [
+      ...new Set(
+        [...aggregatedLines, ...allLines, ...aggregatedSuggestions].map((l) => l.sku),
+      ),
+    ];
     const [pricingMap, componentNames] = await Promise.all([
-      loadPricing(orgId, pricingTier),
-      loadComponentNames(orgId),
+      loadPricing(orgId, pricingTier, bomSkus),
+      loadComponentNames(orgId, bomSkus),
     ]);
 
     // Backfill name/description on all lines from product_components

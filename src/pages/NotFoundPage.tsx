@@ -1,5 +1,6 @@
 import { Link, useRouteError, isRouteErrorResponse } from "react-router-dom";
 import { AlertTriangle, ArrowRight } from "lucide-react";
+import { DEFAULT_BRAND } from "../lib/brand";
 
 interface Props {
   /** When used as a standalone 404 route (not errorElement). */
@@ -33,12 +34,12 @@ export function NotFoundPage({ asNotFound }: Props) {
       <div className="max-w-md">
         {/* Brand */}
         <div className="flex items-center justify-center gap-2 mb-10">
-          <span className="text-xs font-bold text-brand-accent tracking-widest uppercase px-2 py-1 rounded border border-brand-accent/40 bg-brand-accent/5">
-            SkybrookAI
+          <span className="text-sm font-semibold text-brand-text">
+            {DEFAULT_BRAND.companyName}
           </span>
           <span className="text-brand-border/60">|</span>
-          <span className="text-sm font-semibold text-brand-text">
-            The Glass Outlet
+          <span className="text-xs font-bold text-brand-accent tracking-widest uppercase">
+            {DEFAULT_BRAND.tagline}
           </span>
         </div>
 

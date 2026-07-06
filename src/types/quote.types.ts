@@ -51,6 +51,17 @@ export interface SavedQuote {
   contact: ContactInfo;
   notes: string;
   status: QuoteStatus;
+  /** Quote editor title (migration 037). */
+  title?: string | null;
+  /** Days until quote expiry (migration 037, default 30). */
+  expiry_days?: number | null;
+  assigned_installer_id?: string | null;
+  install_date?: string | null;
+  use_splits?: boolean;
+  split_ratio_a?: number;
+  split_ratio_b?: number;
+  xero_invoice_id?: string | null;
+  xero_sync_status?: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -63,6 +63,36 @@ function optionValue(option: unknown): string {
   return String(option);
 }
 
+/** Lowercase slug values like "lapped-capped" / "amazing-fencing". */
+const SLUG_PATTERN = /^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$/;
+
+/** "amazing-fencing" → "Amazing Fencing", "lapped_capped" → "Lapped Capped". */
+export function humaniseSlug(value: string): string {
+  return value
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+/**
+ * Human-readable current value of a schema field — used for collapsed
+ * summaries (run card, disclosure rows) of data-driven systems.
+ */
+export function schemaFieldValueLabel(
+  field: SchemaField,
+  variables: Record<string, string | number | boolean>,
+): string {
+  const raw = variables[field.field_key] ?? field.default_value_json;
+  if (raw === true) return "Yes";
+  if (raw === false) return "No";
+  if (raw === undefined || raw === null || raw === "") return "Default";
+  const value = String(raw);
+  if (ENUM_LABELS[value]) return ENUM_LABELS[value];
+  if (typeof raw === "string" && SLUG_PATTERN.test(value)) return humaniseSlug(value);
+  return `${value}${field.unit ?? ""}`;
+}
+
 function optionLabel(field: SchemaField, option: unknown): string {
   if (option && typeof option === "object" && "label" in option) {
     return String((option as { label: unknown }).label);
@@ -81,7 +111,10 @@ function optionLabel(field: SchemaField, option: unknown): string {
     return `${value}mm`;
   }
   if (field.field_key === "target_height_mm") return `${value}mm`;
-  return ENUM_LABELS[value] ?? value.replace(/_/g, " ");
+  if (ENUM_LABELS[value]) return ENUM_LABELS[value];
+  if (/^\d+(?:\.\d+)?$/.test(value) && field.unit) return `${value}${field.unit}`;
+  if (SLUG_PATTERN.test(value)) return humaniseSlug(value);
+  return value.replace(/_/g, " ");
 }
 
 function coerceValue(field: SchemaField, value: string): string | number | boolean {

@@ -424,6 +424,53 @@ Enables reliable LLM authoring and sets up an in-app AI import feature later
 - [x] Rename QSHS_GATE → QS_GATE (its own file, `compatible_with_system_types: ['QSHS','VS','XPL','BAYG']`)
 - [x] Migrate slat-fencing.sql content into JSON (catalog + pricing + 4 fence products + 12 inactive families); rename original to `.sql.disabled`
 
+### Multi-supplier platform (2026-07-04)
+
+- [x] Migration 034 — `suppliers` + `supplier_items` (price-list catalogue tier, service-role only) + `product_components.supplier_id`
+- [x] Migration 035 — allow `TP_PALING` in `product_components.system_types`
+- [x] Migration 036 — restore classic table grants (newer Supabase CLI images stopped granting DML to anon/authenticated/service_role; seeder + edge functions rely on it; `pricing_rules_with_sku` view re-revoked from client roles)
+- [x] `supplier-catalogue.json` seed (15 suppliers, 5,678 items from Quotient Replica import) + `seed-suppliers.js` upserter (`npm run seed:suppliers`, chained into `db:reset`); regenerate with `npm run catalogue:import`
+- [x] New `tp_paling.json` — Treated Pine Paling fence (butted / lapped / lapped-capped, optional plinth, concrete + nails). 26 SKUs await owner prices (`metadata.price_source: "pending — owner to confirm"`); string-enum rules use `equalText()` (math.js `==` cannot compare strings)
+- [x] `colorbond.json` extended for multi-supplier — `supplier` job variable (glass-outlet default / amazing-fencing), 200 AF components + 3 selectors + tier1 pricing from replica import (all flagged `VERIFY UNIT/PRICE` — AF rails/posts look per-lineal-metre)
+- [x] bom-calculator: `loadPricing`/`loadComponentNames` now filter by BOM SKUs — the unfiltered queries silently truncated at supabase-js's 1000-row cap once the price book passed 1000 rows (pricing was broken for any SKU past the cap)
+- [x] seed-products.js dedupes duplicate SKUs within a file (last wins) — Postgres rejects same-key twice in one upsert batch
+- [x] Header.tsx — missing `isSupabaseConfigured` import crashed every authed page
+- [x] localSeedData.ts — added tp_paling.json import + TP_PALING to the fence whitelist
+- [ ] Local fallback BOM engine (`localBomCalculator.ts`) does not calculate TP_PALING or per-supplier COLORBOND
+- [x] Colorbond colour bug fixed (2026-07-04): `colour_code` options now the 18 real sheet colours (default MO), `post_colour_code` the 19 post colours incl NS; sheets resolve `{colour_code}`, rails/posts/caps `{post_colour_code}` (post colour was previously ignored); `infill_height_short` profile-aware (Metzag 1790→"17", Metline/Trimclad→"18", all 2090→"21"); full CPost height map (1800 no longer resolves a 3000 SKU); post-cap rules use `equalText` and single caps map to the Double/Full CCAP; availability warning added for colours with no 3000mm CPost (JA/MR/RS/WG/WI)
+- [ ] TP_PALING run-card collapsed summary shows slat-fence copy (Color/Slat size/Gap) — cosmetic
+- [x] TP prices sourced from real purchase history (2026-07-04): `scripts/import-xero-bills.mjs` parses cleaned Xero bill CSVs (G: shared drive) → merges into supplier-catalogue.json. 1,442 items / 16 new suppliers (B&B Timbers 273, Lysaght 284, Magoos 236, Bunnings 182, Shape Aluminium 141…), latest-invoice-price-wins, delivery/freight/note lines skipped, size-aware keys (Xero item codes are per-family). tp_paling.json: 20 SKUs priced from B&B Timbers/Premier Nails (posts $14.59–$32.68, rails/caps $12, palings $1.64–$2.95, plinth $23.77, Rapid Set $9.23); nails corrected to Premier's real box-of-7,500 ($78) incl. nail_boxes divisor. 12m×1800 lapped-capped fence = $789.68 ex-GST materials. Still unpriced: 900mm + 150mm-wide palings (never purchased).
+- [x] AF units RESOLVED (2026-07-05): per-PIECE confirmed from Amazing Fencing's Retail Express exports (prices scale linearly because Metroll roll-forms at ~$3.567/m flat). All 200 AF components synced to verified export prices; VERIFY flags removed. 28 extra verified SKUs in scratchpad af-colorbond-corrections.json.
+- [x] Oxworks (ColourSmart) added as third COLORBOND supplier (2026-07-05): 23 OX- components (posts 18-30, rails 2400/3180 mapped to 23/31 codes, Sawtooth/Trimline/Ezyline sheets mapped to GZAG/GTRIM/GLINE, own post cap), colour-at-order model (no colour in SKUs) + 2 info warnings. Gate stiles/short rails deferred.
+- [x] COLORBOND default supplier → amazing-fencing; warning added on glass-outlet variant (its catalogue prices are ~3.2× too low — import artifact); instant-quote widget default likewise fixed (25m range corrected $1,850-2,200 → $2,550-3,000)
+- [ ] Verify/repair Glass Outlet colorbond catalogue prices (÷3.2 import artifact) or retire that variant
+- [ ] Lysaght as fourth COLORBOND supplier (real mill costs $4.99/m posts/rails; needs per-LM→per-piece conversion from messy Xero text); Jono Holdings catalogues unchecked for colorbond
+
+### Instant-quote widget + rebrand (2026-07-04)
+
+- [x] Org-driven branding: organisations.branding JSONB → useOrgBranding + DEFAULT_BRAND (Byron & Beyond Fencing); logo at public/brand/byron-beyond-logo.png; portal uses quote_settings only; QuickScreen kept as product name; slug 'glass-outlet' is legacy-internal
+- [x] Migration 038: instant_quote_settings (labour $/m, margin %, range spread, min job per system), quote_settings.embed_token, quotes.user_id nullable (website leads)
+- [x] bom-calculator internal trusted path: bearer == service role key + internalOrgId (server-to-server only)
+- [x] instant-quote edge fn: config/price/lead by embed token; price returns ONLY a $50-rounded inc-GST range; lead creates a costed draft quote assigned to the org admin
+- [x] /embed/instant-quote public page (type-in or SVG click-to-draw measure, system cards, live debounced range, contact form) + InstantQuoteSettings admin panel with iframe embed snippet
+- [ ] Widget go-live needs public hosting: deploy app (netlify.toml exists) + remote Supabase project + real labour/margin rates (current local rates are TEST placeholders: TP $55/m, CB $45/m, 35%)
+- [ ] Rate-limit instant-quote (per-IP) before public launch
+- [ ] Pre-existing: suggestedAccessories.ts crashes on payloads without run boundaries on /fence-calculator (portal call already guarded)
+- [x] `/admin/catalogue` (2026-07-04) — drag-drop Xero bill CSVs in the app: `import-supplier-bills` edge function parses server-side, auto-creates suppliers, latest-invoice-price-wins including against existing DB rows (re-uploading an old export can never regress a newer price — verified with a fabricated 2020 invoice). Skips delivery/freight/note lines. Nav item in AdminLayout.
+- [ ] Catalogue dump tool: UI-uploaded bills live only in the DB; `db:reset` reverts to supplier-catalogue.json — add a dump-to-seed script (mirror of seed:dump) so imports survive resets
+
+### Quote editor — Phase 2 (2026-07-04)
+
+- [x] Migration 037 — `quote_line_items` (kind calculated/catalogue/manual; client fields + internal material_cost/labor_cost/markup_pct/bom_snapshot), `quotes.title` + `expiry_days`, anon-safe `quote_line_items_public` view (sent/accepted only, no internal columns)
+- [x] Edge function `search-supplier-items` — staff typeahead over the 5,678-item supplier catalogue (cost prices, supplier filter)
+- [x] `/quote/:quoteId/edit` — QuoteEditorPage: header card (title/client/expiry/notes), line-item CRUD with up/down reorder + two-click delete, internal costing strip with suggested-price Apply chip and live margin, catalogue search modal, import-from-calculator-BOM line, sticky totals (subtotal/GST/total + internal material/labour/margin), Save / Preview / two-click Send → portal link
+- [x] QuotesHistoryPage edit button; QuotePortalPage renders `quote_line_items_public` (optional lines client-toggleable) instead of the BOM table when line items exist
+- [x] useQuote no longer mock-falls-back for line-items-only quotes (empty fence_config → real quote row + empty payload); editor fetches the quotes row directly
+- [x] Verified end-to-end in browser + DB: margin math ((1260+900)×1.3/12m = $234/m, 23.1% margin), catalogue add ($65 Oxworks panel), save diff, send flow, portal shows no internal costs
+- [ ] "New quote" button (create a blank line-items quote without the calculator)
+- [ ] Portal: hide the fence-summary card entirely for line-item-only quotes ("No runs specified")
+- [ ] Send should eventually email the client (currently sets status + link only)
+
 ### v3 UI polish + v2 retirement (shipped)
 
 - [x] Searchable fence-only product dropdown (`ProductSelectV3` rewritten as a typeahead, filters `product_type='fence'`)
