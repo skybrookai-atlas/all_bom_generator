@@ -247,17 +247,36 @@ export function QuotesHistoryPage() {
   /** Quotient-style blank quote: straight to the editor, no calculator. */
   const createBlankQuote = async () => {
     if (creatingQuote) return;
-    if (!orgId || !user?.id) {
-      toast.error("Still loading your profile — try again in a second.");
-      return;
-    }
     setCreatingQuote(true);
     try {
+      // Resolve the session + org at click-time rather than depending on the
+      // ProfileContext having already resolved (avoids a first-load race where
+      // orgId is briefly null). Fall back to context if the direct read fails.
+      let resolvedUserId = user?.id ?? null;
+      let resolvedOrgId = orgId ?? null;
+      if (!resolvedUserId || !resolvedOrgId) {
+        const { data: sessionData } = await supabase.auth.getUser();
+        resolvedUserId = resolvedUserId ?? sessionData.user?.id ?? null;
+        if (resolvedUserId && !resolvedOrgId) {
+          const { data: prof } = await supabase
+            .from("profiles")
+            .select("org_id")
+            .eq("id", resolvedUserId)
+            .single();
+          resolvedOrgId = prof?.org_id ?? null;
+        }
+      }
+      if (!resolvedUserId || !resolvedOrgId) {
+        toast.error("Please sign in again — your session could not be read.");
+        setCreatingQuote(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("quotes")
         .insert({
-          org_id: orgId,
-          user_id: user.id,
+          org_id: resolvedOrgId,
+          user_id: resolvedUserId,
           fence_config: {},
           bom: {},
           contact: {},

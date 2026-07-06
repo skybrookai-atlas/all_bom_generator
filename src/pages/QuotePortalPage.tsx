@@ -244,10 +244,10 @@ export function QuotePortalPage() {
       if (user) {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("name, role")
+          .select("full_name, role")
           .eq("id", user.id)
           .single();
-        setCurrentUser(profile ? { ...user, name: profile.name, role: profile.role } : user);
+        setCurrentUser(profile ? { ...user, name: profile.full_name, role: profile.role } : user);
       }
     }
     void getUser();
