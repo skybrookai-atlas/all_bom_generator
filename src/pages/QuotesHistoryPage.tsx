@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, Filter, Trash2, Plus, FileText, Search, Pencil } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "../components/layout/AppShell";
 import { useAuth } from "../hooks/useAuth";
 import { useQuotes } from "../hooks/useQuotes";
@@ -246,13 +247,17 @@ export function QuotesHistoryPage() {
   /** Quotient-style blank quote: straight to the editor, no calculator. */
   const createBlankQuote = async () => {
     if (creatingQuote) return;
+    if (!orgId || !user?.id) {
+      toast.error("Still loading your profile — try again in a second.");
+      return;
+    }
     setCreatingQuote(true);
     try {
       const { data, error } = await supabase
         .from("quotes")
         .insert({
           org_id: orgId,
-          user_id: user?.id,
+          user_id: user.id,
           fence_config: {},
           bom: {},
           contact: {},
@@ -265,6 +270,8 @@ export function QuotesHistoryPage() {
       if (error) throw error;
       navigate(`/quote/${data.id}/edit`);
     } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      toast.error(`Could not create the quote: ${msg}`);
       console.error("[QuotesHistoryPage] blank quote create failed", err);
       setCreatingQuote(false);
     }

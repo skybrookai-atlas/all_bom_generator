@@ -103,6 +103,9 @@ export function Header({
             <NavLink to="/quotes" className={navLinkCls}>
               Quotes
             </NavLink>
+            <NavLink to="/price-list" className={navLinkCls}>
+              Price list
+            </NavLink>
             <NavLink to="/fence-calculator" className={newQuoteLinkCls}>
               <Plus size={16} />
               New Quote

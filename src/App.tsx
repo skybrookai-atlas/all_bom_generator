@@ -15,6 +15,7 @@ import { CalculatorV4Page } from "./pages/CalculatorV4Page";
 import { QuotePortalPage } from "./pages/QuotePortalPage";
 import { InstantQuotePage } from "./pages/InstantQuotePage";
 import { QuoteEditorPage } from "./pages/QuoteEditorPage";
+import { PriceListPage } from "./pages/PriceListPage";
 import { ProductsIndexPage } from "./pages/admin/ProductsIndexPage";
 import { ProductDetailPage } from "./pages/admin/ProductDetailPage";
 import { ComponentsIndexPage } from "./pages/admin/ComponentsIndexPage";
@@ -66,6 +67,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <QuotesHistoryPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/price-list",
+        element: (
+          <AuthGuard>
+            <PriceListPage />
           </AuthGuard>
         ),
       },

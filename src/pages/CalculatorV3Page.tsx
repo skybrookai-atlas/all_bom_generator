@@ -2367,20 +2367,9 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                             </div>
                           )}
 
-                          <hr className="border-brand-border/60" />
-
-                          {/* Drawing Canvas Modal Button */}
-                          <div className="space-y-2">
-                            <button
-                              type="button"
-                              data-testid="open-canvas-modal-btn"
-                              onClick={() => setIsCanvasModalOpen(true)}
-                              className="w-full rounded-lg border border-brand-primary bg-brand-primary/10 px-3 py-2 text-sm font-bold text-brand-primary hover:bg-brand-primary/25 transition-colors"
-                            >
-                              Open Drawing Canvas
-                            </button>
-                          </div>
-
+                          {/* The drawing canvas lives in this page's Map view —
+                              the old modal button opened a SECOND canvas and
+                              confused users. Removed. */}
                           <hr className="border-brand-border/60" />
 
                           {/* Comments / History Section */}

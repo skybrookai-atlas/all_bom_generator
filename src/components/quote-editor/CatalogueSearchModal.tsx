@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, X, Loader2 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
-import { Select } from "../ui/Select";
 import { formatAud } from "./currency";
 
 export interface SupplierSearchItem {
@@ -34,7 +33,7 @@ export function CatalogueSearchModal({
   onClose: () => void;
 }) {
   const [query, setQuery] = useState("");
-  const [supplierSlug, setSupplierSlug] = useState("");
+  const [selectedSuppliers, setSelectedSuppliers] = useState<Set<string>>(new Set());
   const [results, setResults] = useState<SupplierSearchItem[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -84,7 +83,7 @@ export function CatalogueSearchModal({
           {
             body: {
               query: trimmed,
-              supplierSlug: supplierSlug || undefined,
+              supplierSlugs: selectedSuppliers.size > 0 ? [...selectedSuppliers] : undefined,
               limit: 25,
             },
           },
@@ -104,7 +103,7 @@ export function CatalogueSearchModal({
       }
     }, 300);
     return () => window.clearTimeout(timer);
-  }, [query, supplierSlug]);
+  }, [query, selectedSuppliers]);
 
   return (
     <div
@@ -144,19 +143,46 @@ export function CatalogueSearchModal({
               className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-brand-bg border border-brand-border rounded-md text-brand-text placeholder:text-brand-muted/60 focus:outline-none focus:ring-1 focus:ring-brand-accent/40 focus:border-brand-accent"
             />
           </div>
-          <Select
-            value={supplierSlug}
-            onChange={(e) => setSupplierSlug(e.target.value)}
-            aria-label="Supplier"
-            className="sm:w-48 py-2"
-          >
-            <option value="">All suppliers</option>
-            {(suppliersQuery.data ?? []).map((supplier) => (
-              <option key={supplier.id} value={supplier.slug}>
+        </div>
+
+        {/* Multi-select supplier filter — pick one or more to restrict results */}
+        <div className="flex flex-wrap items-center gap-1.5 border-b border-brand-border/60 px-4 py-2.5">
+          <span className="mr-1 text-[11px] font-bold uppercase tracking-wide text-brand-muted">
+            Suppliers
+          </span>
+          {(suppliersQuery.data ?? []).map((supplier) => {
+            const on = selectedSuppliers.has(supplier.slug);
+            return (
+              <button
+                key={supplier.id}
+                type="button"
+                onClick={() =>
+                  setSelectedSuppliers((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(supplier.slug)) next.delete(supplier.slug);
+                    else next.add(supplier.slug);
+                    return next;
+                  })
+                }
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                  on
+                    ? "border-brand-accent bg-brand-accent text-white"
+                    : "border-brand-border bg-brand-bg/60 text-brand-muted hover:border-brand-accent/60 hover:text-brand-text"
+                }`}
+              >
                 {supplier.name}
-              </option>
-            ))}
-          </Select>
+              </button>
+            );
+          })}
+          {selectedSuppliers.size > 0 && (
+            <button
+              type="button"
+              onClick={() => setSelectedSuppliers(new Set())}
+              className="px-2 py-1 text-[11px] font-semibold text-brand-danger hover:underline"
+            >
+              Clear ({selectedSuppliers.size})
+            </button>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto">
