@@ -13,6 +13,7 @@ import {
 } from "../../lib/productOptionRules";
 import { GATE_SEGMENT_STUB_KEYS } from "../../lib/segmentTermination";
 import { localFenceProducts } from "../../lib/localSeedData";
+import { groupProductsByFamily, SLAT_VARIANT_LABELS } from "../../lib/fenceFamilies";
 import {
   POST_FIXING_MATERIALS,
   isPreferredGroutSku,
@@ -372,21 +373,34 @@ export function RunSettingsEditor({ run, onCollapse }: Props) {
         value={run.productCode}
         defaultOpen
       >
-        <div className="flex flex-wrap gap-2 border-t border-brand-border/50 p-3">
-          {localFenceProducts.map((product) => (
-            <button
-              key={product.system_type}
-              type="button"
-              onClick={() => changeRunProduct(product.system_type)}
-              aria-pressed={product.system_type === run.productCode}
-              className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-bold transition-colors ${product.system_type === run.productCode
-                ? "border-brand-primary bg-brand-primary text-white shadow-sm"
-                : "border-brand-border bg-brand-card text-brand-text hover:border-brand-primary hover:text-brand-primary hover:shadow-sm"
-                }`}
-            >
-              {product.system_type === run.productCode && <Check size={16} aria-hidden />}
-              {product.name || product.system_type}
-            </button>
+        <div className="space-y-3 border-t border-brand-border/50 p-3">
+          {groupProductsByFamily(localFenceProducts).map((family) => (
+            <div key={family.key}>
+              {family.products.length > 1 && (
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-brand-muted">
+                  {family.label}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {family.products.map((product) => (
+                  <button
+                    key={product.system_type}
+                    type="button"
+                    onClick={() => changeRunProduct(product.system_type)}
+                    aria-pressed={product.system_type === run.productCode}
+                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-bold transition-colors ${product.system_type === run.productCode
+                      ? "border-brand-primary bg-brand-primary text-white shadow-sm"
+                      : "border-brand-border bg-brand-card text-brand-text hover:border-brand-primary hover:text-brand-primary hover:shadow-sm"
+                      }`}
+                  >
+                    {product.system_type === run.productCode && <Check size={16} aria-hidden />}
+                    {family.products.length > 1
+                      ? SLAT_VARIANT_LABELS[product.system_type] ?? product.name
+                      : product.name || product.system_type}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </SettingsDisclosureRow>

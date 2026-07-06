@@ -2,6 +2,7 @@ import { useCalculator } from "../../context/CalculatorContext";
 import type { CanonicalPayload, CanonicalRun } from "../../types/canonical.types";
 import { initialVariablesForSystem } from "../../lib/productOptionRules";
 import { localFenceProducts } from "../../lib/localSeedData";
+import { groupProductsByFamily, SLAT_VARIANT_LABELS } from "../../lib/fenceFamilies";
 import type { ParseResult } from "../../lib/describeFenceParser";
 import { DescribeFenceBox } from "../calculator/DescribeFenceBox";
 import { RunCard } from "./RunCard";
@@ -111,23 +112,52 @@ export function RunListV3({
         <section className="space-y-3 rounded-2xl border border-brand-primary/30 bg-brand-primary/5 p-3">
           <p className="text-sm font-black text-brand-text">Choose a fence system</p>
           <div className="grid gap-2">
-            {localFenceProducts.map((product) => (
-              <button
-                key={product.system_type}
-                type="button"
-                onClick={() => startFirstRun(product.system_type)}
-                className="flex min-h-[88px] items-center justify-between gap-3 rounded-lg border border-brand-primary bg-brand-primary px-4 py-4 text-left text-white shadow-sm transition hover:bg-brand-primary/90 hover:shadow-md"
-                data-testid={`landing-system-${product.system_type}`}
-              >
-                <span className="grid gap-1">
-                  <span className="text-2xl font-black">{product.system_type}</span>
-                  <span className="text-sm font-extrabold leading-tight">
-                    {SYSTEM_BUTTON_LABELS[product.system_type] ?? product.name}
+            {groupProductsByFamily(localFenceProducts).map((family) =>
+              family.products.length > 1 ? (
+                <div
+                  key={family.key}
+                  className="rounded-lg border border-brand-primary bg-brand-primary px-4 py-4 text-white shadow-sm"
+                >
+                  <p className="text-2xl font-black">{family.label}</p>
+                  <p className="mb-3 text-sm font-extrabold leading-tight">
+                    Choose a style
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {family.products.map((product) => (
+                      <button
+                        key={product.system_type}
+                        type="button"
+                        onClick={() => startFirstRun(product.system_type)}
+                        className="rounded-md border border-white/40 bg-white/10 px-3 py-2.5 text-left text-sm font-extrabold transition hover:bg-white/25"
+                        data-testid={`landing-system-${product.system_type}`}
+                      >
+                        {SLAT_VARIANT_LABELS[product.system_type] ??
+                          SYSTEM_BUTTON_LABELS[product.system_type] ??
+                          product.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  key={family.key}
+                  type="button"
+                  onClick={() => startFirstRun(family.products[0].system_type)}
+                  className="flex min-h-[88px] items-center justify-between gap-3 rounded-lg border border-brand-primary bg-brand-primary px-4 py-4 text-left text-white shadow-sm transition hover:bg-brand-primary/90 hover:shadow-md"
+                  data-testid={`landing-system-${family.products[0].system_type}`}
+                >
+                  <span className="grid gap-1">
+                    <span className="text-2xl font-black">{family.label}</span>
+                    {SYSTEM_BUTTON_LABELS[family.products[0].system_type] &&
+                      SYSTEM_BUTTON_LABELS[family.products[0].system_type] !== family.label && (
+                        <span className="text-sm font-extrabold leading-tight">
+                          {SYSTEM_BUTTON_LABELS[family.products[0].system_type]}
+                        </span>
+                      )}
                   </span>
-                </span>
-                <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs">{product.system_type}</span>
-              </button>
-            ))}
+                </button>
+              ),
+            )}
           </div>
           {onDescribeApply && (
             <div className="pt-2 text-center">
