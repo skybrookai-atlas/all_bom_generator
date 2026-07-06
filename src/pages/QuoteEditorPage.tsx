@@ -26,11 +26,12 @@ import {
 } from "../hooks/useQuoteLineItems";
 import { useProfile } from "../context/ProfileContext";
 import { getJobName } from "../lib/quoteListMeta";
-import {
-  QuoteHeaderCard,
-  type QuoteHeaderFields,
-} from "../components/quote-editor/QuoteHeaderCard";
 import { LineItemRow } from "../components/quote-editor/LineItemRow";
+import {
+  ClientPicker,
+  type ClientRow,
+  type ContactSnapshot,
+} from "../components/quote-editor/ClientPicker";
 import {
   CatalogueSearchModal,
   type SupplierSearchItem,
@@ -40,12 +41,12 @@ import {
   type LibraryItem,
 } from "../components/quote-editor/LibrarySearchModal";
 import {
-  TotalsPanel,
+  TotalsFooter,
   computeQuoteTotals,
 } from "../components/quote-editor/TotalsPanel";
 import { ConfirmButton } from "../components/shared/ConfirmButton";
 import { formatAud } from "../components/quote-editor/currency";
-import type { SavedQuote } from "../types/quote.types";
+import type { QuoteStatus, SavedQuote } from "../types/quote.types";
 
 // ─── quote.bom shape helpers ──────────────────────────────────────────────────
 // quotes.bom is a BOMResult ({ fenceItems, gateItems, total, gst, grandTotal })
@@ -104,6 +105,23 @@ function summariseBom(bom: unknown): string {
   return `Calculated materials package (${lines.length} lines): ${top.join(", ")}${more}.`;
 }
 
+// ─── Editor form state ────────────────────────────────────────────────────────
+
+interface EditorFields {
+  title: string;
+  expiry_days: number;
+  notes: string;
+  client_id: string | null;
+  contact: ContactSnapshot;
+}
+
+const STATUS_COLOURS: Record<QuoteStatus, string> = {
+  draft: "text-brand-muted bg-brand-border/30",
+  sent: "text-brand-primary bg-brand-primary/10",
+  accepted: "text-emerald-400 bg-emerald-500/10",
+  expired: "text-rose-400 bg-rose-500/10",
+};
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function QuoteEditorPage() {
@@ -131,7 +149,7 @@ export function QuoteEditorPage() {
   const quote = quoteQuery.data;
   const orgId = profileOrgId ?? quote?.org_id ?? null;
 
-  const [fields, setFields] = useState<QuoteHeaderFields | null>(null);
+  const [fields, setFields] = useState<EditorFields | null>(null);
   const [items, setItems] = useState<QuoteLineItemDraft[] | null>(null);
   const [showCatalogueModal, setShowCatalogueModal] = useState(false);
   const [showLibraryModal, setShowLibraryModal] = useState(false);
@@ -145,6 +163,7 @@ export function QuoteEditorPage() {
       title: quote.title ?? getJobName(quote) ?? "",
       expiry_days: quote.expiry_days ?? 30,
       notes: quote.notes ?? "",
+      client_id: quote.client_id ?? null,
       contact: {
         name: quote.contact?.fullName ?? "",
         email: quote.contact?.email ?? "",
@@ -184,6 +203,36 @@ export function QuoteEditorPage() {
   const isSentOrAccepted =
     quote?.status === "sent" || quote?.status === "accepted";
 
+  // ── client picker handlers ────────────────────────────────────────────────
+
+  // Picking a client links quotes.client_id AND writes the contact snapshot
+  // the portal renders — same as the replica filling the Client Details block.
+  const handlePickClient = (client: ClientRow) => {
+    setFields((prev) =>
+      prev
+        ? {
+            ...prev,
+            client_id: client.id,
+            contact: {
+              name: client.name,
+              email: client.email ?? "",
+              phone: client.phone ?? "",
+              address: client.address ?? "",
+            },
+          }
+        : prev,
+    );
+  };
+
+  const handleClearClient = () => {
+    setFields((prev) => (prev ? { ...prev, client_id: null } : prev));
+  };
+
+  // Editing the snapshot fields only touches the quote's contact JSONB.
+  const handleContactChange = (contact: ContactSnapshot) => {
+    setFields((prev) => (prev ? { ...prev, contact } : prev));
+  };
+
   // ── line item mutations (local state) ─────────────────────────────────────
 
   const blankDraft = (
@@ -205,6 +254,7 @@ export function QuoteEditorPage() {
     markup_pct: null,
     bom_snapshot: null,
     supplier_item_id: null,
+    image_url: null,
     metadata: null,
     ...overrides,
   });
@@ -237,6 +287,7 @@ export function QuoteEditorPage() {
         quantity: 1,
         unit: libItem.unit ?? "each",
         unit_price: libItem.unit_price,
+        image_url: libItem.image_url,
         metadata: { library_item_id: libItem.id },
       }),
     ]);
@@ -315,6 +366,7 @@ export function QuoteEditorPage() {
       title: fields.title.trim() || null,
       expiry_days: fields.expiry_days,
       notes: fields.notes,
+      client_id: fields.client_id,
       contact: {
         ...quote.contact,
         fullName: fields.contact.name,
@@ -382,7 +434,7 @@ export function QuoteEditorPage() {
   if (quoteQuery.isLoading || !quote || !fields) {
     return (
       <AppShell>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 flex items-center justify-center gap-2 text-sm text-brand-muted">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16 flex items-center justify-center gap-2 text-sm text-brand-muted">
           <Loader2 size={16} className="animate-spin" /> Loading quote editor…
         </div>
       </AppShell>
@@ -390,47 +442,53 @@ export function QuoteEditorPage() {
   }
 
   const itemList = items ?? [];
+  const status = quote.status;
 
   return (
     <AppShell>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
-        {/* ── Page header ─────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+      {/* ── Compact sticky action bar (replica: editor header w/ Save) ── */}
+      <div className="sticky top-0 z-30 border-b border-brand-border bg-brand-bg/90 backdrop-blur">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
+          <div className="flex min-w-0 items-center gap-2.5">
             <Link
               to="/quotes"
               title="Back to quotes"
-              className="p-1.5 rounded-md text-brand-muted hover:text-brand-text border border-brand-border bg-brand-card transition-colors"
+              className="rounded-md border border-brand-border bg-brand-card p-1.5 text-brand-muted transition-colors hover:text-brand-text"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={15} />
             </Link>
-            <div>
-              <h1 className="text-lg font-bold text-brand-text">
-                Quote editor
-              </h1>
-              <p className="text-xs text-brand-muted">
-                {fields.title.trim() || getJobName(quote)}
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-brand-text">
+                {fields.title.trim() || getJobName(quote) || "Untitled quote"}
               </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-brand-muted">
+                {quote.quote_number != null && <span>#{quote.quote_number}</span>}
+                <span
+                  data-testid="editor-status-badge"
+                  className={`rounded-full px-1.5 py-px font-medium ${STATUS_COLOURS[status] ?? "text-brand-muted bg-brand-border/30"}`}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Actions bar */}
           <div className="flex flex-wrap items-center gap-2">
             <a
               href={portalUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-brand-card px-3 py-1.5 text-sm font-medium text-brand-text transition-colors hover:bg-brand-bg/60"
             >
               <ExternalLink size={14} />
-              Preview client view
+              Preview
             </a>
             <button
               type="button"
               onClick={() => void handleSave()}
               disabled={saving || sending}
               data-testid="quote-editor-save-btn"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-brand-accent hover:bg-brand-accent-hover rounded-lg transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-brand-accent px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-accent-hover disabled:opacity-50"
             >
               {saving ? (
                 <Loader2 size={14} className="animate-spin" />
@@ -448,7 +506,7 @@ export function QuoteEditorPage() {
                 </span>
               }
               data-testid="quote-editor-send-btn"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg border border-brand-border bg-brand-card text-brand-text hover:bg-brand-bg/60 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-brand-card px-4 py-1.5 text-sm font-semibold text-brand-text transition-colors hover:bg-brand-bg/60 disabled:opacity-50"
             >
               <span className="inline-flex items-center gap-1.5">
                 {sending ? (
@@ -461,138 +519,184 @@ export function QuoteEditorPage() {
             </ConfirmButton>
           </div>
         </div>
+      </div>
 
+      {/* ── Single centered document column (replica: one quote form card) ── */}
+      <div className="mx-auto max-w-4xl space-y-5 px-4 py-6 sm:px-6">
         {/* Portal link once sent */}
         {isSentOrAccepted && (
-          <div className="flex flex-wrap items-center gap-2 bg-brand-card border border-brand-border rounded-lg px-4 py-2.5">
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-brand-border bg-brand-card px-4 py-2.5">
             <span className="text-xs font-medium text-brand-muted">
               Client link:
             </span>
-            <code className="text-xs text-brand-text bg-brand-bg/60 border border-brand-border/60 rounded px-2 py-1 break-all">
+            <code className="break-all rounded border border-brand-border/60 bg-brand-bg/60 px-2 py-1 text-xs text-brand-text">
               {portalUrl}
             </code>
             <button
               type="button"
               onClick={handleCopyPortalLink}
-              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-brand-accent hover:bg-brand-accent/10 rounded transition-colors"
+              className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent/10"
             >
               <Copy size={12} /> Copy
             </button>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-          {/* ── Left: header + line items ─────────────────────── */}
-          <div className="lg:col-span-2 space-y-5">
-            <QuoteHeaderCard
-              fields={fields}
-              status={quote.status}
-              quoteNumber={quote.quote_number ?? null}
-              onChange={setFields}
-            />
+        {/* Quote title — large editable text, replica's "Job Name / Description" */}
+        <div className="space-y-2">
+          <input
+            value={fields.title}
+            onChange={(e) => setFields({ ...fields, title: e.target.value })}
+            placeholder="e.g. Boundary fence replacement at 12 Paterson St"
+            data-testid="quote-title-input"
+            className="w-full border-0 bg-transparent px-0 py-1 text-2xl font-black tracking-tight text-brand-text outline-none placeholder:font-bold placeholder:text-brand-muted/40 sm:text-3xl"
+          />
+          <div className="flex flex-wrap items-center gap-4 text-xs text-brand-muted">
+            <label className="flex items-center gap-1.5">
+              Valid for
+              <input
+                type="number"
+                min={1}
+                value={String(fields.expiry_days)}
+                onChange={(e) =>
+                  setFields({
+                    ...fields,
+                    expiry_days: Math.max(
+                      1,
+                      Math.round(Number(e.target.value) || 0),
+                    ),
+                  })
+                }
+                className="w-14 rounded-md border border-brand-border bg-brand-card px-1.5 py-0.5 text-right text-xs text-brand-text outline-none focus:border-brand-accent"
+              />
+              days
+            </label>
+          </div>
+        </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-brand-text">
-                  Line items
-                </h2>
-                <span className="text-xs text-brand-muted">
-                  {itemList.length} item{itemList.length !== 1 ? "s" : ""}
-                </span>
-              </div>
+        {/* Client block — replica's Client Details section + client book */}
+        <ClientPicker
+          orgId={orgId}
+          clientId={fields.client_id}
+          contact={fields.contact}
+          onPickClient={handlePickClient}
+          onClearClient={handleClearClient}
+          onContactChange={handleContactChange}
+        />
 
-              {lineItemsQuery.isLoading && items === null ? (
-                <p className="text-sm text-brand-muted py-6 text-center bg-brand-card border border-brand-border rounded-xl">
-                  Loading line items…
-                </p>
-              ) : itemList.length === 0 ? (
-                <p className="text-sm text-brand-muted py-8 text-center bg-brand-card border border-dashed border-brand-border rounded-xl">
-                  No line items yet — add one below.
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {itemList.map((item, index) => (
-                    <LineItemRow
-                      key={item.id}
-                      item={item}
-                      index={index}
-                      count={itemList.length}
-                      onChange={(next) => updateItem(index, next)}
-                      onMove={(direction) => moveItem(index, direction)}
-                      onDelete={() => deleteItem(index)}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Add buttons */}
-              <div className="flex flex-wrap gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={addHeading}
-                  data-testid="add-heading-btn"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
-                >
-                  <Heading1 size={14} /> Heading
-                </button>
-                <button
-                  type="button"
-                  onClick={addText}
-                  data-testid="add-text-btn"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
-                >
-                  <TextIcon size={14} /> Text
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowLibraryModal(true)}
-                  data-testid="add-library-line-btn"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-accent bg-brand-accent/5 border border-brand-accent/40 rounded-lg hover:bg-brand-accent/15 transition-colors"
-                >
-                  <BookMarked size={14} /> Library item
-                </button>
-                <button
-                  type="button"
-                  onClick={addManualLine}
-                  data-testid="add-manual-line-btn"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
-                >
-                  <Plus size={14} /> Priced item
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCatalogueModal(true)}
-                  data-testid="add-catalogue-line-btn"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
-                >
-                  <PackageSearch size={14} /> Catalogue item
-                </button>
-                <button
-                  type="button"
-                  onClick={addBomLine}
-                  disabled={!hasBom}
-                  title={
-                    hasBom
-                      ? "Import the saved calculator BOM as a line item"
-                      : "This quote has no saved calculator BOM"
-                  }
-                  data-testid="add-bom-line-btn"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Calculator size={14} /> From calculator BOM
-                  {hasBom && (
-                    <span className="text-xs text-brand-muted">
-                      ({formatAud(getBomTotalExGst(quote.bom))} ex GST)
-                    </span>
-                  )}
-                </button>
-              </div>
-            </div>
+        {/* ── Line-item document ─────────────────────────────── */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-brand-text">
+              Quote line items
+            </h2>
+            <span className="text-xs text-brand-muted">
+              {itemList.length} item{itemList.length !== 1 ? "s" : ""}
+            </span>
           </div>
 
-          {/* ── Right: totals ─────────────────────────────────── */}
-          <TotalsPanel totals={totals} depositPct={depositQuery.data ?? null} />
+          {lineItemsQuery.isLoading && items === null ? (
+            <p className="rounded-xl border border-brand-border bg-brand-card py-6 text-center text-sm text-brand-muted">
+              Loading line items…
+            </p>
+          ) : itemList.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-brand-border bg-brand-card py-8 text-center text-sm text-brand-muted">
+              No line items yet — add one below.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {itemList.map((item, index) => (
+                <LineItemRow
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  count={itemList.length}
+                  onChange={(next) => updateItem(index, next)}
+                  onMove={(direction) => moveItem(index, direction)}
+                  onDelete={() => deleteItem(index)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Add buttons */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <button
+              type="button"
+              onClick={addHeading}
+              data-testid="add-heading-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+            >
+              <Heading1 size={14} /> Heading
+            </button>
+            <button
+              type="button"
+              onClick={addText}
+              data-testid="add-text-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+            >
+              <TextIcon size={14} /> Text
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowLibraryModal(true)}
+              data-testid="add-library-line-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-accent bg-brand-accent/5 border border-brand-accent/40 rounded-lg hover:bg-brand-accent/15 transition-colors"
+            >
+              <BookMarked size={14} /> Library item
+            </button>
+            <button
+              type="button"
+              onClick={addManualLine}
+              data-testid="add-manual-line-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+            >
+              <Plus size={14} /> Priced item
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCatalogueModal(true)}
+              data-testid="add-catalogue-line-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
+            >
+              <PackageSearch size={14} /> Catalogue item
+            </button>
+            <button
+              type="button"
+              onClick={addBomLine}
+              disabled={!hasBom}
+              title={
+                hasBom
+                  ? "Import the saved calculator BOM as a line item"
+                  : "This quote has no saved calculator BOM"
+              }
+              data-testid="add-bom-line-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Calculator size={14} /> From calculator BOM
+              {hasBom && (
+                <span className="text-xs text-brand-muted">
+                  ({formatAud(getBomTotalExGst(quote.bom))} ex GST)
+                </span>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Notes */}
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-brand-muted">Notes</span>
+          <textarea
+            value={fields.notes}
+            onChange={(e) => setFields({ ...fields, notes: e.target.value })}
+            rows={2}
+            placeholder="Internal or client-facing notes…"
+            className="bg-white border border-brand-border dark:bg-brand-card dark:border-brand-border rounded-[var(--brand-radius-sm)] px-3 py-2 text-sm text-brand-text focus:outline-none focus:ring-1 focus:ring-brand-accent/50 focus:border-brand-accent resize-y"
+          />
+        </label>
+
+        {/* ── Slim sticky totals footer ──────────────────────── */}
+        <TotalsFooter totals={totals} depositPct={depositQuery.data ?? null} />
       </div>
 
       {showCatalogueModal && (

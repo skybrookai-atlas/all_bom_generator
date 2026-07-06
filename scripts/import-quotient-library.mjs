@@ -39,7 +39,11 @@ const out = {
       source_quote_item_id: it.quote_item_id ?? null,
       metadata: {
         source: 'quotient-library-import',
-        images: (it.images ?? []).map((img) => img.localPath ?? img.filename ?? null).filter(Boolean),
+        // Image files are copied into public/library-images/ — store app paths.
+        images: (it.images ?? [])
+          .map((img) => img.localPath ?? null)
+          .filter(Boolean)
+          .map((p) => `/library-images/${String(p).split('/').pop()}`),
       },
     })),
 };

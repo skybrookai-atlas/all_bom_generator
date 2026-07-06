@@ -48,7 +48,7 @@ export function computeQuoteTotals(items: QuoteLineItemDraft[]): QuoteTotals {
   };
 }
 
-function Row({
+function Stat({
   label,
   value,
   emphasis,
@@ -60,12 +60,12 @@ function Row({
   valueClass?: string;
 }) {
   return (
-    <div className="flex justify-between items-baseline text-sm">
-      <span className={emphasis ? "font-semibold text-brand-text" : "text-brand-muted"}>
+    <div className="flex flex-col items-end gap-0">
+      <span className="text-[10px] uppercase tracking-wider text-brand-muted">
         {label}
       </span>
       <span
-        className={`font-mono tabular-nums ${emphasis ? "text-base font-bold text-brand-accent" : "text-brand-text"} ${valueClass ?? ""}`}
+        className={`font-mono tabular-nums ${emphasis ? "text-base font-bold text-brand-accent" : "text-sm font-semibold text-brand-text"} ${valueClass ?? ""}`}
       >
         {value}
       </span>
@@ -73,7 +73,11 @@ function Row({
   );
 }
 
-export function TotalsPanel({
+/**
+ * Slim sticky totals footer — mirrors the replica's always-visible totals
+ * summary (Subtotal / GST / Grand Total) with the internal margin at a glance.
+ */
+export function TotalsFooter({
   totals,
   depositPct,
 }: {
@@ -81,48 +85,51 @@ export function TotalsPanel({
   depositPct: number | null;
 }) {
   return (
-    <div className="bg-brand-card border border-brand-border rounded-xl p-5 space-y-2 lg:sticky lg:top-4">
-      <h3 className="text-sm font-semibold text-brand-text mb-3">Totals</h3>
+    <div className="sticky bottom-0 z-20 -mx-4 sm:mx-0">
+      <div className="border-t border-brand-border bg-brand-card/95 px-4 py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.12)] backdrop-blur sm:rounded-t-xl sm:border-x">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+          {/* Internal margin at a glance (staff-only figure) */}
+          <div className="flex items-center gap-2">
+            <Lock size={11} className="text-brand-muted" />
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-wider text-brand-muted">
+                Margin (internal)
+              </span>
+              <span
+                data-testid="totals-footer-margin"
+                className={`font-mono text-sm font-semibold tabular-nums ${totals.marginDollars >= 0 ? "text-emerald-500" : "text-brand-danger"}`}
+              >
+                {formatAud(totals.marginDollars)}
+                {totals.marginPct != null
+                  ? ` (${totals.marginPct.toFixed(1)}%)`
+                  : ""}
+              </span>
+            </div>
+          </div>
 
-      <Row label="Subtotal (ex GST)" value={formatAud(totals.subtotalExGst)} />
-      {totals.optionalTotalExGst > 0 && (
-        <Row
-          label="Optional items (ex GST)"
-          value={`+ ${formatAud(totals.optionalTotalExGst)}`}
-          valueClass="text-brand-muted"
-        />
-      )}
-      <Row label="GST (10%)" value={formatAud(totals.gst)} />
-      <div className="border-t border-brand-border/60 pt-2">
-        <Row
-          label="Total (inc GST)"
-          value={formatAud(totals.totalIncGst)}
-          emphasis
-        />
-      </div>
-      {depositPct != null && depositPct > 0 && (
-        <Row
-          label={`Deposit (${depositPct}%)`}
-          value={formatAud((totals.totalIncGst * depositPct) / 100)}
-        />
-      )}
-
-      <div className="mt-4 pt-3 border-t border-dashed border-brand-border space-y-2 rounded-b-xl">
-        <div className="flex items-center gap-1.5">
-          <Lock size={11} className="text-brand-muted" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-muted">
-            Internal
-          </span>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            {totals.optionalTotalExGst > 0 && (
+              <Stat
+                label="Optional"
+                value={`+ ${formatAud(totals.optionalTotalExGst)}`}
+                valueClass="text-brand-muted"
+              />
+            )}
+            {depositPct != null && depositPct > 0 && (
+              <Stat
+                label={`Deposit ${depositPct}%`}
+                value={formatAud((totals.totalIncGst * depositPct) / 100)}
+              />
+            )}
+            <Stat label="Subtotal ex GST" value={formatAud(totals.subtotalExGst)} />
+            <Stat label="GST 10%" value={formatAud(totals.gst)} />
+            <Stat
+              label="Total inc GST"
+              value={formatAud(totals.totalIncGst)}
+              emphasis
+            />
+          </div>
         </div>
-        <Row label="Total material" value={formatAud(totals.totalMaterial)} />
-        <Row label="Total labour" value={formatAud(totals.totalLabor)} />
-        <Row
-          label="Margin"
-          value={`${formatAud(totals.marginDollars)}${totals.marginPct != null ? ` (${totals.marginPct.toFixed(1)}%)` : ""}`}
-          valueClass={
-            totals.marginDollars >= 0 ? "text-emerald-500" : "text-brand-danger"
-          }
-        />
       </div>
     </div>
   );

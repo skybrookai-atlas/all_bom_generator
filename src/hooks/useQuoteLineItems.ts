@@ -29,6 +29,8 @@ export interface QuoteLineItem {
   markup_pct: number | null;
   bom_snapshot: unknown | null;
   supplier_item_id: string | null;
+  /** Client-visible item photo (exposed via quote_line_items_public). */
+  image_url: string | null;
   metadata: Record<string, unknown> | null;
 }
 
@@ -56,6 +58,7 @@ function serialise(item: QuoteLineItemDraft): string {
     item.markup_pct,
     item.bom_snapshot,
     item.supplier_item_id,
+    item.image_url,
     item.metadata,
   ]);
 }

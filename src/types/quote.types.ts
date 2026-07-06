@@ -55,6 +55,8 @@ export interface SavedQuote {
   title?: string | null;
   /** Days until quote expiry (migration 037, default 30). */
   expiry_days?: number | null;
+  /** Linked client-book entry (migration 040). contact stays the portal snapshot. */
+  client_id?: string | null;
   assigned_installer_id?: string | null;
   install_date?: string | null;
   use_splits?: boolean;

@@ -34,6 +34,7 @@ interface PublicLineItem {
   unit: string;
   unit_price: number;
   is_optional: boolean;
+  image_url: string | null;
 }
 
 export function QuotePortalPage() {
@@ -76,7 +77,7 @@ export function QuotePortalPage() {
         const { data, error } = await supabase
           .from("quote_line_items_public")
           .select(
-            "id, quote_id, sort_order, kind, title, description, quantity, unit, unit_price, is_optional",
+            "id, quote_id, sort_order, kind, title, description, quantity, unit, unit_price, is_optional, image_url",
           )
           .eq("quote_id", quoteId!)
           .order("sort_order", { ascending: true });
@@ -776,7 +777,9 @@ export function QuotePortalPage() {
             )}
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-xl font-black text-white">Proposal: {quote.customer_ref}</h1>
+                <h1 className="text-xl font-black text-white">
+                  Proposal: {quote.contact?.fullName || quote.customer_ref || quote.title || ""}
+                </h1>
                 <span className="text-xs text-brand-muted">#{quote.quote_number || "Draft"}</span>
               </div>
               <p className="text-sm text-brand-muted mt-1 leading-relaxed">
@@ -931,7 +934,17 @@ export function QuotePortalPage() {
                           data-testid="portal-line-item"
                           className="flex justify-between items-start text-xs border-b border-brand-border/10 pb-2"
                         >
-                          <div className="max-w-[75%]">
+                          <div className="flex max-w-[75%] items-start gap-2.5">
+                            {item.image_url && (
+                              <img
+                                src={item.image_url}
+                                alt=""
+                                loading="lazy"
+                                data-testid="portal-line-item-image"
+                                className="mt-0.5 h-14 w-14 shrink-0 rounded-lg border border-brand-border/40 object-cover"
+                              />
+                            )}
+                            <div className="min-w-0">
                             <p className="font-bold text-white/95">{item.title}</p>
                             {item.description?.trim() ? (
                               <p className="text-brand-muted text-[10px] mt-0.5 whitespace-pre-line">
@@ -942,6 +955,7 @@ export function QuotePortalPage() {
                               Qty: {item.quantity} {item.unit} @ $
                               {item.unit_price.toFixed(2)}
                             </p>
+                            </div>
                           </div>
                           <span className="font-semibold text-white/90">
                             ${(item.quantity * item.unit_price).toFixed(2)}

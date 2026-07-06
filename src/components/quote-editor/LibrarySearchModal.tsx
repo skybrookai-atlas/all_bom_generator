@@ -10,6 +10,17 @@ export interface LibraryItem {
   unit: string | null;
   unit_price: number;
   categories: string[] | null;
+  /** First entry of metadata.images — app-served path like /library-images/x.jpg */
+  image_url: string | null;
+}
+
+/** Pull the first metadata.images entry off a raw quote_library_items row. */
+function firstImage(metadata: unknown): string | null {
+  if (!metadata || typeof metadata !== "object") return null;
+  const images = (metadata as Record<string, unknown>).images;
+  if (!Array.isArray(images)) return null;
+  const first = images.find((entry) => typeof entry === "string" && entry.length > 0);
+  return (first as string | undefined) ?? null;
 }
 
 interface Props {
@@ -32,14 +43,21 @@ export function LibrarySearchModal({ onPick, onClose }: Props) {
       setLoading(true);
       let q = supabase
         .from("quote_library_items")
-        .select("id, title, body, unit, unit_price, categories")
+        .select("id, title, body, unit, unit_price, categories, metadata")
         .eq("active", true)
         .order("title", { ascending: true })
         .limit(50);
       if (query.trim().length > 0) q = q.ilike("title", `%${query.trim()}%`);
       const { data } = await q;
       if (!cancelled) {
-        setResults((data as LibraryItem[]) ?? []);
+        setResults(
+          ((data ?? []) as (LibraryItem & { metadata: unknown })[]).map(
+            ({ metadata, ...item }) => ({
+              ...item,
+              image_url: firstImage(metadata),
+            }),
+          ),
+        );
         setLoading(false);
       }
     }, 250);
@@ -106,21 +124,36 @@ export function LibrarySearchModal({ onPick, onClose }: Props) {
                     type="button"
                     onClick={() => onPick(item)}
                     data-testid="library-result-row"
-                    className="w-full px-4 py-2.5 text-left transition-colors hover:bg-brand-bg/50"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-brand-bg/50"
                   >
-                    <div className="flex items-baseline justify-between gap-3">
-                      <span className="min-w-0 truncate text-sm font-medium text-brand-text">
-                        {item.title}
-                      </span>
-                      <span className="shrink-0 font-mono text-xs tabular-nums text-brand-accent">
-                        {formatAud(item.unit_price)}
-                      </span>
-                    </div>
-                    {item.body && (
-                      <p className="mt-0.5 truncate text-xs text-brand-muted">
-                        {item.body.split("\n")[0]}
-                      </p>
+                    {item.image_url ? (
+                      <img
+                        src={item.image_url}
+                        alt=""
+                        loading="lazy"
+                        data-testid="library-result-thumb"
+                        className="h-11 w-11 shrink-0 rounded-md border border-brand-border object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-dashed border-brand-border/70 text-brand-muted/50">
+                        <BookMarked size={14} />
+                      </div>
                     )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="min-w-0 truncate text-sm font-medium text-brand-text">
+                          {item.title}
+                        </span>
+                        <span className="shrink-0 font-mono text-xs tabular-nums text-brand-accent">
+                          {formatAud(item.unit_price)}
+                        </span>
+                      </div>
+                      {item.body && (
+                        <p className="mt-0.5 truncate text-xs text-brand-muted">
+                          {item.body.split("\n")[0]}
+                        </p>
+                      )}
+                    </div>
                   </button>
                 </li>
               ))}
