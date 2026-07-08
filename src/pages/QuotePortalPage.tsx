@@ -116,10 +116,17 @@ export function QuotePortalPage() {
     const optionalTotal = pricedItems
       .filter((item) => item.is_optional && activeOptionalLineIds.has(item.id))
       .reduce((sum, item) => sum + item.quantity * item.unit_price, 0);
-    const subtotal = baseTotal + optionalTotal;
+    const rawSubtotal = baseTotal + optionalTotal;
+    // Quote-level discount (Quotient-style) reduces the subtotal before GST.
+    const discountPct = Math.min(
+      100,
+      Math.max(0, Number((quote as { discount_pct?: number } | undefined)?.discount_pct ?? 0)),
+    );
+    const discount = rawSubtotal * (discountPct / 100);
+    const subtotal = rawSubtotal - discount;
     const gst = subtotal * 0.1;
-    return { subtotal, gst, grandTotal: subtotal + gst };
-  }, [publicLineItems, activeOptionalLineIds]);
+    return { rawSubtotal, discountPct, discount, subtotal, gst, grandTotal: subtotal + gst };
+  }, [publicLineItems, activeOptionalLineIds, quote]);
 
   const getCoordinates = (
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
@@ -1123,8 +1130,24 @@ export function QuotePortalPage() {
               <div className="mt-8 border-t border-brand-border/40 pt-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-brand-muted font-semibold">Subtotal</span>
-                  <span className="font-semibold text-white/90">${displayTotals.subtotal.toFixed(2)}</span>
+                  <span className="font-semibold text-white/90">
+                    $
+                    {(hasLineItems && lineItemTotals.discount > 0
+                      ? lineItemTotals.rawSubtotal
+                      : displayTotals.subtotal
+                    ).toFixed(2)}
+                  </span>
                 </div>
+                {hasLineItems && lineItemTotals.discount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-emerald-400 font-semibold">
+                      Discount ({lineItemTotals.discountPct}%)
+                    </span>
+                    <span className="font-semibold text-emerald-400">
+                      − ${lineItemTotals.discount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-brand-muted font-semibold">GST (10%)</span>
                   <span className="font-semibold text-white/90">${displayTotals.gst.toFixed(2)}</span>

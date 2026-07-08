@@ -45,6 +45,7 @@ import {
   computeQuoteTotals,
 } from "../components/quote-editor/TotalsPanel";
 import { ConfirmButton } from "../components/shared/ConfirmButton";
+import { QuoteComments } from "../components/quote/QuoteComments";
 import { formatAud } from "../components/quote-editor/currency";
 import type { QuoteStatus, SavedQuote } from "../types/quote.types";
 
@@ -113,6 +114,13 @@ interface EditorFields {
   notes: string;
   client_id: string | null;
   contact: ContactSnapshot;
+  // Quote details rail (Quotient parity)
+  assigned_installer_id: string | null;
+  install_date: string | null;
+  use_splits: boolean;
+  split_ratio_a: number;
+  split_ratio_b: number;
+  discount_pct: number;
 }
 
 const STATUS_COLOURS: Record<QuoteStatus, string> = {
@@ -144,7 +152,7 @@ export function QuoteEditorPage() {
     },
   });
   const { lineItemsQuery, saveLineItems } = useQuoteLineItems(quoteId);
-  const { orgId: profileOrgId } = useProfile();
+  const { orgId: profileOrgId, user: profileUser } = useProfile();
 
   const quote = quoteQuery.data;
   const orgId = profileOrgId ?? quote?.org_id ?? null;
@@ -170,6 +178,12 @@ export function QuoteEditorPage() {
         phone: quote.contact?.phone ?? "",
         address: quote.contact?.deliveryAddress ?? "",
       },
+      assigned_installer_id: quote.assigned_installer_id ?? null,
+      install_date: quote.install_date ?? null,
+      use_splits: quote.use_splits ?? false,
+      split_ratio_a: Number(quote.split_ratio_a ?? 50),
+      split_ratio_b: Number(quote.split_ratio_b ?? 50),
+      discount_pct: Number((quote as { discount_pct?: number }).discount_pct ?? 0),
     });
   }, [quote, fields]);
 
@@ -195,7 +209,26 @@ export function QuoteEditorPage() {
     },
   });
 
-  const totals = useMemo(() => computeQuoteTotals(items ?? []), [items]);
+  const totals = useMemo(
+    () => computeQuoteTotals(items ?? [], fields?.discount_pct ?? 0),
+    [items, fields?.discount_pct],
+  );
+
+  // Installers for the assignment dropdown (same source as the calculator page).
+  const installersQuery = useQuery({
+    queryKey: ["installers", orgId],
+    enabled: !!orgId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("installers")
+        .select("id, name")
+        .eq("org_id", orgId!)
+        .eq("status", "Active")
+        .order("name");
+      if (error) return [] as Array<{ id: string; name: string }>;
+      return (data ?? []) as Array<{ id: string; name: string }>;
+    },
+  });
   const hasBom = useMemo(() => hasBomContent(quote?.bom), [quote?.bom]);
   const portalUrl = quoteId
     ? `${window.location.origin}/q/${quoteId}`
@@ -362,7 +395,7 @@ export function QuoteEditorPage() {
 
   const persistQuoteFields = async () => {
     if (!quote || !fields) return;
-    const updates: Partial<SavedQuote> = {
+    const updates: Partial<SavedQuote> & Record<string, unknown> = {
       title: fields.title.trim() || null,
       expiry_days: fields.expiry_days,
       notes: fields.notes,
@@ -375,6 +408,12 @@ export function QuoteEditorPage() {
         deliveryAddress: fields.contact.address,
         fulfilment: quote.contact?.fulfilment ?? "pickup",
       },
+      assigned_installer_id: fields.assigned_installer_id,
+      install_date: fields.install_date || null,
+      use_splits: fields.use_splits,
+      split_ratio_a: fields.split_ratio_a,
+      split_ratio_b: fields.split_ratio_b,
+      discount_pct: fields.discount_pct,
     };
     const { error } = await supabase
       .from("quotes")
@@ -551,7 +590,7 @@ export function QuoteEditorPage() {
             data-testid="quote-title-input"
             className="w-full border-0 bg-transparent px-0 py-1 text-2xl font-black tracking-tight text-brand-text outline-none placeholder:font-bold placeholder:text-brand-muted/40 sm:text-3xl"
           />
-          <div className="flex flex-wrap items-center gap-4 text-xs text-brand-muted">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-brand-muted">
             <label className="flex items-center gap-1.5">
               Valid for
               <input
@@ -571,6 +610,95 @@ export function QuoteEditorPage() {
               />
               days
             </label>
+            <label className="flex items-center gap-1.5">
+              Installer
+              <select
+                value={fields.assigned_installer_id ?? ""}
+                onChange={(e) =>
+                  setFields({
+                    ...fields,
+                    assigned_installer_id: e.target.value || null,
+                  })
+                }
+                data-testid="quote-installer-select"
+                className="rounded-md border border-brand-border bg-brand-card px-1.5 py-0.5 text-xs text-brand-text outline-none focus:border-brand-accent"
+              >
+                <option value="">Unassigned</option>
+                {(installersQuery.data ?? []).map((installer) => (
+                  <option key={installer.id} value={installer.id}>
+                    {installer.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex items-center gap-1.5">
+              Install date
+              <input
+                type="date"
+                value={fields.install_date ?? ""}
+                onChange={(e) =>
+                  setFields({ ...fields, install_date: e.target.value || null })
+                }
+                className="rounded-md border border-brand-border bg-brand-card px-1.5 py-0.5 text-xs text-brand-text outline-none focus:border-brand-accent"
+              />
+            </label>
+            <label className="flex items-center gap-1.5">
+              Discount
+              <input
+                type="number"
+                min={0}
+                max={100}
+                step="0.5"
+                value={String(fields.discount_pct)}
+                onChange={(e) =>
+                  setFields({
+                    ...fields,
+                    discount_pct: Math.min(
+                      100,
+                      Math.max(0, Number(e.target.value) || 0),
+                    ),
+                  })
+                }
+                data-testid="quote-discount-input"
+                className="w-14 rounded-md border border-brand-border bg-brand-card px-1.5 py-0.5 text-right text-xs text-brand-text outline-none focus:border-brand-accent"
+              />
+              %
+            </label>
+            <label className="flex items-center gap-1.5">
+              <input
+                type="checkbox"
+                checked={fields.use_splits}
+                onChange={(e) =>
+                  setFields({ ...fields, use_splits: e.target.checked })
+                }
+                className="h-3.5 w-3.5 accent-brand-accent"
+              />
+              Neighbour split
+            </label>
+            {fields.use_splits && (
+              <label className="flex items-center gap-1.5">
+                A
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={String(fields.split_ratio_a)}
+                  onChange={(e) => {
+                    const a = Math.min(100, Math.max(0, Number(e.target.value) || 0));
+                    setFields({
+                      ...fields,
+                      split_ratio_a: a,
+                      split_ratio_b: Math.round((100 - a) * 100) / 100,
+                    });
+                  }}
+                  className="w-14 rounded-md border border-brand-border bg-brand-card px-1.5 py-0.5 text-right text-xs text-brand-text outline-none focus:border-brand-accent"
+                />
+                % / B
+                <span className="font-semibold text-brand-text">
+                  {fields.split_ratio_b}%
+                </span>
+              </label>
+            )}
           </div>
         </div>
 
@@ -694,6 +822,26 @@ export function QuoteEditorPage() {
             className="bg-white border border-brand-border dark:bg-brand-card dark:border-brand-border rounded-[var(--brand-radius-sm)] px-3 py-2 text-sm text-brand-text focus:outline-none focus:ring-1 focus:ring-brand-accent/50 focus:border-brand-accent resize-y"
           />
         </label>
+
+        {/* Discussion thread — same comments the client sees on the portal,
+            plus private staff notes (Quotient's Q&A on the quote). */}
+        {quoteId && (
+          <div className="rounded-xl border border-brand-border bg-brand-card p-4">
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-brand-muted">
+              Discussion & private notes
+            </h3>
+            <QuoteComments
+              quoteId={quoteId}
+              currentUser={
+                profileUser
+                  ? { email: profileUser.email ?? "", name: profileUser.email ?? "" }
+                  : null
+              }
+              orgId={orgId ?? undefined}
+              clientName={fields.contact.name || "Client"}
+            />
+          </div>
+        )}
 
         {/* ── Slim sticky totals footer ──────────────────────── */}
         <TotalsFooter totals={totals} depositPct={depositQuery.data ?? null} />

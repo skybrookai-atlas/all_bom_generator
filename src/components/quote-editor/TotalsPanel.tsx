@@ -4,6 +4,8 @@ import { formatAud } from "./currency";
 
 export interface QuoteTotals {
   subtotalExGst: number;
+  discountPct: number;
+  discountExGst: number;
   optionalTotalExGst: number;
   gst: number;
   totalIncGst: number;
@@ -13,8 +15,14 @@ export interface QuoteTotals {
   marginPct: number | null;
 }
 
-/** Totals over non-optional lines; optional lines reported separately. */
-export function computeQuoteTotals(items: QuoteLineItemDraft[]): QuoteTotals {
+/**
+ * Totals over non-optional lines; optional lines reported separately.
+ * A quote-level discount % (Quotient-style) reduces the subtotal before GST.
+ */
+export function computeQuoteTotals(
+  items: QuoteLineItemDraft[],
+  discountPct = 0,
+): QuoteTotals {
   let subtotal = 0;
   let optionalTotal = 0;
   let totalMaterial = 0;
@@ -33,18 +41,23 @@ export function computeQuoteTotals(items: QuoteLineItemDraft[]): QuoteTotals {
     totalLabor += item.labor_cost ?? 0;
   }
 
-  const gst = subtotal * 0.1;
-  const marginDollars = subtotal - totalMaterial - totalLabor;
+  const safeDiscountPct = Math.min(100, Math.max(0, discountPct || 0));
+  const discountExGst = subtotal * (safeDiscountPct / 100);
+  const discounted = subtotal - discountExGst;
+  const gst = discounted * 0.1;
+  const marginDollars = discounted - totalMaterial - totalLabor;
 
   return {
     subtotalExGst: subtotal,
+    discountPct: safeDiscountPct,
+    discountExGst,
     optionalTotalExGst: optionalTotal,
     gst,
-    totalIncGst: subtotal + gst,
+    totalIncGst: discounted + gst,
     totalMaterial,
     totalLabor,
     marginDollars,
-    marginPct: subtotal > 0 ? (marginDollars / subtotal) * 100 : null,
+    marginPct: discounted > 0 ? (marginDollars / discounted) * 100 : null,
   };
 }
 
@@ -122,6 +135,13 @@ export function TotalsFooter({
               />
             )}
             <Stat label="Subtotal ex GST" value={formatAud(totals.subtotalExGst)} />
+            {totals.discountExGst > 0 && (
+              <Stat
+                label={`Discount ${totals.discountPct}%`}
+                value={`− ${formatAud(totals.discountExGst)}`}
+                valueClass="text-emerald-500"
+              />
+            )}
             <Stat label="GST 10%" value={formatAud(totals.gst)} />
             <Stat
               label="Total inc GST"

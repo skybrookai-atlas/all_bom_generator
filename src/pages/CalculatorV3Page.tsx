@@ -2367,9 +2367,18 @@ function CalculatorV3Content({ quoteId }: { quoteId?: string }) {
                             </div>
                           )}
 
-                          {/* The drawing canvas lives in this page's Map view —
-                              the old modal button opened a SECOND canvas and
-                              confused users. Removed. */}
+                          {/* Jump from the compact sidebar to the full-page
+                              Quotient-style quote editor for this job. */}
+                          {quoteId && (
+                            <button
+                              type="button"
+                              data-testid="open-full-quote-editor-btn"
+                              onClick={() => navigate(`/quote/${quoteId}/edit`)}
+                              className="w-full rounded-lg border border-brand-accent bg-brand-accent/10 px-3 py-2 text-sm font-bold text-brand-accent hover:bg-brand-accent/20 transition-colors"
+                            >
+                              Open full quote editor →
+                            </button>
+                          )}
                           <hr className="border-brand-border/60" />
 
                           {/* Comments / History Section */}
