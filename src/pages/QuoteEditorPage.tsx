@@ -40,6 +40,7 @@ import {
   LibrarySearchModal,
   type LibraryItem,
 } from "../components/quote-editor/LibrarySearchModal";
+import { FenceBuilderModal } from "../components/quote-editor/FenceBuilderModal";
 import {
   TotalsFooter,
   computeQuoteTotals,
@@ -161,6 +162,7 @@ export function QuoteEditorPage() {
   const [items, setItems] = useState<QuoteLineItemDraft[] | null>(null);
   const [showCatalogueModal, setShowCatalogueModal] = useState(false);
   const [showLibraryModal, setShowLibraryModal] = useState(false);
+  const [showFenceModal, setShowFenceModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
 
@@ -347,6 +349,12 @@ export function QuoteEditorPage() {
       }),
     ]);
     setShowCatalogueModal(false);
+  };
+
+  // Fence built inside the editor via the calculator engine (FenceBuilderModal).
+  const addFenceLine = (overrides: Partial<QuoteLineItemDraft>) => {
+    setItems((prev) => [...(prev ?? []), blankDraft(overrides)]);
+    setShowFenceModal(false);
   };
 
   const addBomLine = () => {
@@ -751,6 +759,14 @@ export function QuoteEditorPage() {
           <div className="flex flex-wrap gap-2 pt-1">
             <button
               type="button"
+              onClick={() => setShowFenceModal(true)}
+              data-testid="add-fence-line-btn"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-brand-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-accent-hover"
+            >
+              <Calculator size={14} /> Fence
+            </button>
+            <button
+              type="button"
               onClick={addHeading}
               data-testid="add-heading-btn"
               className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-brand-text bg-brand-card border border-brand-border rounded-lg hover:bg-brand-bg/60 transition-colors"
@@ -857,6 +873,13 @@ export function QuoteEditorPage() {
         <LibrarySearchModal
           onPick={addLibraryLine}
           onClose={() => setShowLibraryModal(false)}
+        />
+      )}
+      {showFenceModal && (
+        <FenceBuilderModal
+          orgId={orgId}
+          onAdd={addFenceLine}
+          onClose={() => setShowFenceModal(false)}
         />
       )}
     </AppShell>

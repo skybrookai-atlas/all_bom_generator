@@ -467,9 +467,10 @@ Enables reliable LLM authoring and sets up an in-app AI import feature later
 - [x] QuotesHistoryPage edit button; QuotePortalPage renders `quote_line_items_public` (optional lines client-toggleable) instead of the BOM table when line items exist
 - [x] useQuote no longer mock-falls-back for line-items-only quotes (empty fence_config → real quote row + empty payload); editor fetches the quotes row directly
 - [x] Verified end-to-end in browser + DB: margin math ((1260+900)×1.3/12m = $234/m, 23.1% margin), catalogue add ($65 Oxworks panel), save diff, send flow, portal shows no internal costs
-- [ ] "New quote" button (create a blank line-items quote without the calculator)
+- [x] "New quote" button (create a blank line-items quote without the calculator)
 - [ ] Portal: hide the fence-summary card entirely for line-item-only quotes ("No runs specified")
 - [ ] Send should eventually email the client (currently sets status + link only)
+- [x] FenceBuilderModal (2026-07-12) — "Fence" button in the editor's add-row: family-grouped fence-type picker (all 6 systems), length/height/colour, runs the real `bom-calculator` engine, prefills labour ($/m × length) and markup from `instant_quote_settings`, shows BOM lines + warnings + live sell price, adds a `calculated` line with material/labour/markup internals and `bom_snapshot`. Verified in browser: TP 12m×1800 = $789.68 materials (matches prior engine verification), sell $1,957.07 at $55/m + 35%; COLORBOND 12m×1800 = $454.60 (Amazing Fencing, Monument, coastal warning shown). Real Colorbond colour names added to displayNames (`COLORBOND_COLOUR_NAMES`).
 
 ### v3 UI polish + v2 retirement (shipped)
 

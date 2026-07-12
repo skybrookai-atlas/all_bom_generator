@@ -23,6 +23,27 @@ export const COLOUR_DISPLAY_NAMES: Record<string, string> = {
   WRC: "Western Red Cedar",
 };
 
+/** Real ColorBond catalogue colour codes (supplier price lists). Codes with
+ * no confirmed name render as the raw code via displayName(). */
+export const COLORBOND_COLOUR_NAMES: Record<string, string> = {
+  BA: "Basalt",
+  CG: "Cottage Green",
+  DO: "Deep Ocean",
+  DU: "Dune",
+  EH: "Evening Haze",
+  IS: "Ironstone",
+  JA: "Jasper",
+  MO: "Monument",
+  MR: "Manor Red",
+  NS: "Night Sky",
+  PB: "Paperbark",
+  PE: "Pale Eucalypt",
+  SG: "Shale Grey",
+  SM: "Surfmist",
+  WG: "Woodland Grey",
+  WS: "Windspray",
+};
+
 export const MOUNTING_DISPLAY_NAMES: Record<string, string> = {
   in_ground: "Concreted in ground",
   base_plate: "Base-plated to slab",
