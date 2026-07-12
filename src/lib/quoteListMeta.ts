@@ -170,8 +170,15 @@ export function getQuoteGrandTotal(
 }
 
 export function getJobName(
-  quote: Pick<SavedQuote, 'customer_ref' | 'fence_config' | 'notes' | 'quote_number'>,
+  quote: Pick<
+    SavedQuote,
+    'customer_ref' | 'fence_config' | 'notes' | 'quote_number' | 'title'
+  >,
 ): string {
+  // The editor's job name / description field wins when set.
+  const title = quote.title?.trim();
+  if (title) return title;
+
   const ref = quote.customer_ref?.trim();
   if (ref) return ref;
 

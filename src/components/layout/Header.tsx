@@ -1,8 +1,10 @@
-import { Eye, EyeOff, LogOut, Menu, Moon, Plus, PlayCircle, Sun, Trash2, WifiOff, X } from 'lucide-react';
+import { Calculator, Eye, EyeOff, FileText, LogOut, Menu, Moon, Plus, PlayCircle, Settings, Sun, Tags, Trash2, WifiOff, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
+import { createBlankQuote } from '../../lib/blankQuote';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../context/ThemeContext';
 import { DEFAULT_BRAND } from '../../lib/brand';
@@ -37,9 +39,28 @@ export function Header({
 }: HeaderProps = {}) {
   const { user } = useAuth();
   const { theme, toggle } = useTheme();
+  const navigate = useNavigate();
   const [installVideosOpen, setInstallVideosOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [offline, setOffline] = useState(() => navigator.onLine === false);
+  const [creatingQuote, setCreatingQuote] = useState(false);
+
+  // "+ New quote" — blank Quotient-style quote straight into the editor.
+  const handleNewQuote = async () => {
+    if (creatingQuote) return;
+    setCreatingQuote(true);
+    setMobileMenuOpen(false);
+    try {
+      const quoteId = await createBlankQuote();
+      navigate(`/quote/${quoteId}/edit`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      toast.error(`Could not create the quote: ${msg}`);
+      console.error("[Header] blank quote create failed", err);
+    } finally {
+      setCreatingQuote(false);
+    }
+  };
 
   useEffect(() => {
     const onOnline = () => setOffline(false);
@@ -64,11 +85,8 @@ export function Header({
       : 'text-brand-muted hover:text-brand-text hover:bg-brand-border/20'
     }`;
 
-  const newQuoteLinkCls = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-md transition-colors ml-1 ${isActive
-      ? 'text-brand-accent bg-brand-accent/15'
-      : 'text-brand-accent hover:bg-brand-accent/10'
-    }`;
+  const mobileNavCls =
+    'flex min-h-11 items-center gap-3 rounded-lg border border-brand-border px-3 py-2 text-left text-sm font-bold text-brand-text';
 
   return (
     <header className="sticky top-0 z-40 flex min-h-[calc(var(--safe-top)+3.25rem)] flex-wrap items-stretch justify-between border-b border-brand-border bg-brand-card px-3 py-0 pt-[var(--safe-top)] sm:px-6">
@@ -97,19 +115,28 @@ export function Header({
 
         {(user || !isSupabaseConfigured) && (
           <nav className="hidden sm:flex items-center gap-0.5 ml-2">
-            <NavLink to="/" end className={navLinkCls}>
-              Home
-            </NavLink>
-            <NavLink to="/quotes" className={navLinkCls}>
+            <NavLink to="/quotes" className={navLinkCls} data-testid="nav-quotes">
               Quotes
             </NavLink>
-            <NavLink to="/price-list" className={navLinkCls}>
+            <NavLink to="/fence-calculator" className={navLinkCls} data-testid="nav-calculator">
+              Fence calculator
+            </NavLink>
+            <NavLink to="/price-list" className={navLinkCls} data-testid="nav-price-list">
               Price list
             </NavLink>
-            <NavLink to="/fence-calculator" className={newQuoteLinkCls}>
-              <Plus size={16} />
-              New Quote
+            <NavLink to="/admin/settings" className={navLinkCls} data-testid="nav-admin">
+              Admin
             </NavLink>
+            <button
+              type="button"
+              onClick={() => void handleNewQuote()}
+              disabled={creatingQuote}
+              data-testid="nav-new-quote"
+              className="ml-1 flex items-center gap-1 rounded-md bg-brand-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-accent-hover disabled:opacity-50"
+            >
+              <Plus size={14} />
+              {creatingQuote ? 'Creating…' : 'New quote'}
+            </button>
           </nav>
         )}
       </div>
@@ -297,27 +324,46 @@ export function Header({
             )}
             {(user || !isSupabaseConfigured) && (
               <>
-                <NavLink
-                  to="/"
-                  end
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-border px-3 py-2 text-left text-sm font-bold text-brand-text"
+                <button
+                  type="button"
+                  onClick={() => void handleNewQuote()}
+                  disabled={creatingQuote}
+                  className="flex min-h-11 items-center gap-3 rounded-lg bg-brand-accent px-3 py-2 text-left text-sm font-bold text-white disabled:opacity-50"
                 >
-                  Home
-                </NavLink>
+                  <Plus size={18} />
+                  {creatingQuote ? 'Creating…' : 'New quote'}
+                </button>
                 <NavLink
                   to="/quotes"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-border px-3 py-2 text-left text-sm font-bold text-brand-text"
+                  className={mobileNavCls}
                 >
+                  <FileText size={18} />
                   Quotes
                 </NavLink>
                 <NavLink
                   to="/fence-calculator"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-accent/50 px-3 py-2 text-left text-sm font-bold text-brand-accent"
+                  className={mobileNavCls}
                 >
-                  New Quote
+                  <Calculator size={18} />
+                  Fence calculator
+                </NavLink>
+                <NavLink
+                  to="/price-list"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={mobileNavCls}
+                >
+                  <Tags size={18} />
+                  Price list
+                </NavLink>
+                <NavLink
+                  to="/admin/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={mobileNavCls}
+                >
+                  <Settings size={18} />
+                  Admin
                 </NavLink>
               </>
             )}

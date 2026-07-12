@@ -9,6 +9,8 @@ import { useProfile } from "../context/ProfileContext";
 import { formatLayoutLabel, isJobNameFallback } from "../lib/quoteListMeta";
 import type { QuoteStatus } from "../types/quote.types";
 import { supabase } from "../lib/supabase";
+import { createBlankQuote } from "../lib/blankQuote";
+import { ConfirmButton } from "../components/shared/ConfirmButton";
 
 type CreatedByFilter = "mine" | "all" | "users";
 type StatusFilter = "any" | QuoteStatus;
@@ -245,49 +247,12 @@ export function QuotesHistoryPage() {
   const [creatingQuote, setCreatingQuote] = useState(false);
 
   /** Quotient-style blank quote: straight to the editor, no calculator. */
-  const createBlankQuote = async () => {
+  const handleWriteQuote = async () => {
     if (creatingQuote) return;
     setCreatingQuote(true);
     try {
-      // Resolve the session + org at click-time rather than depending on the
-      // ProfileContext having already resolved (avoids a first-load race where
-      // orgId is briefly null). Fall back to context if the direct read fails.
-      let resolvedUserId = user?.id ?? null;
-      let resolvedOrgId = orgId ?? null;
-      if (!resolvedUserId || !resolvedOrgId) {
-        const { data: sessionData } = await supabase.auth.getUser();
-        resolvedUserId = resolvedUserId ?? sessionData.user?.id ?? null;
-        if (resolvedUserId && !resolvedOrgId) {
-          const { data: prof } = await supabase
-            .from("profiles")
-            .select("org_id")
-            .eq("id", resolvedUserId)
-            .single();
-          resolvedOrgId = prof?.org_id ?? null;
-        }
-      }
-      if (!resolvedUserId || !resolvedOrgId) {
-        toast.error("Please sign in again — your session could not be read.");
-        setCreatingQuote(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("quotes")
-        .insert({
-          org_id: resolvedOrgId,
-          user_id: resolvedUserId,
-          fence_config: {},
-          bom: {},
-          contact: {},
-          notes: "",
-          status: "draft",
-          title: "Untitled quote",
-        })
-        .select("id")
-        .single();
-      if (error) throw error;
-      navigate(`/quote/${data.id}/edit`);
+      const quoteId = await createBlankQuote({ userId: user?.id, orgId });
+      navigate(`/quote/${quoteId}/edit`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       toast.error(`Could not create the quote: ${msg}`);
@@ -427,7 +392,7 @@ export function QuotesHistoryPage() {
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               type="button"
-              onClick={() => void createBlankQuote()}
+              onClick={() => void handleWriteQuote()}
               disabled={creatingQuote}
               data-testid="new-blank-quote-btn"
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-accent hover:bg-brand-accent-hover text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
@@ -688,17 +653,23 @@ export function QuotesHistoryPage() {
                               >
                                 <Pencil size={16} />
                               </button>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteQuote.mutate(quote.id);
-                                }}
-                                title="Delete quote"
-                                className="p-1.5 text-brand-muted hover:text-brand-danger transition-colors"
-                              >
-                                <Trash2 size={16} />
-                              </button>
+                              {/* stopPropagation wrapper: keep both confirm
+                                  clicks from opening the quote row */}
+                              <span onClick={(e) => e.stopPropagation()}>
+                                <ConfirmButton
+                                  onConfirm={() => deleteQuote.mutate(quote.id)}
+                                  confirmLabel={
+                                    <span className="px-1 text-xs font-semibold">
+                                      Delete?
+                                    </span>
+                                  }
+                                  title="Delete quote"
+                                  data-testid="delete-quote-btn"
+                                  className="rounded-md p-1.5 text-brand-muted hover:text-brand-danger transition-colors"
+                                >
+                                  <Trash2 size={16} />
+                                </ConfirmButton>
+                              </span>
                             </div>
                           </td>
                         </tr>

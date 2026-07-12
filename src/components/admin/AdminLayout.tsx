@@ -29,11 +29,11 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
       {/* Top bar */}
       <div className="bg-brand-card border-b border-brand-border px-6 py-3 flex items-center gap-4">
         <NavLink
-          to="/"
+          to="/quotes"
           className="flex items-center gap-1.5 text-xs text-brand-muted hover:text-brand-text transition-colors"
         >
           <ArrowLeft size={13} />
-          App
+          Back to app
         </NavLink>
         <span className="text-brand-border/60">|</span>
         <span className="text-xs font-bold text-brand-accent tracking-widest uppercase px-2 py-0.5 rounded border border-brand-accent/40 bg-brand-accent/5">
